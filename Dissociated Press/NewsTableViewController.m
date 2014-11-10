@@ -7,6 +7,8 @@
 //
 
 #import "NewsTableViewController.h"
+#import "NewsStory.h"
+#import "NewsLoader.h"
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 @property (strong, nonatomic) UISearchBar *searchBar;
@@ -47,7 +49,8 @@
     //reset and populate news array
     self.pageNumber = 1;
     self.newsArray = [[NSMutableArray alloc] init];
-#warning populate news array
+    [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:@"macaque" pageNumber:self.pageNumber]];
+    [self.tableView reloadData];
 }
 
 - (void)refresh
@@ -73,7 +76,23 @@
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellReuseIdentifier];
     
-#warning populate with item from newsarray
+    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = story.title;
+    cell.textLabel.numberOfLines = 0;
+    cell.detailTextLabel.text = story.content;
+    cell.detailTextLabel.numberOfLines = 5;
+    
+    if (story.imageUrl) {
+        dispatch_async(self.globalQueue, ^{
+            NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
+            
+            dispatch_async(self.mainQueue, ^{
+                cell.imageView.image = [[UIImage alloc] initWithData:imageData];
+                [cell layoutSubviews];
+            });
+        });
+    } else cell.imageView.image = nil;
     
     return cell;
 }
@@ -98,7 +117,7 @@
     if (indexPath.row >= self.newsArray.count - 1) {
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
-#warning should append next page to newsarray
+            [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:@"macaque" pageNumber:self.pageNumber]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
             });
