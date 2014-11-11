@@ -49,7 +49,7 @@
     //reset and populate news array
     self.pageNumber = 1;
     self.newsArray = [[NSMutableArray alloc] init];
-    [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:@"macaque" pageNumber:self.pageNumber]];
+    [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
     [self.tableView reloadData];
 }
 
@@ -117,7 +117,7 @@
     if (indexPath.row >= self.newsArray.count - 1) {
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
-            [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:@"macaque" pageNumber:self.pageNumber]];
+            [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
             });
@@ -130,7 +130,7 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     NSLog(@"%@",NSStringFromSelector(_cmd));
-    [self loadNews];
+    //    [self loadNews];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar

@@ -13,6 +13,11 @@
 
 + (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber
 {
+    //check that query isn't empty
+    if (![[query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]) {
+        return nil;
+    }
+    
     NSString *escapedQuery = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     int start = (pageNumber - 1) * 4;
