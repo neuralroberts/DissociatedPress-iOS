@@ -35,9 +35,9 @@
     
     NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
     
-    NSMutableArray *associatedResult = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
+    NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
-        NSLog(@"%@",resultDictionary);
+        //        NSLog(@"%@",resultDictionary);
         NewsStory *story = [[NewsStory alloc] init];
         story.title = resultDictionary[@"titleNoFormatting"];
         story.content = resultDictionary[@"content"];
@@ -50,9 +50,13 @@
             story.imageUrl = [NSURL URLWithString:imageDictionary[@"tbUrl"]];
         }
         
-        [associatedResult addObject:story];
+        [result addObject:story];
     }
     
-    return associatedResult;
+    return result;
 }
+
+
+
+
 @end

@@ -9,11 +9,13 @@
 #import "NewsTableViewController.h"
 #import "NewsStory.h"
 #import "NewsLoader.h"
+#import "Dissociator.h"
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 @property (strong, nonatomic) UISearchBar *searchBar;
 
-@property (strong, nonatomic) NSMutableArray *newsArray;
+@property (strong, nonatomic) NSMutableArray *associatedNewsArray;
+@property (strong, nonatomic) NSMutableArray *dissociatedNewsArray;
 @property (nonatomic) int pageNumber;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) dispatch_queue_t globalQueue;
@@ -36,6 +38,7 @@
     self.searchBar.delegate = self;
     [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+    self.searchBar.text = @"macaque";
     self.navigationItem.titleView = self.searchBar;
     
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -48,8 +51,13 @@
 {
     //reset and populate news array
     self.pageNumber = 1;
-    self.newsArray = [[NSMutableArray alloc] init];
-    [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
+    
+    self.associatedNewsArray = [[NSMutableArray alloc] init];
+    [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
+    
+    self.dissociatedNewsArray = [[NSMutableArray alloc] init];
+    [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateResult:self.associatedNewsArray pageNumber:self.pageNumber]];
+    
     [self.tableView reloadData];
 }
 
@@ -67,7 +75,7 @@
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.newsArray count];
+    return [self.dissociatedNewsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -76,7 +84,7 @@
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellReuseIdentifier];
     
-    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
+    NewsStory *story = [self.dissociatedNewsArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text = story.title;
     cell.textLabel.numberOfLines = 0;
@@ -106,18 +114,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
 #warning should segue to detail view
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
-    
-    if (indexPath.row >= self.newsArray.count - 1) {
+    if (indexPath.row >= self.dissociatedNewsArray.count - 1) {
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
-            [self.newsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
+            [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
+            [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateResult:self.associatedNewsArray pageNumber:self.pageNumber]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
             });
@@ -129,19 +135,16 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     //    [self loadNews];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     [self loadNews];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
 }
 
 

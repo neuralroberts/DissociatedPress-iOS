@@ -15,6 +15,7 @@
 		43383D971A11573000D58D0F /* NewsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D961A11573000D58D0F /* NewsTableViewController.m */; };
 		43383D9B1A117C7E00D58D0F /* NewsStory.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D9A1A117C7E00D58D0F /* NewsStory.m */; };
 		43383D9E1A117CE400D58D0F /* NewsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D9D1A117CE400D58D0F /* NewsLoader.m */; };
+		4364570F1A12981100C7DF66 /* Dissociator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4364570E1A12981100C7DF66 /* Dissociator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,8 @@
 		43383D9A1A117C7E00D58D0F /* NewsStory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsStory.m; sourceTree = "<group>"; };
 		43383D9C1A117CE400D58D0F /* NewsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsLoader.h; sourceTree = "<group>"; };
 		43383D9D1A117CE400D58D0F /* NewsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsLoader.m; sourceTree = "<group>"; };
+		4364570D1A12981100C7DF66 /* Dissociator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dissociator.h; sourceTree = "<group>"; };
+		4364570E1A12981100C7DF66 /* Dissociator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Dissociator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +132,8 @@
 				43383D9A1A117C7E00D58D0F /* NewsStory.m */,
 				43383D9C1A117CE400D58D0F /* NewsLoader.h */,
 				43383D9D1A117CE400D58D0F /* NewsLoader.m */,
+				4364570D1A12981100C7DF66 /* Dissociator.h */,
+				4364570E1A12981100C7DF66 /* Dissociator.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -240,6 +245,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4364570F1A12981100C7DF66 /* Dissociator.m in Sources */,
 				43383D9B1A117C7E00D58D0F /* NewsStory.m in Sources */,
 				43383D971A11573000D58D0F /* NewsTableViewController.m in Sources */,
 				43383D9E1A117CE400D58D0F /* NewsLoader.m in Sources */,
@@ -478,6 +484,7 @@
 				43383D901A1155F800D58D0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		43383D941A1155F800D58D0F /* Build configuration list for PBXNativeTarget "Dissociated PressTests" */ = {
 			isa = XCConfigurationList;
@@ -486,6 +493,7 @@
 				43383D921A1155F800D58D0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		43F232221A11542E008E87E4 /* Build configuration list for PBXProject "DissociatedPress-iOS" */ = {
 			isa = XCConfigurationList;
