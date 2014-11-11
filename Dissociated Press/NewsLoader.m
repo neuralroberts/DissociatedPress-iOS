@@ -37,7 +37,6 @@
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
-        //        NSLog(@"%@",resultDictionary);
         NewsStory *story = [[NewsStory alloc] init];
         story.title = resultDictionary[@"titleNoFormatting"];
         story.content = resultDictionary[@"content"];

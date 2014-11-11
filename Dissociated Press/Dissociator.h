@@ -10,6 +10,7 @@
 
 @interface Dissociator : NSObject
 
-+ (NSArray *)dissociateResult:(NSArray *)associatedResult pageNumber:(int)page;
++ (NSArray *)dissociateNewsResults:(NSArray *)associatedResults;
++ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(int)n;
 
 @end

@@ -38,7 +38,7 @@
     self.searchBar.delegate = self;
     [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    self.searchBar.text = @"macaque";
+    self.searchBar.text = @"north korea";
     self.navigationItem.titleView = self.searchBar;
     
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -56,7 +56,7 @@
     [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
     
     self.dissociatedNewsArray = [[NSMutableArray alloc] init];
-    [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateResult:self.associatedNewsArray pageNumber:self.pageNumber]];
+    [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
     
     [self.tableView reloadData];
 }
@@ -87,7 +87,7 @@
     NewsStory *story = [self.dissociatedNewsArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text = story.title;
-    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.numberOfLines = 3;
     cell.detailTextLabel.text = story.content;
     cell.detailTextLabel.numberOfLines = 5;
     
@@ -123,7 +123,7 @@
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
             [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
-            [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateResult:self.associatedNewsArray pageNumber:self.pageNumber]];
+            [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
             });
