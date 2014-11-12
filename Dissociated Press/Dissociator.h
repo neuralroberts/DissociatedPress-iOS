@@ -11,6 +11,6 @@
 @interface Dissociator : NSObject
 
 + (NSArray *)dissociateNewsResults:(NSArray *)associatedResults;
-+ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(int)n;
++ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(int)n seedNGram:(NSString *)seedNGram;
 
 @end

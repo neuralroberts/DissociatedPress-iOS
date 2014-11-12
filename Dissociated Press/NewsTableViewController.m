@@ -38,7 +38,7 @@
     self.searchBar.delegate = self;
     [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    self.searchBar.text = @"north korea";
+    self.searchBar.text = @"Florida Man";
     self.navigationItem.titleView = self.searchBar;
     
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);

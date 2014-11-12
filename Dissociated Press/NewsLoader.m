@@ -38,8 +38,9 @@
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
         NewsStory *story = [[NewsStory alloc] init];
-        story.title = resultDictionary[@"titleNoFormatting"];
-        story.content = resultDictionary[@"content"];
+#warning NSString category for stripping html
+        story.title = [[[NSAttributedString alloc] initWithData:[resultDictionary[@"title"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil] string];
+        story.content = [[[NSAttributedString alloc] initWithData:[resultDictionary[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil] string];
         story.url = [NSURL URLWithString:resultDictionary[@"unescapedUrl"]];
         
         NSDictionary *imageDictionary = resultDictionary[@"image"];
@@ -54,8 +55,5 @@
     
     return result;
 }
-
-
-
 
 @end

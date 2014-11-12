@@ -16,7 +16,7 @@
     NSMutableArray *dissociatedResults = [[associatedResults subarrayWithRange:NSMakeRange(associatedResults.count - 4, 4)] mutableCopy];
     
     //n-gram size
-    int n = 4;
+    int n = 2;
     
     //build the source text
     NSString *titleSourceText = @"";
@@ -24,55 +24,54 @@
     for (NewsStory *story in associatedResults) {
         titleSourceText = [titleSourceText stringByAppendingString:story.title];
         titleSourceText = [titleSourceText stringByAppendingString:@"\n"];
+        
         bodySourceText = [bodySourceText stringByAppendingString:story.content];
         bodySourceText = [bodySourceText stringByAppendingString:@"\n"];
     }
     
     for (NewsStory *story in dissociatedResults) {
-        story.title = [Dissociator dissociateSourceText:titleSourceText nGramSize:n];
-        story.content = [Dissociator dissociateSourceText:bodySourceText nGramSize:n];
+        //get the first n letters of the current title to seed the dissociation
+        NSString *seedNGram = [story.title substringWithRange:NSMakeRange(0, n)];
+        story.title = [Dissociator dissociateSourceText:titleSourceText nGramSize:n seedNGram:seedNGram];
+        
+        seedNGram = [story.content substringWithRange:NSMakeRange(0, n)];
+        story.content = [Dissociator dissociateSourceText:bodySourceText nGramSize:n seedNGram:seedNGram];
     }
     
     return dissociatedResults;
 }
 
-+ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(int)n
++ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(int)n seedNGram:(NSString *)seedNGram
 {
     //collect n-grams from the source text
     NSMutableDictionary *nGramsDictionary = [[NSMutableDictionary alloc] init];
     NSMutableArray *nGrams = [[NSMutableArray alloc] initWithCapacity:[sourceText length] - n];
     for (int i = 0; i <= [sourceText length] - n; i++) {
         NSString *nGram = [sourceText substringWithRange:NSMakeRange(i, n)];
-        if ([nGram containsString:@"\n"]) nGram = [[[nGram componentsSeparatedByString:@"\n"] firstObject] stringByAppendingString:@"\n"];
+#warning NSString category for containsString
+        if ([nGram rangeOfString:@"\n"].location != NSNotFound) nGram = [[[nGram componentsSeparatedByString:@"\n"] firstObject] stringByAppendingString:@"\n"];
         [nGrams addObject:nGram];
         if (!nGramsDictionary[nGram]) nGramsDictionary[nGram] = [[NSMutableArray alloc] init];
         [nGramsDictionary[nGram] addObject:[NSNumber numberWithInt:i]];
     }
     
-    //build filtered array of ngrams with first letter capitalized
-    NSIndexSet *indexSet = [nGrams indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
-        return [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[obj characterAtIndex:0]];
-    }];
-    NSArray *startingnGrams = [nGrams objectsAtIndexes:indexSet];
-    
-    
     BOOL success = NO;
     NSString *outString = @"";
+    NSUInteger randomIndex;
     while (!success) {
         outString = @"";
-        NSUInteger randomIndex = arc4random() % [startingnGrams count];
-        NSString *currentToken = startingnGrams[randomIndex];
+        NSString *currentNGram = seedNGram;
         
-        while (![currentToken containsString:@"\n"] && [outString length] < 16000) {
-            outString = [outString stringByAppendingString:currentToken];
-            randomIndex = arc4random() % [nGramsDictionary[currentToken] count];
-            randomIndex = [nGramsDictionary[currentToken][randomIndex] intValue] + n;
+        while (!([currentNGram rangeOfString:@"\n"].location != NSNotFound) && [outString length] < 16000) {
+            outString = [outString stringByAppendingString:currentNGram];
+            randomIndex = arc4random() % [nGramsDictionary[currentNGram] count];
+            randomIndex = [nGramsDictionary[currentNGram][randomIndex] intValue] + n;
             if (randomIndex >= [nGrams count]) {
-                currentToken = [[nGrams lastObject] substringFromIndex:(randomIndex - [nGrams count] + 1)];
+                currentNGram = [[nGrams lastObject] substringFromIndex:(randomIndex - [nGrams count] + 1)];
             }
-            else currentToken = nGrams[randomIndex];
+            else currentNGram = nGrams[randomIndex];
         }
-        outString = [outString stringByAppendingString:currentToken];
+        outString = [outString stringByAppendingString:currentNGram];
         
         NSLog(@"\n%@, %lu",outString, (unsigned long)[outString length]);
         if ([outString length] > n && [outString length] < 150000) {
