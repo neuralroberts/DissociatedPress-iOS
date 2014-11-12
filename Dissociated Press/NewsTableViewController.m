@@ -13,7 +13,7 @@
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 @property (strong, nonatomic) UISearchBar *searchBar;
-
+@property (strong, nonatomic) NSString *query;
 @property (strong, nonatomic) NSMutableArray *associatedNewsArray;
 @property (strong, nonatomic) NSMutableArray *dissociatedNewsArray;
 @property (nonatomic) int pageNumber;
@@ -38,7 +38,8 @@
     self.searchBar.delegate = self;
     [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    self.searchBar.text = @"Florida Man";
+    self.query = @"florida man";
+    self.searchBar.text = self.query;
     self.navigationItem.titleView = self.searchBar;
     
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -53,11 +54,10 @@
     self.pageNumber = 1;
     
     self.associatedNewsArray = [[NSMutableArray alloc] init];
-    [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
-    
     self.dissociatedNewsArray = [[NSMutableArray alloc] init];
-    [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
     
+    [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
+    [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
     [self.tableView reloadData];
 }
 
@@ -122,7 +122,7 @@
     if (indexPath.row >= self.dissociatedNewsArray.count - 1) {
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
-            [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.searchBar.text pageNumber:self.pageNumber]];
+            [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
             [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
@@ -140,6 +140,9 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    [searchBar resignFirstResponder];
+    self.query = self.searchBar.text;
     [self loadNews];
 }
 
