@@ -46,9 +46,21 @@
     return _nGramSizeSlider;
 }
 
+- (UILabel *)nGramSizeLabel
+{
+    if (!_nGramSizeLabel) {
+        UILabel *nGramSizeLabel = [[UILabel alloc] init];
+        nGramSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.nGramSize];
+        _nGramSizeLabel = nGramSizeLabel;
+    }
+    return _nGramSizeLabel;
+}
+
 - (void)nGramSliderChanged
 {
+    NSLog(@"%f",self.nGramSizeSlider.value);
     self.nGramSize = self.nGramSizeSlider.value;
+    self.nGramSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.nGramSize];
 }
 
 - (void)viewDidLoad {
@@ -93,12 +105,19 @@
         if (indexPath.row == 0) {
             self.nGramSizeSlider.frame = CGRectMake(cell.contentView.frame.origin.x + 112.0,
                                                     cell.contentView.frame.origin.y,
-                                                    cell.contentView.frame.size.width - 120.0,
+                                                    cell.contentView.frame.size.width - 164.0,
                                                     cell.contentView.frame.size.height);
             self.nGramSizeSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             
+            self.nGramSizeLabel.frame = CGRectMake(cell.contentView.frame.size.width - 32.0,
+                                                   cell.contentView.frame.origin.y,
+                                                   32.0,
+                                                   cell.contentView.frame.size.height);
+            self.nGramSizeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            
             cell.textLabel.text = @"nGram size";
             [cell.contentView addSubview:self.nGramSizeSlider];
+            [cell.contentView addSubview:self.nGramSizeLabel];
         }
     }
     return cell;
