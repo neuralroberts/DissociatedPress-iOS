@@ -18,7 +18,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+    [self setupUserDefaults];
     
     NewsTableViewController *newsTVC = [[NewsTableViewController alloc] init];
     UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
@@ -27,6 +27,15 @@
     self.window.rootViewController = navigationVC;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (void)setupUserDefaults
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults boolForKey:@"hasLaunched"]) {
+        [defaults setInteger:4 forKey:@"nGramSizeParameter"];
+    }
+    [defaults setBool:YES forKey:@"hasLaunched"];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

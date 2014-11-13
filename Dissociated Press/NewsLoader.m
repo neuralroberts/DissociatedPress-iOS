@@ -39,8 +39,8 @@
     for (NSDictionary *resultDictionary in associatedResultsArray) {
         NewsStory *story = [[NewsStory alloc] init];
 #warning NSString category for stripping html
-        story.title = [[[NSAttributedString alloc] initWithData:[resultDictionary[@"title"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil] string];
-        story.content = [[[NSAttributedString alloc] initWithData:[resultDictionary[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil] string];
+        story.attributedTitle = [[NSAttributedString alloc] initWithData:[resultDictionary[@"title"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil];
+        story.attributedContent = [[NSAttributedString alloc] initWithData:[resultDictionary[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil];
         story.url = [NSURL URLWithString:resultDictionary[@"unescapedUrl"]];
         
         NSDictionary *imageDictionary = resultDictionary[@"image"];

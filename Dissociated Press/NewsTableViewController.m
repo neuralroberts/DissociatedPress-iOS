@@ -10,9 +10,11 @@
 #import "NewsStory.h"
 #import "NewsLoader.h"
 #import "Dissociator.h"
+#import "SettingsViewController.h"
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 @property (strong, nonatomic) UISearchBar *searchBar;
+
 @property (strong, nonatomic) NSString *query;
 @property (strong, nonatomic) NSMutableArray *associatedNewsArray;
 @property (strong, nonatomic) NSMutableArray *dissociatedNewsArray;
@@ -42,23 +44,41 @@
     self.searchBar.text = self.query;
     self.navigationItem.titleView = self.searchBar;
     
+    //create and configure the parameter control
+    UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(pressedParametersBarButtonItem)];
+    self.navigationItem.rightBarButtonItem = parametersBarButtonItem;
+    
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.mainQueue = dispatch_get_main_queue();
-    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     [self loadNews];
+}
+
+- (void)pressedParametersBarButtonItem
+{
+    SettingsViewController *settingsVC = [[SettingsViewController alloc] init];
+    [self.navigationController pushViewController:settingsVC animated:YES];
 }
 
 - (void)loadNews
 {
+    NSLog(@"%@",NSStringFromSelector(_cmd));
     //reset and populate news array
     self.pageNumber = 1;
     
-    self.associatedNewsArray = [[NSMutableArray alloc] init];
-    self.dissociatedNewsArray = [[NSMutableArray alloc] init];
-    
-    [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
-    [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
-    [self.tableView reloadData];
+//    dispatch_async(self.globalQueue, ^{
+        self.associatedNewsArray = [[NSMutableArray alloc] init];
+        self.dissociatedNewsArray = [[NSMutableArray alloc] init];
+        [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
+        [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
+        dispatch_async(self.mainQueue, ^{
+            [self.tableView reloadData];
+        });
+//    });
 }
 
 - (void)refresh
@@ -133,23 +153,11 @@
 
 #pragma mark - UISearchBarDelegate
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
-{
-    //    [self loadNews];
-}
-
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     [searchBar resignFirstResponder];
     self.query = self.searchBar.text;
     [self loadNews];
 }
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
-{
-}
-
-
 
 @end

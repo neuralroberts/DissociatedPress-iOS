@@ -16,7 +16,7 @@
     NSMutableArray *dissociatedResults = [[associatedResults subarrayWithRange:NSMakeRange(associatedResults.count - 4, 4)] mutableCopy];
     
     //n-gram size
-    int n = 2;
+    NSInteger n = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
     
     //build the source text
     NSString *titleSourceText = @"";
@@ -41,7 +41,7 @@
     return dissociatedResults;
 }
 
-+ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(int)n seedNGram:(NSString *)seedNGram
++ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(NSInteger)n seedNGram:(NSString *)seedNGram
 {
     //collect n-grams from the source text
     NSMutableDictionary *nGramsDictionary = [[NSMutableDictionary alloc] init];
@@ -73,7 +73,7 @@
         }
         outString = [outString stringByAppendingString:currentNGram];
         
-        NSLog(@"\n%@, %lu",outString, (unsigned long)[outString length]);
+//        NSLog(@"\n%@, %lu",outString, (unsigned long)[outString length]);
         if ([outString length] > n && [outString length] < 150000) {
             success = YES;
         }
