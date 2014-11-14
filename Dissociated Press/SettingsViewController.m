@@ -20,18 +20,12 @@
 @property (nonatomic, strong) UISlider *nGramSizeSlider;
 @property (nonatomic, strong) UILabel *nGramSizeLabel;
 
+@property (nonatomic) NSNumber *dissociateByWord;
+@property (nonatomic, strong) UISegmentedControl *dissociateByWordControl;
+
 @end
 
 @implementation SettingsViewController
-
-- (NSInteger)nGramSize
-{
-    if (!_nGramSize) {
-        NSInteger nGramSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
-        _nGramSize = nGramSize;
-    }
-    return _nGramSize;
-}
 
 - (UISlider *)nGramSizeSlider
 {
@@ -62,8 +56,31 @@
     self.nGramSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.nGramSize];
 }
 
+- (UISegmentedControl *)dissociateByWordControl
+{
+    if (!_dissociateByWordControl) {
+        NSArray *items = @[@"Char", @"Word"];
+        UISegmentedControl *dissociateByWordControl = [[UISegmentedControl alloc] initWithItems:items];
+        dissociateByWordControl.selectedSegmentIndex = [self.dissociateByWord intValue];
+        [dissociateByWordControl addTarget:self action:@selector(dissociateByWordControlChanged) forControlEvents:UIControlEventValueChanged];
+        _dissociateByWordControl = dissociateByWordControl;
+    }
+    return _dissociateByWordControl;
+}
+
+- (void)dissociateByWordControlChanged
+{
+    self.dissociateByWord = [NSNumber numberWithInteger:self.dissociateByWordControl.selectedSegmentIndex];
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.nGramSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
+    BOOL dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
+    self.dissociateByWord = [NSNumber numberWithBool:dissociateByWord];
+    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
 }
 
@@ -73,6 +90,8 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setInteger:self.nGramSize forKey:@"nGramSizeParameter"];
+    [defaults setBool:[self.dissociateByWord boolValue] forKey:@"dissociateByWordParameter"];
+    [defaults synchronize];
 }
 
 
@@ -117,6 +136,15 @@
             cell.textLabel.text = @"nGram size";
             [cell.contentView addSubview:self.nGramSizeSlider];
             [cell.contentView addSubview:self.nGramSizeLabel];
+        } else if (indexPath.row == 1) {
+            self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 128.0,
+                                                            cell.contentView.frame.origin.y,
+                                                            120.0,
+                                                            cell.contentView.frame.size.height);
+            self.dissociateByWordControl.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth;
+            
+            cell.textLabel.text = @"Dissociate by:";
+            [cell.contentView addSubview:self.dissociateByWordControl];
         }
     }
     return cell;

@@ -26,14 +26,17 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = navigationVC;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
 - (void)setupUserDefaults
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:NO forKey:@"dissociateByWordParameter"];
     if (![defaults boolForKey:@"hasLaunched"]) {
-        [defaults setInteger:4 forKey:@"nGramSizeParameter"];
+        [defaults setInteger:3 forKey:@"nGramSizeParameter"];
+        [defaults setBool:NO forKey:@"dissociateByWordParameter"];
     }
     [defaults setBool:YES forKey:@"hasLaunched"];
 }

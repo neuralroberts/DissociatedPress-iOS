@@ -13,8 +13,8 @@
 #import "SettingsViewController.h"
 
 @interface NewsTableViewController () <UISearchBarDelegate>
-@property (strong, nonatomic) UISearchBar *searchBar;
 
+@property (strong, nonatomic) UISearchBar *searchBar;
 @property (strong, nonatomic) NSString *query;
 @property (strong, nonatomic) NSMutableArray *associatedNewsArray;
 @property (strong, nonatomic) NSMutableArray *dissociatedNewsArray;
@@ -40,8 +40,7 @@
     self.searchBar.delegate = self;
     [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-//    self.query = @"florida man";
-    self.query = @"girl's basketball";
+    self.query = @"florida man";
     self.searchBar.text = self.query;
     self.navigationItem.titleView = self.searchBar;
     
@@ -52,6 +51,7 @@
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.mainQueue = dispatch_get_main_queue();
 }
+
 
 - (void)viewDidAppear:(BOOL)animated
 {

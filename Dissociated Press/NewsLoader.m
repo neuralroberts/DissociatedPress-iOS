@@ -40,7 +40,6 @@
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
         NewsStory *story = [[NewsStory alloc] init];
-#warning NSString category for stripping html
         story.title = [resultDictionary[@"title"] stringByConvertingHTMLToPlainText];
         story.content = [resultDictionary[@"content"] stringByConvertingHTMLToPlainText];
         story.url = [NSURL URLWithString:resultDictionary[@"unescapedUrl"]];
