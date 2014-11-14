@@ -58,7 +58,6 @@
 
 - (void)nGramSliderChanged
 {
-    NSLog(@"%f",self.nGramSizeSlider.value);
     self.nGramSize = self.nGramSizeSlider.value;
     self.nGramSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.nGramSize];
 }

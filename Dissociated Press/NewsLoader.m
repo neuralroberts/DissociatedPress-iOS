@@ -8,6 +8,8 @@
 
 #import "NewsLoader.h"
 #import "NewsStory.h"
+#import "NSString+HTML.h"
+
 
 @implementation NewsLoader
 
@@ -39,8 +41,8 @@
     for (NSDictionary *resultDictionary in associatedResultsArray) {
         NewsStory *story = [[NewsStory alloc] init];
 #warning NSString category for stripping html
-        story.attributedTitle = [[NSAttributedString alloc] initWithData:[resultDictionary[@"title"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil];
-        story.attributedContent = [[NSAttributedString alloc] initWithData:[resultDictionary[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]} documentAttributes:nil error:nil];
+        story.title = [resultDictionary[@"title"] stringByConvertingHTMLToPlainText];
+        story.content = [resultDictionary[@"content"] stringByConvertingHTMLToPlainText];
         story.url = [NSURL URLWithString:resultDictionary[@"unescapedUrl"]];
         
         NSDictionary *imageDictionary = resultDictionary[@"image"];

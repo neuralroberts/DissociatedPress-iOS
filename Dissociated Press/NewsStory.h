@@ -11,8 +11,6 @@
 
 @interface NewsStory : NSObject
 
-@property (strong, nonatomic) NSAttributedString* attributedTitle;
-@property (strong, nonatomic) NSAttributedString* attributedContent;
 @property (strong, nonatomic) NSString* title;
 @property (strong, nonatomic) NSString* content;
 @property (strong, nonatomic) NSURL* url;

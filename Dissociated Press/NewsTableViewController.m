@@ -32,7 +32,7 @@
     
     //create and configure the refresh control
     self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
     //create and configure the search bar
@@ -40,7 +40,8 @@
     self.searchBar.delegate = self;
     [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
     [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-    self.query = @"florida man";
+//    self.query = @"florida man";
+    self.query = @"girl's basketball";
     self.searchBar.text = self.query;
     self.navigationItem.titleView = self.searchBar;
     
@@ -66,25 +67,23 @@
 
 - (void)loadNews
 {
+    [self.refreshControl beginRefreshing];
+    
     NSLog(@"%@",NSStringFromSelector(_cmd));
     //reset and populate news array
     self.pageNumber = 1;
+    self.associatedNewsArray = [[NSMutableArray alloc] init];
+    self.dissociatedNewsArray = [[NSMutableArray alloc] init];
     
-//    dispatch_async(self.globalQueue, ^{
-        self.associatedNewsArray = [[NSMutableArray alloc] init];
-        self.dissociatedNewsArray = [[NSMutableArray alloc] init];
+    dispatch_async(self.globalQueue, ^{
         [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
         [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
+            [self.refreshControl endRefreshing];
         });
-//    });
-}
-
-- (void)refresh
-{
-    [self loadNews];
-    [self.refreshControl endRefreshing];
+    });
+    
 }
 
 - (void)didReceiveMemoryWarning
