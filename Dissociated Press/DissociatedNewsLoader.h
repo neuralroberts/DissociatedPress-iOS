@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NewsLoader.h"
 
-@interface Dissociator : NSObject
+@interface DissociatedNewsLoader : NewsLoader
 
 + (NSArray *)dissociateNewsResults:(NSArray *)associatedResults;
 + (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(NSInteger)n seedNGram:(NSString *)seedNGram;
+- (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)page;
 
 @end

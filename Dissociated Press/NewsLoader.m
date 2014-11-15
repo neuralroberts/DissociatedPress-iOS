@@ -13,7 +13,7 @@
 
 @implementation NewsLoader
 
-+ (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber
+- (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber
 {
     //check that query isn't empty
     if (![[query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]) {

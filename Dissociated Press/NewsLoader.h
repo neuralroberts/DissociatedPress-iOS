@@ -10,6 +10,6 @@
 
 @interface NewsLoader : NSObject
 
-+(NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)page;
+- (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)page;
 
 @end

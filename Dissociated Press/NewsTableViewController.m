@@ -9,7 +9,7 @@
 #import "NewsTableViewController.h"
 #import "NewsStory.h"
 #import "NewsLoader.h"
-#import "Dissociator.h"
+#import "DissociatedNewsLoader.h"
 #import "SettingsViewController.h"
 
 @interface NewsTableViewController () <UISearchBarDelegate>
@@ -18,8 +18,8 @@
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 
 @property (strong, nonatomic) NSString *query;
-@property (strong, nonatomic) NSMutableArray *associatedNewsArray;
-@property (strong, nonatomic) NSMutableArray *dissociatedNewsArray;
+@property (strong, nonatomic) NSMutableArray *newsArray;
+@property (strong, nonatomic) DissociatedNewsLoader *newsLoader;
 @property (nonatomic) int pageNumber;
 @property (strong, nonatomic) dispatch_queue_t globalQueue;
 @property (strong, nonatomic) dispatch_queue_t mainQueue;
@@ -93,15 +93,13 @@
 {
     [self.refreshControl beginRefreshing];
     
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     //reset and populate news array
     self.pageNumber = 1;
-    self.associatedNewsArray = [[NSMutableArray alloc] init];
-    self.dissociatedNewsArray = [[NSMutableArray alloc] init];
+    self.newsLoader = [[DissociatedNewsLoader alloc] init];
+    self.newsArray = [[NSMutableArray alloc] init];
     
     dispatch_async(self.globalQueue, ^{
-        [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
-        [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
+        [self.newsArray addObjectsFromArray:[self.newsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];
@@ -111,7 +109,7 @@
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.dissociatedNewsArray count];
+    return [self.newsArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -120,7 +118,7 @@
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellReuseIdentifier];
     
-    NewsStory *story = [self.dissociatedNewsArray objectAtIndex:indexPath.row];
+    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
     
     cell.textLabel.text = story.title;
     cell.textLabel.numberOfLines = 3;
@@ -155,11 +153,10 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row >= self.dissociatedNewsArray.count - 1) {
+    if (indexPath.row >= self.newsArray.count - 1) {
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
-            [self.associatedNewsArray addObjectsFromArray:[NewsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
-            [self.dissociatedNewsArray addObjectsFromArray:[Dissociator dissociateNewsResults:self.associatedNewsArray]];
+            [self.newsArray addObjectsFromArray:[self.newsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
             });
