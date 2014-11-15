@@ -9,84 +9,138 @@
 #import "DissociatedNewsLoader.h"
 #import "NewsStory.h"
 
+@interface DissociatedNewsLoader ()
+
+@property (strong, nonatomic) NSMutableArray *titleNGrams;
+@property (strong, nonatomic) NSMutableDictionary *titleNGramContext;
+@property (strong, nonatomic) NSMutableArray *contentNGrams;
+@property (strong, nonatomic) NSMutableDictionary *contentNGramContext;
+
+@property (nonatomic) NSInteger nGramSize;
+@property (strong, nonatomic) NSNumber *dissociateByWord;
+@end
+
 @implementation DissociatedNewsLoader
 
-- (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)page
+- (NSMutableArray *)titleNGrams
 {
-    return [super loadNewsForQuery:query pageNumber:page];
+    if (!_titleNGrams) {
+        _titleNGrams = [[NSMutableArray alloc] init];
+    }
+    return _titleNGrams;
 }
 
-+ (NSArray *)dissociateNewsResults:(NSArray *)associatedResults
+- (NSMutableDictionary *)titleNGramContext
 {
-    NSMutableArray *dissociatedResults = [[associatedResults subarrayWithRange:NSMakeRange(associatedResults.count - 4, 4)] mutableCopy];
-    
-    //n-gram size
-    NSInteger n = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
-    BOOL dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
-    
-    //build the source text
-    NSString *titleSourceText = @"";
-    NSString *bodySourceText = @"";
-    for (NewsStory *story in associatedResults) {
-        titleSourceText = [titleSourceText stringByAppendingString:story.title];
-        titleSourceText = [titleSourceText stringByAppendingString:@"\n "];
-        
-        bodySourceText = [bodySourceText stringByAppendingString:story.content];
-        bodySourceText = [bodySourceText stringByAppendingString:@"\n "];
+    if (!_titleNGramContext) {
+        _titleNGramContext = [[NSMutableDictionary alloc] init];
     }
-    
-    for (NewsStory *story in dissociatedResults) {
-        //get the first n letters of the current title to seed the dissociation
-        NSString *seedNGram = [story.title substringWithRange:NSMakeRange(0, n)];
-        if (dissociateByWord) seedNGram = [[[story.title componentsSeparatedByString:@" "] subarrayWithRange:NSMakeRange(0, n)] componentsJoinedByString:@" "];
-        story.title = [DissociatedNewsLoader dissociateSourceText:titleSourceText nGramSize:n seedNGram:seedNGram];
-        
-        seedNGram = [story.content substringWithRange:NSMakeRange(0, n)];
-        if (dissociateByWord) seedNGram = [[[story.content componentsSeparatedByString:@" "] subarrayWithRange:NSMakeRange(0, n)] componentsJoinedByString:@" "];
-        story.content = [DissociatedNewsLoader dissociateSourceText:bodySourceText nGramSize:n seedNGram:seedNGram];
-    }
-    
-    return dissociatedResults;
+    return _titleNGramContext;
 }
 
-+ (NSString *)dissociateSourceText:(NSString *)sourceText nGramSize:(NSInteger)n seedNGram:(NSString *)seedNGram
+- (NSMutableArray *)contentNGrams
 {
-    BOOL dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
-    //collect n-grams from the source text
-    NSMutableDictionary *nGramsDictionary = [[NSMutableDictionary alloc] init];
-    NSMutableArray *nGrams = [[NSMutableArray alloc] init];
-    if (dissociateByWord) {
-        NSArray *sourceTextArray = [sourceText componentsSeparatedByString:@" "];
-        for (int i = 0; i < [sourceTextArray count] - n; i++) {
-            NSString *nGram = [[sourceTextArray subarrayWithRange:NSMakeRange(i, n)] componentsJoinedByString:@" "];
-            if ([nGram rangeOfString:@"\n"].location != NSNotFound) nGram = [[[nGram componentsSeparatedByString:@"\n"] firstObject] stringByAppendingString:@"\n"];
-            [nGrams addObject:nGram];
-            if (!nGramsDictionary[nGram]) nGramsDictionary[nGram] = [[NSMutableArray alloc] init];
-            [nGramsDictionary[nGram] addObject:[NSNumber numberWithInt:i]];
-        }
-    } else {
-        for (int i = 0; i <= [sourceText length] - n; i++) {
-            NSString *nGram = [sourceText substringWithRange:NSMakeRange(i, n)];
-#warning NSString category for containsString
-            if ([nGram rangeOfString:@"\n"].location != NSNotFound) nGram = [[[nGram componentsSeparatedByString:@"\n"] firstObject] stringByAppendingString:@"\n"];
-            [nGrams addObject:nGram];
-            if (!nGramsDictionary[nGram]) nGramsDictionary[nGram] = [[NSMutableArray alloc] init];
-            [nGramsDictionary[nGram] addObject:[NSNumber numberWithInt:i]];
-        }
+    if (!_contentNGrams) {
+        _contentNGrams = [[NSMutableArray alloc] init];
+    }
+    return _contentNGrams;
+}
+
+- (NSMutableDictionary *)contentNGramContext
+{
+    if (!_contentNGramContext) {
+        _contentNGramContext = [[NSMutableDictionary alloc] init];
+    }
+    return _contentNGramContext;
+}
+
+- (NSInteger)nGramSize
+{
+    if (!_nGramSize) {
+        _nGramSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
+    }
+    return _nGramSize;
+}
+
+- (NSNumber *)dissociateByWord
+{
+    if (!_dissociateByWord) {
+        _dissociateByWord = [NSNumber numberWithBool:[[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"]];
+    }
+    return _dissociateByWord;
+}
+
+- (NSArray *)loadDissociatedNewsForQuery:(NSString *)query pageNumber:(int)page
+{
+    NSArray *results = [super loadNewsForQuery:query pageNumber:page];
+    
+    NSUInteger stringEnumerationOptions = NSStringEnumerationByComposedCharacterSequences;
+    NSString *joinString = @"";
+    if ([self.dissociateByWord boolValue]) {
+        stringEnumerationOptions = NSStringEnumerationByWords;
+        joinString = @"";
     }
     
+    NSMutableArray *nGram;
+    NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
+    NSMutableDictionary *contentSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
+    for (NewsStory *story in results) {
+        NSNumber *storyHash  = [NSNumber numberWithUnsignedInteger:[story hash]];
+        nGram = [[NSMutableArray alloc] init];
+        NSString *title = [story.title stringByAppendingString:@"\n"];
+        [title enumerateSubstringsInRange:NSMakeRange(0, title.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+            substring = [title substringWithRange:enclosingRange];
+            [nGram addObject:substring];
+            if (nGram.count > self.nGramSize) [nGram removeObjectAtIndex:0];
+            if (nGram.count == self.nGramSize || [substring rangeOfString:@"\n"].location != NSNotFound) {
+                NSString *nGramString = [[nGram componentsJoinedByString:joinString] stringByAppendingString:joinString];
+                if (!titleSeeds[storyHash]) titleSeeds[storyHash] = nGramString;
+                [self.titleNGrams addObject:nGramString];
+                if (!self.titleNGramContext[nGramString]) self.titleNGramContext[nGramString] = [[NSMutableArray alloc] init];
+                [self.titleNGramContext[nGramString] addObject:[NSNumber numberWithInteger:(self.titleNGrams.count - 1)]];
+            }
+        }];
+        nGram = [[NSMutableArray alloc] init];
+        NSString *content = [story.content stringByAppendingString:@"\n"];
+        [content enumerateSubstringsInRange:NSMakeRange(0, content.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+            substring = [content substringWithRange:enclosingRange];
+            [nGram addObject:substring];
+            if (nGram.count > self.nGramSize) [nGram removeObjectAtIndex:0];
+            if (nGram.count == self.nGramSize || [substring rangeOfString:@"\n"].location != NSNotFound) {
+                NSString *nGramString = [[nGram componentsJoinedByString:joinString] stringByAppendingString:joinString];
+                if (!contentSeeds[storyHash]) contentSeeds[storyHash] = nGramString;
+                [self.contentNGrams addObject:nGramString];
+                if (!self.contentNGramContext[nGramString]) self.contentNGramContext[nGramString] = [[NSMutableArray alloc] init];
+                [self.contentNGramContext[nGramString] addObject:[NSNumber numberWithInteger:(self.contentNGrams.count - 1)]];
+            }
+        }];
+    }
+    
+    for (NewsStory *story in results) {
+        NSNumber *storyHash = [NSNumber numberWithUnsignedInteger:[story hash]];
+        NSString *titleSeed = titleSeeds[storyHash];
+        story.title = [self dissociateWithSeed:titleSeed nGrams:self.titleNGrams context:self.titleNGramContext];
+        
+        NSString *contentSeed = contentSeeds[storyHash];
+        story.content = [self dissociateWithSeed:contentSeed nGrams:self.contentNGrams context:self.contentNGramContext];
+
+    }
+    return results;
+}
+
+- (NSString *)dissociateWithSeed:(NSString *)seed nGrams:(NSArray *)nGrams context:(NSDictionary *)context
+{
     BOOL success = NO;
     NSString *outString = @"";
     NSUInteger randomIndex;
     while (!success) {
         outString = @"";
-        NSString *currentNGram = seedNGram;
+        NSString *currentNGram = seed;
         
-        while (!([currentNGram rangeOfString:@"\n"].location != NSNotFound) && [outString length] < 16000) {
-            if (dissociateByWord) outString = [outString stringByAppendingString:[@" " stringByAppendingString:currentNGram]];
-            else outString = [outString stringByAppendingString:currentNGram];
-            randomIndex = arc4random() % [nGramsDictionary[currentNGram] count];
-            randomIndex = [nGramsDictionary[currentNGram][randomIndex] intValue] + n;
+        while (!([currentNGram rangeOfString:@"\n"].location != NSNotFound)) {
+            outString = [outString stringByAppendingString:currentNGram];
+            randomIndex = arc4random() % [context[currentNGram] count];
+            randomIndex = [context[currentNGram][randomIndex] intValue] + self.nGramSize;
             if (randomIndex >= [nGrams count]) {
                 currentNGram = [[nGrams lastObject] substringFromIndex:(randomIndex - [nGrams count] + 1)];
             }
@@ -94,13 +148,11 @@
         }
         outString = [outString stringByAppendingString:currentNGram];
         
-        //        NSLog(@"\n%@, %lu",outString, (unsigned long)[outString length]);
-        if ([outString length] > n && [outString length] < 150000) {
+        if ([outString length] > self.nGramSize) {
             success = YES;
         }
     }
     return outString;
 }
-
 
 @end

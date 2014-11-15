@@ -33,7 +33,6 @@
 - (void)setupUserDefaults
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:NO forKey:@"dissociateByWordParameter"];
     if (![defaults boolForKey:@"hasLaunched"]) {
         [defaults setInteger:3 forKey:@"nGramSizeParameter"];
         [defaults setBool:NO forKey:@"dissociateByWordParameter"];

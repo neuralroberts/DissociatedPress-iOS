@@ -74,7 +74,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self loadNews];
+//    [self loadNews];
 }
 
 - (void)didReceiveMemoryWarning
@@ -99,7 +99,7 @@
     self.newsArray = [[NSMutableArray alloc] init];
     
     dispatch_async(self.globalQueue, ^{
-        [self.newsArray addObjectsFromArray:[self.newsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
+        [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQuery:self.query pageNumber:self.pageNumber]];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];
@@ -156,7 +156,7 @@
     if (indexPath.row >= self.newsArray.count - 1) {
         dispatch_async(self.globalQueue, ^{
             self.pageNumber++;
-            [self.newsArray addObjectsFromArray:[self.newsLoader loadNewsForQuery:self.query pageNumber:self.pageNumber]];
+            [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQuery:self.query pageNumber:self.pageNumber]];
             dispatch_async(self.mainQueue, ^{
                 [self.tableView reloadData];
             });
