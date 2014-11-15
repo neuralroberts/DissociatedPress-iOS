@@ -15,11 +15,12 @@
 @interface NewsTableViewController () <UISearchBarDelegate>
 
 @property (strong, nonatomic) UISearchBar *searchBar;
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
+
 @property (strong, nonatomic) NSString *query;
 @property (strong, nonatomic) NSMutableArray *associatedNewsArray;
 @property (strong, nonatomic) NSMutableArray *dissociatedNewsArray;
 @property (nonatomic) int pageNumber;
-@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) dispatch_queue_t globalQueue;
 @property (strong, nonatomic) dispatch_queue_t mainQueue;
 
@@ -27,21 +28,39 @@
 
 @implementation NewsTableViewController
 
+@synthesize refreshControl = _refreshControl;
+
+#pragma mark - properties
+
+- (UIRefreshControl *)refreshControl
+{
+    if (!_refreshControl) {
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        [refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
+        _refreshControl = refreshControl;
+    }
+    return _refreshControl;
+}
+
+- (UISearchBar *)searchBar
+{
+    if (!_searchBar) {
+        UISearchBar *searchBar = [[UISearchBar alloc] init];
+        searchBar.delegate = self;
+        [searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+        [searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+        searchBar.text = self.query;
+        _searchBar = searchBar;
+    }
+    return _searchBar;
+}
+
+#pragma mark - view lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //create and configure the refresh control
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
-    [self.tableView addSubview:self.refreshControl];
-    
-    //create and configure the search bar
-    self.searchBar = [[UISearchBar alloc] init];
-    self.searchBar.delegate = self;
-    [self.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
-    [self.searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
     self.query = @"florida man";
-    self.searchBar.text = self.query;
+    [self.tableView addSubview:self.refreshControl];
     self.navigationItem.titleView = self.searchBar;
     
     //create and configure the parameter control
@@ -52,11 +71,16 @@
     self.mainQueue = dispatch_get_main_queue();
 }
 
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self loadNews];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 - (void)pressedParametersBarButtonItem
@@ -83,13 +107,6 @@
             [self.refreshControl endRefreshing];
         });
     });
-    
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - UITableViewDataSource
