@@ -35,6 +35,7 @@
                                                                options:NSJSONReadingAllowFragments
                                                                  error:&error];
     
+
     NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
@@ -43,7 +44,6 @@
         story.title = [resultDictionary[@"title"] stringByConvertingHTMLToPlainText];
         story.content = [resultDictionary[@"content"] stringByConvertingHTMLToPlainText];
         story.url = [NSURL URLWithString:resultDictionary[@"unescapedUrl"]];
-        story.publisher = [resultDictionary[@"publisher"] stringByConvertingHTMLToPlainText];
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
