@@ -13,6 +13,8 @@
 
 @property (strong, nonatomic) NSString* title;
 @property (strong, nonatomic) NSString* content;
+@property (strong, nonatomic) NSString* publisher;
+@property (strong, nonatomic) NSDate *date;
 @property (strong, nonatomic) NSURL* url;
 @property (strong, nonatomic) NSURL* imageUrl;
 @property (readwrite) CGFloat imageWidth;

@@ -56,6 +56,7 @@
     return _searchBar;
 }
 
+
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -128,6 +129,13 @@
     cell.titleLabel.numberOfLines = 2;
     cell.contentLabel.text = story.content;
     cell.contentLabel.numberOfLines = 2;
+    cell.publisherLabel.text = story.publisher;
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
+    cell.dateLabel.text = [NSString stringWithFormat:@" - %@",[dateFormatter stringFromDate:story.date]];
+
     
     if (story.imageUrl) {
         dispatch_async(self.globalQueue, ^{
