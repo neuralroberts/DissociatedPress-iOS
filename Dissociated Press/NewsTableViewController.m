@@ -11,6 +11,7 @@
 #import "NewsLoader.h"
 #import "DissociatedNewsLoader.h"
 #import "SettingsViewController.h"
+#import "NewsTableViewCell.h"
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 
@@ -59,6 +60,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
+    self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     self.query = @"florida man";
     [self.tableView addSubview:self.refreshControl];
     self.navigationItem.titleView = self.searchBar;
@@ -74,7 +79,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-//    [self loadNews];
+    [self loadNews];
 }
 
 - (void)didReceiveMemoryWarning
@@ -114,27 +119,26 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *cellReuseIdentifier = @"newsFeedCell";
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
-    if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellReuseIdentifier];
+    NSString *cellReuseIdentifier = @"NewsFeedCell";
+    NewsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
     
     NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
     
-    cell.textLabel.text = story.title;
-    cell.textLabel.numberOfLines = 3;
-    cell.detailTextLabel.text = story.content;
-    cell.detailTextLabel.numberOfLines = 5;
+    cell.titleLabel.text = story.title;
+    cell.titleLabel.numberOfLines = 2;
+    cell.contentLabel.text = story.content;
+    cell.contentLabel.numberOfLines = 2;
     
     if (story.imageUrl) {
         dispatch_async(self.globalQueue, ^{
             NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
             
             dispatch_async(self.mainQueue, ^{
-                cell.imageView.image = [[UIImage alloc] initWithData:imageData];
+                cell.image.image = [[UIImage alloc] initWithData:imageData];
                 [cell layoutSubviews];
             });
         });
-    } else cell.imageView.image = nil;
+    } else cell.image.image = nil;
     
     return cell;
 }
@@ -143,12 +147,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 150;
+    return 160;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-#warning should segue to detail view
+
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

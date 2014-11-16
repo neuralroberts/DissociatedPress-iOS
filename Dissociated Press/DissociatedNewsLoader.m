@@ -75,10 +75,8 @@
     NSArray *results = [super loadNewsForQuery:query pageNumber:page];
     
     NSUInteger stringEnumerationOptions = NSStringEnumerationByComposedCharacterSequences;
-    NSString *joinString = @"";
     if ([self.dissociateByWord boolValue]) {
         stringEnumerationOptions = NSStringEnumerationByWords;
-        joinString = @"";
     }
     
     NSMutableArray *nGram;
@@ -93,7 +91,7 @@
             [nGram addObject:substring];
             if (nGram.count > self.nGramSize) [nGram removeObjectAtIndex:0];
             if (nGram.count == self.nGramSize || [substring rangeOfString:@"\n"].location != NSNotFound) {
-                NSString *nGramString = [[nGram componentsJoinedByString:joinString] stringByAppendingString:joinString];
+                NSString *nGramString = [nGram componentsJoinedByString:@""];
                 if (!titleSeeds[storyHash]) titleSeeds[storyHash] = nGramString;
                 [self.titleNGrams addObject:nGramString];
                 if (!self.titleNGramContext[nGramString]) self.titleNGramContext[nGramString] = [[NSMutableArray alloc] init];
@@ -107,7 +105,7 @@
             [nGram addObject:substring];
             if (nGram.count > self.nGramSize) [nGram removeObjectAtIndex:0];
             if (nGram.count == self.nGramSize || [substring rangeOfString:@"\n"].location != NSNotFound) {
-                NSString *nGramString = [[nGram componentsJoinedByString:joinString] stringByAppendingString:joinString];
+                NSString *nGramString = [nGram componentsJoinedByString:@""];
                 if (!contentSeeds[storyHash]) contentSeeds[storyHash] = nGramString;
                 [self.contentNGrams addObject:nGramString];
                 if (!self.contentNGramContext[nGramString]) self.contentNGramContext[nGramString] = [[NSMutableArray alloc] init];
