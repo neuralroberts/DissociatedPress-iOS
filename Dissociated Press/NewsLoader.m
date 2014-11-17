@@ -11,6 +11,7 @@
 #import "NSString+HTML.h"
 
 
+
 @implementation NewsLoader
 
 - (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber
