@@ -134,7 +134,7 @@
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     cell.dateLabel.text = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:story.date]];
-
+    
     if (story.imageUrl) {
         dispatch_async(self.globalQueue, ^{
             NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
@@ -158,19 +158,22 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row >= self.newsArray.count - 1) {
-        dispatch_async(self.globalQueue, ^{
-            self.pageNumber++;
-            [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQuery:self.query pageNumber:self.pageNumber]];
-            dispatch_async(self.mainQueue, ^{
-                [self.tableView reloadData];
+    if (self.pageNumber < 16) {
+        if (indexPath.row >= self.newsArray.count - 1) {
+            dispatch_async(self.globalQueue, ^{
+                
+                self.pageNumber++;
+                [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQuery:self.query pageNumber:self.pageNumber]];
+                dispatch_async(self.mainQueue, ^{
+                    [self.tableView reloadData];
+                });
             });
-        });
+        }
     }
 }
 

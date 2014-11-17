@@ -35,7 +35,7 @@
                                                                options:NSJSONReadingAllowFragments
                                                                  error:&error];
     
-
+    
     NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
