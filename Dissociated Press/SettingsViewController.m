@@ -16,9 +16,9 @@
 
 @interface SettingsViewController ()
 
-@property (nonatomic) NSInteger nGramSize;
-@property (nonatomic, strong) UISlider *nGramSizeSlider;
-@property (nonatomic, strong) UILabel *nGramSizeLabel;
+@property (nonatomic) NSInteger tokenSize;
+@property (nonatomic, strong) UISlider *tokenSizeSlider;
+@property (nonatomic, strong) UILabel *tokenSizeLabel;
 
 @property (nonatomic) NSNumber *dissociateByWord;
 @property (nonatomic, strong) UISegmentedControl *dissociateByWordControl;
@@ -27,33 +27,33 @@
 
 @implementation SettingsViewController
 
-- (UISlider *)nGramSizeSlider
+- (UISlider *)tokenSizeSlider
 {
-    if (!_nGramSizeSlider) {
-        UISlider *nGramSlider = [[UISlider alloc] init];
-        nGramSlider.minimumValue = 1;
-        nGramSlider.maximumValue = 9;
-        nGramSlider.value = self.nGramSize;
-        [nGramSlider addTarget:self action:@selector(nGramSliderChanged) forControlEvents:UIControlEventValueChanged];
-        _nGramSizeSlider = nGramSlider;
+    if (!_tokenSizeSlider) {
+        UISlider *tokenSlider = [[UISlider alloc] init];
+        tokenSlider.minimumValue = 1;
+        tokenSlider.maximumValue = 9;
+        tokenSlider.value = self.tokenSize;
+        [tokenSlider addTarget:self action:@selector(tokenSliderChanged) forControlEvents:UIControlEventValueChanged];
+        _tokenSizeSlider = tokenSlider;
     }
-    return _nGramSizeSlider;
+    return _tokenSizeSlider;
 }
 
-- (UILabel *)nGramSizeLabel
+- (UILabel *)tokenSizeLabel
 {
-    if (!_nGramSizeLabel) {
-        UILabel *nGramSizeLabel = [[UILabel alloc] init];
-        nGramSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.nGramSize];
-        _nGramSizeLabel = nGramSizeLabel;
+    if (!_tokenSizeLabel) {
+        UILabel *tokenSizeLabel = [[UILabel alloc] init];
+        tokenSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tokenSize];
+        _tokenSizeLabel = tokenSizeLabel;
     }
-    return _nGramSizeLabel;
+    return _tokenSizeLabel;
 }
 
-- (void)nGramSliderChanged
+- (void)tokenSliderChanged
 {
-    self.nGramSize = self.nGramSizeSlider.value;
-    self.nGramSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.nGramSize];
+    self.tokenSize = self.tokenSizeSlider.value;
+    self.tokenSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tokenSize];
 }
 
 - (UISegmentedControl *)dissociateByWordControl
@@ -77,7 +77,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.nGramSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
+    self.tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
     BOOL dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
     self.dissociateByWord = [NSNumber numberWithBool:dissociateByWord];
     
@@ -89,7 +89,7 @@
     [super viewWillDisappear:animated];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setInteger:self.nGramSize forKey:@"nGramSizeParameter"];
+    [defaults setInteger:self.tokenSize forKey:@"tokenSizeParameter"];
     [defaults setBool:[self.dissociateByWord boolValue] forKey:@"dissociateByWordParameter"];
     [defaults synchronize];
 }
@@ -121,21 +121,21 @@
     
     if (indexPath.section == SECTION_SETTINGS) {
         if (indexPath.row == 0) {
-            self.nGramSizeSlider.frame = CGRectMake(cell.contentView.frame.origin.x + 112.0,
+            self.tokenSizeSlider.frame = CGRectMake(cell.contentView.frame.origin.x + 112.0,
                                                     cell.contentView.frame.origin.y,
                                                     cell.contentView.frame.size.width - 164.0,
                                                     cell.contentView.frame.size.height);
-            self.nGramSizeSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+            self.tokenSizeSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             
-            self.nGramSizeLabel.frame = CGRectMake(cell.contentView.frame.size.width - 32.0,
+            self.tokenSizeLabel.frame = CGRectMake(cell.contentView.frame.size.width - 32.0,
                                                    cell.contentView.frame.origin.y,
                                                    32.0,
                                                    cell.contentView.frame.size.height);
-            self.nGramSizeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            self.tokenSizeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
             
-            cell.textLabel.text = @"nGram size";
-            [cell.contentView addSubview:self.nGramSizeSlider];
-            [cell.contentView addSubview:self.nGramSizeLabel];
+            cell.textLabel.text = @"Token size";
+            [cell.contentView addSubview:self.tokenSizeSlider];
+            [cell.contentView addSubview:self.tokenSizeLabel];
         } else if (indexPath.row == 1) {
             self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 128.0,
                                                             cell.contentView.frame.origin.y,

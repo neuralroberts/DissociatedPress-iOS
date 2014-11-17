@@ -11,12 +11,12 @@
 
 @interface DissociatedNewsLoader ()
 
-@property (strong, nonatomic) NSMutableArray *titleNGrams;
-@property (strong, nonatomic) NSMutableDictionary *titleNGramContext;
-@property (strong, nonatomic) NSMutableArray *contentNGrams;
-@property (strong, nonatomic) NSMutableDictionary *contentNGramContext;
+@property (strong, nonatomic) NSMutableArray *titleTokens;
+@property (strong, nonatomic) NSMutableDictionary *titleTokenContext;
+@property (strong, nonatomic) NSMutableArray *contentTokens;
+@property (strong, nonatomic) NSMutableDictionary *contentTokenContext;
 
-@property (nonatomic) NSInteger nGramSize;
+@property (nonatomic) NSInteger tokenSize;
 @property (strong, nonatomic) NSNumber *dissociateByWord;
 @end
 
@@ -26,11 +26,11 @@
 {
     self = [super init];
     if (self) {
-        self.titleNGrams = [[NSMutableArray alloc] init];
-        self.titleNGramContext = [[NSMutableDictionary alloc] init];
-        self.contentNGrams = [[NSMutableArray alloc] init];
-        self.contentNGramContext = [[NSMutableDictionary alloc] init];
-        self.nGramSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"nGramSizeParameter"];
+        self.titleTokens = [[NSMutableArray alloc] init];
+        self.titleTokenContext = [[NSMutableDictionary alloc] init];
+        self.contentTokens = [[NSMutableArray alloc] init];
+        self.contentTokenContext = [[NSMutableDictionary alloc] init];
+        self.tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
         self.dissociateByWord = [NSNumber numberWithBool:[[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"]];
     }
     return self;
@@ -41,98 +41,89 @@
 {
     NSArray *results = [super loadNewsForQuery:query pageNumber:page];
     
-    NSUInteger stringEnumerationOptions = NSStringEnumerationByComposedCharacterSequences;
-    if ([self.dissociateByWord boolValue]) {
-        stringEnumerationOptions = NSStringEnumerationByWords;
-    }
-    
-    NSMutableArray *nGram;
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     NSMutableDictionary *contentSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
+    //tokenize each story and add it to the token lists
     for (NewsStory *story in results) {
         NSNumber *storyHash  = [NSNumber numberWithUnsignedInteger:[story hash]];
-        nGram = [[NSMutableArray alloc] init];
+        
+        NSUInteger seedIndex = [self.titleTokens count]; //index of the first token to be added for story.title
         NSString *title = [story.title stringByAppendingString:@"\n"];
-        [title enumerateSubstringsInRange:NSMakeRange(0, title.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-            substring = [title substringWithRange:enclosingRange];
-            [nGram addObject:substring];
-            if (nGram.count > self.nGramSize) [nGram removeObjectAtIndex:0];
-            if ([substring rangeOfString:@"\n"].location != NSNotFound) {
-                while ([nGram count] > 0) {
-                    NSString *nGramString = [nGram componentsJoinedByString:@""];
-                    if (!titleSeeds[storyHash]) titleSeeds[storyHash] = nGramString;
-                    [self.titleNGrams addObject:nGramString];
-                    if (!self.titleNGramContext[nGramString]) self.titleNGramContext[nGramString] = [[NSMutableArray alloc] init];
-                    [self.titleNGramContext[nGramString] addObject:[NSNumber numberWithInteger:(self.titleNGrams.count - 1)]];
-                    [nGram removeObjectAtIndex:0];
-                }
-            } else if (nGram.count == self.nGramSize) {
-                NSString *nGramString = [nGram componentsJoinedByString:@""];
-                if (!titleSeeds[storyHash]) titleSeeds[storyHash] = nGramString;
-                [self.titleNGrams addObject:nGramString];
-                if (!self.titleNGramContext[nGramString]) self.titleNGramContext[nGramString] = [[NSMutableArray alloc] init];
-                [self.titleNGramContext[nGramString] addObject:[NSNumber numberWithInteger:(self.titleNGrams.count - 1)]];
-            }
-        }];
-        nGram = [[NSMutableArray alloc] init];
+        [self tokenizeString:title toTokenArray:self.titleTokens TokenContext:self.titleTokenContext];
+        titleSeeds[storyHash] = self.titleTokens[seedIndex]; //save the first token from this story to seed the dissociation
+        
+        seedIndex = [self.contentTokens count]; //index of the first token to be added for story.content
         NSString *content = [story.content stringByAppendingString:@"\n"];
-        [content enumerateSubstringsInRange:NSMakeRange(0, content.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-            substring = [content substringWithRange:enclosingRange];
-            [nGram addObject:substring];
-            if (nGram.count > self.nGramSize) [nGram removeObjectAtIndex:0];
-            if ([substring rangeOfString:@"\n"].location != NSNotFound) {
-                while ([nGram count] > 0) {
-                    NSString *nGramString = [nGram componentsJoinedByString:@""];
-                    if (!contentSeeds[storyHash]) contentSeeds[storyHash] = nGramString;
-                    [self.contentNGrams addObject:nGramString];
-                    if (!self.contentNGramContext[nGramString]) self.contentNGramContext[nGramString] = [[NSMutableArray alloc] init];
-                    [self.contentNGramContext[nGramString] addObject:[NSNumber numberWithInteger:(self.contentNGrams.count - 1)]];
-                    [nGram removeObjectAtIndex:0];
-                }
-            } else if (nGram.count == self.nGramSize) {
-                NSString *nGramString = [nGram componentsJoinedByString:@""];
-                if (!contentSeeds[storyHash]) contentSeeds[storyHash] = nGramString;
-                [self.contentNGrams addObject:nGramString];
-                if (!self.contentNGramContext[nGramString]) self.contentNGramContext[nGramString] = [[NSMutableArray alloc] init];
-                [self.contentNGramContext[nGramString] addObject:[NSNumber numberWithInteger:(self.contentNGrams.count - 1)]];
-            }
-        }];
+        [self tokenizeString:content toTokenArray:self.contentTokens TokenContext:self.contentTokenContext];
+        contentSeeds[storyHash] = self.contentTokens[seedIndex]; //save the first token from this story to seed the dissociation
     }
     
+    //rewrite each story using the collected tokens
     for (NewsStory *story in results) {
         NSNumber *storyHash = [NSNumber numberWithUnsignedInteger:[story hash]];
         NSString *titleSeed = titleSeeds[storyHash];
-        story.title = [self reassociateWithSeed:titleSeed nGrams:self.titleNGrams context:self.titleNGramContext];
+        story.title = [self reassociateWithSeed:titleSeed tokens:self.titleTokens context:self.titleTokenContext];
         
         NSString *contentSeed = contentSeeds[storyHash];
-        story.content = [self reassociateWithSeed:contentSeed nGrams:self.contentNGrams context:self.contentNGramContext];
+        story.content = [self reassociateWithSeed:contentSeed tokens:self.contentTokens context:self.contentTokenContext];
         
     }
     return results;
 }
 
+- (void)tokenizeString:(NSString *)sourceString toTokenArray:(NSMutableArray *)tokenArray TokenContext:(NSMutableDictionary *)tokenContext
+{
+    NSUInteger stringEnumerationOptions = NSStringEnumerationByComposedCharacterSequences;
+    if ([self.dissociateByWord boolValue]) {
+        stringEnumerationOptions = NSStringEnumerationByWords;
+    }
+    NSMutableArray *token = [[NSMutableArray alloc] init];
+    [sourceString enumerateSubstringsInRange:NSMakeRange(0, sourceString.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+        substring = [sourceString substringWithRange:enclosingRange];
+        [token addObject:substring];
+        if (token.count > self.tokenSize) [token removeObjectAtIndex:0];
+        
+        if ([substring rangeOfString:@"\n"].location != NSNotFound) {
+            //taper off when adding the final token
+            while ([token count] > 0) {
+                NSString *tokenString = [token componentsJoinedByString:@""];
+                [tokenArray addObject:tokenString];
+                if (!tokenContext[tokenString]) tokenContext[tokenString] = [[NSMutableArray alloc] init];
+                [tokenContext[tokenString] addObject:[NSNumber numberWithInteger:(tokenArray.count - 1)]];
+                [token removeObjectAtIndex:0];
+            }
+            
+        } else if (token.count == self.tokenSize) {
+            NSString *tokenString = [token componentsJoinedByString:@""];
+            [tokenArray addObject:tokenString];
+            if (!tokenContext[tokenString]) tokenContext[tokenString] = [[NSMutableArray alloc] init];
+            [tokenContext[tokenString] addObject:[NSNumber numberWithInteger:(tokenArray.count - 1)]];
+        }
+    }];
+}
 
-- (NSString *)reassociateWithSeed:(NSString *)seed nGrams:(NSArray *)nGrams context:(NSDictionary *)context
+
+- (NSString *)reassociateWithSeed:(NSString *)seed tokens:(NSArray *)tokens context:(NSDictionary *)context
 {
     BOOL success = NO;
     NSString *outString = @"";
     NSUInteger index;
     while (!success) {
         outString = @"";
-        NSString *currentNGram = seed;
+        NSString *currentToken = seed;
         
-        while ([currentNGram rangeOfString:@"\n"].location == NSNotFound) {
-            outString = [outString stringByAppendingString:currentNGram];
-            index = arc4random() % [context[currentNGram] count];
-            index = [context[currentNGram][index] intValue] + self.nGramSize;
-            if (index >= [nGrams count]) {
-                currentNGram = @"\n";
+        while ([currentToken rangeOfString:@"\n"].location == NSNotFound) {
+            outString = [outString stringByAppendingString:currentToken];
+            index = arc4random() % [context[currentToken] count];
+            index = [context[currentToken][index] intValue] + self.tokenSize;
+            if (index >= [tokens count]) {
+                currentToken = @"\n";
             }
-            else currentNGram = nGrams[index];
+            else currentToken = tokens[index];
         }
-        outString = [outString stringByAppendingString:currentNGram];
+        outString = [outString stringByAppendingString:currentToken];
         
-        if ([outString length] > self.nGramSize) {
+        if ([outString length] > self.tokenSize) {
             success = YES;
         }
     }

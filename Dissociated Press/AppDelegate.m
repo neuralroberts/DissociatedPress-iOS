@@ -34,7 +34,7 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"hasLaunched"]) {
-        [defaults setInteger:3 forKey:@"nGramSizeParameter"];
+        [defaults setInteger:3 forKey:@"tokenSizeParameter"];
         [defaults setBool:NO forKey:@"dissociateByWordParameter"];
     }
     [defaults setBool:YES forKey:@"hasLaunched"];
