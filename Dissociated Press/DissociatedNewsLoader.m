@@ -43,10 +43,11 @@
     for (NSString *query in queries) {
         [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:page]];
     }
-    //query should be an array of strings
-    //for query in query array,
-    //results addObjects:loadNewsForQuery:query
-    //after that everything should work as is, just need interface to add the second query
+    //shuffle array
+    //0,4,8,12 --> 0,1,2,3
+    //1,5,9,13 --> 4,5,6,7
+    //2,6,10,14 --> 8,9,10,11
+    //3,7,11,15 --> 12,13,14,15
     
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     NSMutableDictionary *contentSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];

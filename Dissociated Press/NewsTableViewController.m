@@ -48,7 +48,7 @@
 - (UIView *)newsHeaderView
 {
     if (!_newsHeaderView) {
-        self.queries = [[NSMutableArray alloc] initWithObjects:@"",@"",@"",@"",@"", nil];
+        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"",@"",@"",@"", nil];
         UIView *newsHeaderView = [[UIView alloc] init];
         _newsHeaderView = newsHeaderView;
     }
@@ -68,7 +68,11 @@
             [searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
             [searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
             searchBar.placeholder = [NSString stringWithFormat:@"Query %lu",(unsigned long)searchBars.count];
+            if ([self.queries[i] length] > 0) {
+                searchBar.text = self.queries[i];
+            }
             searchBar.translatesAutoresizingMaskIntoConstraints = NO;
+            [searchBar setContentCompressionResistancePriority:(UILayoutPriorityDefaultHigh - i) forAxis:UILayoutConstraintAxisVertical];
             [nameMap setObject:searchBar forKey:[NSString stringWithFormat:@"searchBar%d",i]];
         }
         NSMutableString *verticalConstraintsString = [[NSMutableString alloc] initWithString:@"V:|"];
@@ -96,7 +100,7 @@
         headerStepper.autorepeat = NO;
         [headerStepper addTarget:self action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
         [self.newsHeaderView addSubview:headerStepper];
-        headerStepper.value = [searchBars count];
+        headerStepper.value = 2;
         self.headerStepper = headerStepper;
         self.newsHeaderView.frame = CGRectMake(self.newsHeaderView.frame.origin.x,
                                                self.newsHeaderView.frame.origin.y,
@@ -176,12 +180,12 @@
 {
     [self.refreshControl beginRefreshing];
     
-    //reset and populate news array
-    self.pageNumber = 1;
-    self.newsLoader = [[DissociatedNewsLoader alloc] init];
-    self.newsArray = [[NSMutableArray alloc] init];
-    
     dispatch_async(self.globalQueue, ^{
+        //reset and populate news array
+        self.pageNumber = 1;
+        self.newsLoader = [[DissociatedNewsLoader alloc] init];
+        self.newsArray = [[NSMutableArray alloc] init];
+
         [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber]];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
@@ -230,6 +234,7 @@
 
 
 #pragma mark - UITableViewDelegate
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
