@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
@@ -16,7 +16,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pea-zM-jKq">
-                        <rect key="frame" x="16" y="16" width="532" height="143"/>
+                        <rect key="frame" x="16" y="8" width="532" height="143"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Content" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yX2-wL-b5b">
                                 <rect key="frame" x="135" y="66" width="381" height="20"/>
@@ -50,28 +50,21 @@
                             <constraint firstAttribute="trailing" secondItem="yX2-wL-b5b" secondAttribute="trailing" constant="16" id="QhB-fq-NTI"/>
                             <constraint firstAttribute="trailing" secondItem="AQJ-7J-5ki" secondAttribute="trailing" constant="16" id="RSv-I8-lQ2"/>
                             <constraint firstItem="AQJ-7J-5ki" firstAttribute="leading" secondItem="nX3-tW-aNJ" secondAttribute="trailing" constant="8" id="VcX-cV-Alt"/>
-                            <constraint firstAttribute="bottom" secondItem="yX2-wL-b5b" secondAttribute="bottom" priority="770" constant="16" id="Wnv-mI-KMf"/>
                             <constraint firstItem="nX3-tW-aNJ" firstAttribute="top" secondItem="pea-zM-jKq" secondAttribute="top" constant="16" id="dHo-IX-4et"/>
                             <constraint firstItem="AQJ-7J-5ki" firstAttribute="top" secondItem="pea-zM-jKq" secondAttribute="top" constant="16" id="fbj-Lj-SoE"/>
-                            <constraint firstItem="yX2-wL-b5b" firstAttribute="top" secondItem="ISg-kS-Eio" secondAttribute="bottom" constant="8" id="hc7-hE-osj"/>
                             <constraint firstItem="nX3-tW-aNJ" firstAttribute="leading" secondItem="pea-zM-jKq" secondAttribute="leading" constant="16" id="hqz-1Y-lMP"/>
                             <constraint firstItem="ISg-kS-Eio" firstAttribute="top" secondItem="AQJ-7J-5ki" secondAttribute="bottom" constant="8" id="len-8F-sW2"/>
                             <constraint firstItem="yX2-wL-b5b" firstAttribute="leading" secondItem="nX3-tW-aNJ" secondAttribute="trailing" constant="8" id="q0S-3i-CAR"/>
                             <constraint firstItem="ISg-kS-Eio" firstAttribute="leading" secondItem="nX3-tW-aNJ" secondAttribute="trailing" constant="8" id="rdL-Dw-yH1"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="Wnv-mI-KMf"/>
-                            </mask>
-                        </variation>
                     </view>
                 </subviews>
                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                 <constraints>
                     <constraint firstItem="pea-zM-jKq" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="UZn-8f-qjo"/>
-                    <constraint firstItem="pea-zM-jKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="bsm-GJ-KT9"/>
+                    <constraint firstItem="pea-zM-jKq" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="bsm-GJ-KT9"/>
                     <constraint firstAttribute="trailing" secondItem="pea-zM-jKq" secondAttribute="trailing" constant="16" id="dMw-xk-kr9"/>
-                    <constraint firstAttribute="bottom" secondItem="pea-zM-jKq" secondAttribute="bottom" id="k5o-Gd-pyl"/>
+                    <constraint firstAttribute="bottom" secondItem="pea-zM-jKq" secondAttribute="bottom" constant="8" id="k5o-Gd-pyl"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

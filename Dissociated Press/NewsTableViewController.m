@@ -17,6 +17,9 @@
 
 @property (strong, nonatomic) UISearchBar *searchBar;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) UIView *newsHeaderView;
+@property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars
+@property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 
 @property (strong, nonatomic) NSString *query;
 @property (strong, nonatomic) NSMutableArray *newsArray;
@@ -56,12 +59,98 @@
     return _searchBar;
 }
 
+- (UIView *)newsHeaderView
+{
+    if (!_newsHeaderView) {
+        self.queries = [[NSMutableArray alloc] init];
+        UIView *newsHeaderView = [[UIView alloc] init];
+        _newsHeaderView = newsHeaderView;
+    }
+    return _newsHeaderView;
+}
+
+- (NSMutableArray *)searchBars
+{
+    if (!_searchBars) {
+        NSMutableDictionary *nameMap = [[NSMutableDictionary alloc] init];
+        NSMutableArray *searchBars = [[NSMutableArray alloc] init];
+        for (int i = 0; i < 5; i++) {
+            UISearchBar *searchBar = [[UISearchBar alloc] init];
+            [self.newsHeaderView addSubview:searchBar];
+            [searchBars addObject:searchBar];
+            searchBar.delegate = self;
+            [searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
+            [searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+            searchBar.placeholder = [NSString stringWithFormat:@"Query %lu",(unsigned long)searchBars.count];
+            searchBar.translatesAutoresizingMaskIntoConstraints = NO;
+            [nameMap setObject:searchBar forKey:[NSString stringWithFormat:@"searchBar%d",i]];
+        }
+        NSMutableString *verticalConstraintsString = [[NSMutableString alloc] initWithString:@"V:|"];
+        for (int i = 0; i < searchBars.count; i++) {
+            NSString *horizontalConstraintsString = [NSString stringWithFormat:@"H:|-110.0-[searchBar%d]|",i];
+            NSArray *horizontalContraints = [NSLayoutConstraint constraintsWithVisualFormat:horizontalConstraintsString
+                                                                                    options:0 metrics:nil views:nameMap];
+            
+            [self.newsHeaderView addConstraints:horizontalContraints];
+            [verticalConstraintsString appendString:[NSString stringWithFormat:@"[searchBar%d]",i]];
+            
+        }
+        [verticalConstraintsString appendString:@"|"];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:verticalConstraintsString
+                                                                               options:0 metrics:nil views:nameMap];
+        [self.newsHeaderView addConstraints:verticalConstraints];
+        
+        UIStepper *headerStepper = [[UIStepper alloc] initWithFrame:CGRectMake(_newsHeaderView.frame.origin.x,
+                                                                         _newsHeaderView.frame.origin.y,
+                                                                         94.0, 29.0)];
+        headerStepper.translatesAutoresizingMaskIntoConstraints = NO;
+        headerStepper.minimumValue = 1;
+        headerStepper.maximumValue = 5;
+        headerStepper.continuous = NO;
+        headerStepper.autorepeat = NO;
+        [headerStepper addTarget:self action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
+        [self.newsHeaderView addSubview:headerStepper];
+        headerStepper.value = [searchBars count];
+        self.newsHeaderView.frame = CGRectMake(self.newsHeaderView.frame.origin.x,
+                                               self.newsHeaderView.frame.origin.y,
+                                               self.newsHeaderView.frame.size.width,
+                                               44.0 * headerStepper.value);
+        
+        [nameMap setObject:headerStepper forKey:@"headerStepper"];
+        NSArray *stepperHorizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[headerStepper]-8-[searchBar0]|"
+                                                                                        options:0 metrics:nil views:nameMap];
+        NSArray *stepperVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[headerStepper]"
+                                                                                      options:0 metrics:nil views:nameMap];
+        [self.newsHeaderView addConstraints:stepperHorizontalConstraints];
+        [self.newsHeaderView addConstraints:stepperVerticalConstraints];
+        _searchBars = searchBars;
+    }
+    return _searchBars;
+}
+
+- (void)touchedStepper:(UIStepper *)sender
+{
+    self.newsHeaderView.frame = CGRectMake(self.newsHeaderView.frame.origin.x,
+                                           self.newsHeaderView.frame.origin.y,
+                                           self.newsHeaderView.frame.size.width,
+                                           44.0 * sender.value);
+
+    self.tableView.tableHeaderView = self.newsHeaderView;
+    
+    [self.newsHeaderView layoutSubviews];
+}
+
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSLog(@"%@",self.searchBars);
+    
+    self.tableView.tableHeaderView = self.newsHeaderView;
+    
     [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
+    //    [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -88,6 +177,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 - (void)pressedParametersBarButtonItem
 {
@@ -144,10 +234,13 @@
                 [cell layoutSubviews];
             });
         });
-    } else cell.image.image = nil;
-    
+    } else {
+        cell.image.image = nil;
+        cell.image.frame = CGRectMake(0, 0, 0, 0);
+    }
     return cell;
 }
+
 
 #pragma mark - UITableViewDelegate
 
@@ -158,7 +251,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
