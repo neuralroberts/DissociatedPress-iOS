@@ -15,13 +15,12 @@
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 
-@property (strong, nonatomic) UISearchBar *searchBar;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UIView *newsHeaderView;
 @property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
+@property (strong, nonatomic) UIStepper *headerStepper;
 
-@property (strong, nonatomic) NSString *query;
 @property (strong, nonatomic) NSMutableArray *newsArray;
 @property (strong, nonatomic) DissociatedNewsLoader *newsLoader;
 @property (nonatomic) int pageNumber;
@@ -46,23 +45,10 @@
     return _refreshControl;
 }
 
-- (UISearchBar *)searchBar
-{
-    if (!_searchBar) {
-        UISearchBar *searchBar = [[UISearchBar alloc] init];
-        searchBar.delegate = self;
-        [searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
-        [searchBar setAutocapitalizationType:UITextAutocapitalizationTypeNone];
-        searchBar.text = self.query;
-        _searchBar = searchBar;
-    }
-    return _searchBar;
-}
-
 - (UIView *)newsHeaderView
 {
     if (!_newsHeaderView) {
-        self.queries = [[NSMutableArray alloc] init];
+        self.queries = [[NSMutableArray alloc] initWithObjects:@"",@"",@"",@"",@"", nil];
         UIView *newsHeaderView = [[UIView alloc] init];
         _newsHeaderView = newsHeaderView;
     }
@@ -111,6 +97,7 @@
         [headerStepper addTarget:self action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
         [self.newsHeaderView addSubview:headerStepper];
         headerStepper.value = [searchBars count];
+        self.headerStepper = headerStepper;
         self.newsHeaderView.frame = CGRectMake(self.newsHeaderView.frame.origin.x,
                                                self.newsHeaderView.frame.origin.y,
                                                self.newsHeaderView.frame.size.width,
@@ -138,6 +125,7 @@
     self.tableView.tableHeaderView = self.newsHeaderView;
     
     [self.newsHeaderView layoutSubviews];
+    [self loadNews];
 }
 
 
@@ -154,9 +142,8 @@
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    self.query = @"florida man";
     [self.tableView addSubview:self.refreshControl];
-    self.navigationItem.titleView = self.searchBar;
+    self.navigationItem.title = @"Dissociated Press";
     
     //create and configure the parameter control
     UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(pressedParametersBarButtonItem)];
@@ -195,7 +182,7 @@
     self.newsArray = [[NSMutableArray alloc] init];
     
     dispatch_async(self.globalQueue, ^{
-        [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQuery:self.query pageNumber:self.pageNumber]];
+        [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber]];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];
@@ -261,7 +248,7 @@
             dispatch_async(self.globalQueue, ^{
                 
                 self.pageNumber++;
-                [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQuery:self.query pageNumber:self.pageNumber]];
+                [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber]];
                 dispatch_async(self.mainQueue, ^{
                     [self.tableView reloadData];
                 });
@@ -276,7 +263,10 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
-    self.query = self.searchBar.text;
+    for (int i = 0; i < 5; i++) {
+        UISearchBar *searchBar = self.searchBars[i];
+        self.queries[i] = searchBar.text;
+    }
     [self loadNews];
 }
 

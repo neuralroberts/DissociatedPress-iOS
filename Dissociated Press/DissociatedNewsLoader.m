@@ -37,12 +37,15 @@
 }
 
 
-- (NSArray *)loadDissociatedNewsForQuery:(NSString *)query pageNumber:(int)page
+- (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)page
 {
-    NSArray *results = [super loadNewsForQuery:query pageNumber:page];
+    NSMutableArray *results = [[NSMutableArray alloc] init];
+    for (NSString *query in queries) {
+        [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:page]];
+    }
     //query should be an array of strings
     //for query in query array,
-        //results addObjects:loadNewsForQuery:query
+    //results addObjects:loadNewsForQuery:query
     //after that everything should work as is, just need interface to add the second query
     
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];

@@ -11,6 +11,6 @@
 
 @interface DissociatedNewsLoader : NewsLoader
 
-- (NSArray *)loadDissociatedNewsForQuery:(NSString *)query pageNumber:(int)page;
+- (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)page;
 
 @end
