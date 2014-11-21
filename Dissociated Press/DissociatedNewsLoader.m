@@ -41,13 +41,18 @@
 {
     NSMutableArray *results = [[NSMutableArray alloc] init];
     for (NSString *query in queries) {
-        [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:page]];
+        NSArray *resultsToMerge = [super loadNewsForQuery:query pageNumber:page];
+        //interleave results from different queries
+        //query 0 - 0,1,2,3
+        //query 1 - 1,3,5,7
+        //query 2 - 2,5,8,11 etc
+        int index = results.count / 4;
+        int increment  = index + 1;
+        for (int i = 0; i < 4; i++) {
+            [results insertObject:resultsToMerge[i] atIndex:index];
+            index += increment;
+        }
     }
-    //shuffle array
-    //0,4,8,12 --> 0,1,2,3
-    //1,5,9,13 --> 4,5,6,7
-    //2,6,10,14 --> 8,9,10,11
-    //3,7,11,15 --> 12,13,14,15
     
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     NSMutableDictionary *contentSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];

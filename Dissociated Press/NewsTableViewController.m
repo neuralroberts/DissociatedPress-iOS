@@ -48,7 +48,7 @@
 - (UIView *)newsHeaderView
 {
     if (!_newsHeaderView) {
-        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"",@"",@"",@"", nil];
+        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"prophecy",@"lagos",@"piracy",@"endangered", nil];
         UIView *newsHeaderView = [[UIView alloc] init];
         _newsHeaderView = newsHeaderView;
     }
@@ -96,8 +96,6 @@
         headerStepper.translatesAutoresizingMaskIntoConstraints = NO;
         headerStepper.minimumValue = 1;
         headerStepper.maximumValue = 5;
-        headerStepper.continuous = NO;
-        headerStepper.autorepeat = NO;
         [headerStepper addTarget:self action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
         [self.newsHeaderView addSubview:headerStepper];
         headerStepper.value = 2;
