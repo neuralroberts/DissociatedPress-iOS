@@ -91,8 +91,8 @@
         [self.newsHeaderView addConstraints:verticalConstraints];
         
         UIStepper *headerStepper = [[UIStepper alloc] initWithFrame:CGRectMake(_newsHeaderView.frame.origin.x,
-                                                                         _newsHeaderView.frame.origin.y,
-                                                                         94.0, 29.0)];
+                                                                               _newsHeaderView.frame.origin.y,
+                                                                               94.0, 29.0)];
         headerStepper.translatesAutoresizingMaskIntoConstraints = NO;
         headerStepper.minimumValue = 1;
         headerStepper.maximumValue = 5;
@@ -123,13 +123,12 @@
                                            self.newsHeaderView.frame.origin.y,
                                            self.newsHeaderView.frame.size.width,
                                            44.0 * sender.value);
-
+    
     self.tableView.tableHeaderView = self.newsHeaderView;
     
     [self.newsHeaderView layoutSubviews];
     [self loadNews];
 }
-
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
@@ -139,8 +138,8 @@
     
     self.tableView.tableHeaderView = self.newsHeaderView;
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
-    //    [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
+        [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
+ //   [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -167,6 +166,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self.tableView reloadData];
+}
+
 
 - (void)pressedParametersBarButtonItem
 {
@@ -183,7 +188,7 @@
         self.pageNumber = 1;
         self.newsLoader = [[DissociatedNewsLoader alloc] init];
         self.newsArray = [[NSMutableArray alloc] init];
-
+        
         [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber]];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
@@ -204,9 +209,9 @@
     
     NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
     
-    cell.titleLabel.text = story.title;
-    cell.titleLabel.numberOfLines = 2;
-    cell.contentLabel.text = story.content;
+    cell.titleLabel.text = [story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    cell.titleLabel.numberOfLines = 0;
+    cell.contentLabel.text = [story.content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     cell.contentLabel.numberOfLines = 2;
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -233,15 +238,30 @@
 
 #pragma mark - UITableViewDelegate
 
+//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return 200.0;
+//}
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 160;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return 160;
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.contentLabel.numberOfLines = 0;
+    [self.tableView layoutSubviews];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.contentLabel.numberOfLines = 2;
+    [self.tableView layoutSubviews];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath

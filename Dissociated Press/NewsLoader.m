@@ -57,6 +57,9 @@
             story.imageHeight = [imageDictionary[@"tbHeight"] floatValue];
             story.imageWidth = [imageDictionary[@"tbWidth"] floatValue];
             story.imageUrl = [NSURL URLWithString:imageDictionary[@"tbUrl"]];
+        } else {
+            story.imageHeight = 0.0;
+            story.imageWidth = 0.0;
         }
         
         [result addObject:story];
