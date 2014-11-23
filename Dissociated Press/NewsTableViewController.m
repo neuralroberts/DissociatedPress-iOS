@@ -187,9 +187,9 @@
         //reset and populate news array
         self.pageNumber = 1;
         self.newsLoader = [[DissociatedNewsLoader alloc] init];
-        self.newsArray = [[NSMutableArray alloc] init];
+//        self.newsArray = [[NSMutableArray alloc] init];
         
-        [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber]];
+        self.newsArray = [[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber] mutableCopy];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
             [self.refreshControl endRefreshing];
@@ -212,7 +212,7 @@
     cell.titleLabel.text = [story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     cell.titleLabel.numberOfLines = 0;
     cell.contentLabel.text = [story.content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    cell.contentLabel.numberOfLines = 2;
+    cell.contentLabel.numberOfLines = 8;
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
@@ -249,21 +249,25 @@
 //    return 160;
 //}
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    cell.contentLabel.numberOfLines = 0;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.contentLabel.numberOfLines = 0;
+    [tableView beginUpdates];
+    [tableView endUpdates];
 //    [self.tableView layoutSubviews];
-////    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//}
-//
-//- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    cell.contentLabel.numberOfLines = 2;
+//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.contentLabel.numberOfLines = 2;
+    [tableView beginUpdates];
+    [tableView endUpdates];
 //    [self.tableView layoutSubviews];
-// //   [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//}
+ //   [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
