@@ -138,8 +138,8 @@
     
     self.tableView.tableHeaderView = self.newsHeaderView;
     
-        [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
- //   [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
+    //   [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -147,7 +147,10 @@
     self.navigationItem.title = @"Dissociated Press";
     
     //create and configure the parameter control
-    UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(pressedParametersBarButtonItem)];
+    UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"\u2699" style:UIBarButtonItemStylePlain target:self action:@selector(pressedParametersBarButtonItem)];
+    UIFont *font = [UIFont fontWithName:@"Helvetica" size:24.0];
+    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, nil];
+    [parametersBarButtonItem setTitleTextAttributes:dict forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = parametersBarButtonItem;
     
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -158,6 +161,14 @@
 {
     [super viewDidAppear:animated];
     [self loadNews];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.newsArray = nil;
+    self.newsLoader = nil;
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -187,7 +198,7 @@
         //reset and populate news array
         self.pageNumber = 1;
         self.newsLoader = [[DissociatedNewsLoader alloc] init];
-//        self.newsArray = [[NSMutableArray alloc] init];
+        //        self.newsArray = [[NSMutableArray alloc] init];
         
         self.newsArray = [[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber] mutableCopy];
         dispatch_async(self.mainQueue, ^{
@@ -206,6 +217,7 @@
 {
     NSString *cellReuseIdentifier = @"NewsFeedCell";
     NewsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
     
@@ -238,36 +250,6 @@
 
 
 #pragma mark - UITableViewDelegate
-//
-//- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return 300.0;
-//}
-
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return 160;
-//}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.contentLabel.numberOfLines = 0;
-    [tableView beginUpdates];
-    [tableView endUpdates];
-//    [self.tableView layoutSubviews];
-//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
-
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NewsTableViewCell *cell = (NewsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.contentLabel.numberOfLines = 2;
-    [tableView beginUpdates];
-    [tableView endUpdates];
-//    [self.tableView layoutSubviews];
- //   [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
