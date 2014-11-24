@@ -46,12 +46,15 @@
         //query 0 - 0,1,2,3
         //query 1 - 1,3,5,7
         //query 2 - 2,5,8,11 etc
-        int index = (int)results.count / 4;
-        int increment  = index + 1;
-        for (int i = 0; i < 4; i++) {
-            [results insertObject:resultsToMerge[i] atIndex:index];
-            index += increment;
+        if (resultsToMerge) {
+            int index = (int)results.count / 4;
+            int increment  = index + 1;
+            for (int i = 0; i < resultsToMerge.count; i++) {
+                [results insertObject:resultsToMerge[i] atIndex:index];
+                index += increment;
+            }
         }
+        
     }
     
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];

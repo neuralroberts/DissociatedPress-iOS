@@ -153,6 +153,9 @@
     [parametersBarButtonItem setTitleTextAttributes:dict forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = parametersBarButtonItem;
     
+    UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
+    self.navigationItem.leftBarButtonItem = refreshButton;
+    
     self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     self.mainQueue = dispatch_get_main_queue();
 }
