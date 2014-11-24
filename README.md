@@ -7,6 +7,8 @@ An open source iOS app which fetches news using the Google Feed API and generate
 
 Supports changing of parameters (token size, word/letter based tokenization) and merging of multiple queries to build the source text.
 
+![screenshot1](http://i.imgur.com/7GwY7L6.png)
+
 Installation
 ====================
 ```
