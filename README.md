@@ -17,6 +17,7 @@ open DissociatedPress-iOS.xcworkspace
 
 Requirements
 ====================
+* Xcode
 * iOS 8.0 or higher
 
 Credits
