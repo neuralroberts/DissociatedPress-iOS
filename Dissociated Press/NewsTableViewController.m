@@ -15,7 +15,6 @@
 
 @interface NewsTableViewController () <UISearchBarDelegate>
 
-@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UIView *newsHeaderView;
 @property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
@@ -31,19 +30,7 @@
 
 @implementation NewsTableViewController
 
-@synthesize refreshControl = _refreshControl;
-
 #pragma mark - properties
-
-- (UIRefreshControl *)refreshControl
-{
-    if (!_refreshControl) {
-        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-        [refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
-        _refreshControl = refreshControl;
-    }
-    return _refreshControl;
-}
 
 - (UIView *)newsHeaderView
 {
@@ -134,17 +121,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSLog(@"%@",self.searchBars);
-    
-    self.tableView.tableHeaderView = self.newsHeaderView;
+    self.navigationItem.title = @"Dissociated Press";
     
     [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
     //   [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    [self.tableView addSubview:self.refreshControl];
-    self.navigationItem.title = @"Dissociated Press";
+    NSLog(@"%@",self.searchBars);
+    
+    self.tableView.tableHeaderView = self.newsHeaderView;
     
     //create and configure the parameter control
     UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"\u2699" style:UIBarButtonItemStylePlain target:self action:@selector(pressedParametersBarButtonItem)];
@@ -169,6 +155,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    //set datasource to nil for cleaner look during segue
     self.newsArray = nil;
     self.newsLoader = nil;
     [self.tableView reloadData];
@@ -183,6 +170,7 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    //reload data so that cells are layed out properly after rotation
     [self.tableView reloadData];
 }
 
@@ -195,8 +183,6 @@
 
 - (void)loadNews
 {
-    [self.refreshControl beginRefreshing];
-    
     dispatch_async(self.globalQueue, ^{
         //reset and populate news array
         self.pageNumber = 1;
@@ -206,7 +192,6 @@
         self.newsArray = [[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber] mutableCopy];
         dispatch_async(self.mainQueue, ^{
             [self.tableView reloadData];
-            [self.refreshControl endRefreshing];
         });
     });
 }

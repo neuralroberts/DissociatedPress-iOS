@@ -39,6 +39,10 @@
     
     NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
     
+    if (!associatedResultsArray) {
+        NSLog(@"%@",associatedResultsArray);
+    }
+    
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
         NewsStory *story = [[NewsStory alloc] init];
