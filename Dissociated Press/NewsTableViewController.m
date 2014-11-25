@@ -23,7 +23,7 @@
 @property (strong, nonatomic) NSMutableArray *newsArray;
 @property (strong, nonatomic) DissociatedNewsLoader *newsLoader;
 @property (nonatomic) int pageNumber;
-@property (strong, nonatomic) dispatch_queue_t globalQueue;
+@property (strong, nonatomic) dispatch_queue_t newsLoaderQueue;
 @property (strong, nonatomic) dispatch_queue_t mainQueue;
 
 @end
@@ -142,8 +142,10 @@
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
     self.navigationItem.leftBarButtonItem = refreshButton;
     
-    self.globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    self.newsLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
     self.mainQueue = dispatch_get_main_queue();
+    
+    NSLog(@"%@",NSStringFromSelector(_cmd));
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -183,15 +185,21 @@
 
 - (void)loadNews
 {
-    dispatch_async(self.globalQueue, ^{
-        //reset and populate news array
+    //reset and populate news array
+
+    
+    dispatch_barrier_async(self.newsLoaderQueue, ^{
+        NSLog(@"%@",NSStringFromSelector(_cmd));
+
         self.pageNumber = 1;
-        self.newsLoader = [[DissociatedNewsLoader alloc] init];
-        //        self.newsArray = [[NSMutableArray alloc] init];
+        DissociatedNewsLoader *newsLoader = [[DissociatedNewsLoader alloc] init];
+        NSArray *newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
         
-        self.newsArray = [[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber] mutableCopy];
         dispatch_async(self.mainQueue, ^{
+            self.newsLoader = newsLoader;
+            self.newsArray = [newNews mutableCopy];
             [self.tableView reloadData];
+            NSLog(@"finished loadNews");
         });
     });
 }
@@ -220,7 +228,7 @@
     cell.dateLabel.text = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:story.date]];
     
     if (story.imageUrl) {
-        dispatch_async(self.globalQueue, ^{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
             
             dispatch_async(self.mainQueue, ^{
@@ -243,11 +251,14 @@
 {
     if (self.pageNumber < 16) {
         if (indexPath.row >= self.newsArray.count - 1) {
-            dispatch_async(self.globalQueue, ^{
+            dispatch_barrier_async(self.newsLoaderQueue, ^{
+                NSLog(@"%@",NSStringFromSelector(_cmd));
                 
                 self.pageNumber++;
-                [self.newsArray addObjectsFromArray:[self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber]];
+                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
+                
                 dispatch_async(self.mainQueue, ^{
+                    [self.newsArray addObjectsFromArray:newNews];
                     [self.tableView reloadData];
                 });
             });

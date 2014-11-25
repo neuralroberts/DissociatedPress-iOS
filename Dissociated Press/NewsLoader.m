@@ -39,8 +39,9 @@
     
     NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
     
-    if (!associatedResultsArray) {
-        NSLog(@"%@",associatedResultsArray);
+    if ([NSNull null] == associatedResultsArray) {
+        NSLog(@"%@",jsonObject);
+        return nil;
     }
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
