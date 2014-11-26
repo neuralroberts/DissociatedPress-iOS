@@ -46,13 +46,18 @@
         //query 0 - 0,1,2,3
         //query 1 - 1,3,5,7
         //query 2 - 2,5,8,11 etc
-        if (resultsToMerge) {
-            int index = (int)results.count / 4;
-            int increment  = index + 1;
-            for (int i = 0; i < resultsToMerge.count; i++) {
-                [results insertObject:resultsToMerge[i] atIndex:index];
-                index += increment;
-            }
+//        if (resultsToMerge) {
+//            int index = (int)results.count / 4;
+//            int increment  = index + 1;
+//            for (int i = 0; i < resultsToMerge.count; i++) {
+//                [results insertObject:resultsToMerge[i] atIndex:index];
+//                index += increment;
+//            }
+//        }
+        [results addObjectsFromArray:resultsToMerge];
+        for (int i = 0; i < results.count; i++)
+        {
+            [results exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform(i+1)];
         }
         
     }

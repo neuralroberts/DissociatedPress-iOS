@@ -26,7 +26,8 @@
     int start = (pageNumber - 1) * 4;
     NSString *urlString = [NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/news?v=1.0&start=%d&q=%@", start, escapedQuery];
     NSURL *url = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setValue:@"https://github.com/neuralroberts/DissociatedPress-iOS" forHTTPHeaderField:@"Referer"];
     
     NSHTTPURLResponse *response;
     NSError *error;
@@ -36,13 +37,14 @@
                                                                options:NSJSONReadingAllowFragments
                                                                  error:&error];
     
-    
-    NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
-    
-    if ([NSNull null] == associatedResultsArray) {
+    if ([NSNull null] == [jsonObject valueForKeyPath:@"responseData"]) {
         NSLog(@"%@",jsonObject);
         return nil;
     }
+    
+    NSArray *associatedResultsArray = [jsonObject valueForKeyPath:@"responseData.results"];
+    
+
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {

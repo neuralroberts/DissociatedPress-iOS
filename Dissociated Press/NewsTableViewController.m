@@ -121,8 +121,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"Dissociated Press";
-    
     [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
     //   [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
@@ -151,6 +149,9 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    NSInteger tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
+    NSString *dissociateBy = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"] ? @"word" : @"character";
+    self.navigationItem.title = [NSString stringWithFormat:@"n = %ld, dissociate by %@",(long)tokenSize,dissociateBy];
     [self loadNews];
 }
 
