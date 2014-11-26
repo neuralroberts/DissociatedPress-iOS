@@ -3,11 +3,12 @@ DissociatedPress-iOS
 
 Dissociated Press news reader for iOS (universal)
 
-An open source iOS app which fetches news using the Google Feed API and generates new, better news using the [Dissociated Press algorithm][1].
+An iOS app which fetches news using the Google Feed API and generates new, better news using the [Dissociated Press algorithm][1].
 
 Supports changing of parameters (token size, word/letter based tokenization) and merging of multiple queries to build the source text.
 
-![screenshot1](http://i.imgur.com/7GwY7L6.png)
+![screenshot1](http://i.imgur.com/qKSeMYj.png)
+![screenshot2](http://i.imgur.com/Wty44IK.png)
 
 Installation
 ====================
@@ -26,7 +27,7 @@ Credits
 
 License
 ====================
-Copyright (c) 2014, Joseph Jackson Wilkerson
+Copyright (c) 2014, Joseph Wilkerson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
