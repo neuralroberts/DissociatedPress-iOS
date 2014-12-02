@@ -74,7 +74,14 @@
     return self;
 }
 
-
+//-(void)setFrame:(CGRect)frame
+//{
+//    [super setFrame:frame];
+//    NSLog(@"%@",NSStringFromSelector(_cmd));
+//    //Do your rotation stuffs here :)
+//    [self updateConstraints];
+//    [self layoutSubviews];
+//}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

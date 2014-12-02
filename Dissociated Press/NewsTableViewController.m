@@ -35,7 +35,7 @@
 - (UIView *)newsHeaderView
 {
     if (!_newsHeaderView) {
-        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"prophecy",@"lagos",@"piracy",@"endangered", nil];
+        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"prophecy",@"lagos",@"ebola",@"endangered", nil];
         UIView *newsHeaderView = [[UIView alloc] init];
         _newsHeaderView = newsHeaderView;
     }
@@ -85,7 +85,7 @@
         headerStepper.maximumValue = 5;
         [headerStepper addTarget:self action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
         [self.newsHeaderView addSubview:headerStepper];
-        headerStepper.value = 2;
+        headerStepper.value = 1;
         self.headerStepper = headerStepper;
         self.newsHeaderView.frame = CGRectMake(self.newsHeaderView.frame.origin.x,
                                                self.newsHeaderView.frame.origin.y,
@@ -159,9 +159,14 @@
 {
     [super viewWillDisappear:animated];
     //set datasource to nil for cleaner look during segue
+    self.navigationController.title = nil;
+    
+    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
     self.newsArray = nil;
     self.newsLoader = nil;
-    [self.tableView reloadData];
+    [self.tableView deleteRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+//    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -174,8 +179,14 @@
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     //reload data so that cells are layed out properly after rotation
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
+//    [self.tableView setNeedsUpdateConstraints];
+//    [self.tableView layoutSubviews];
+//    [self.tableView beginUpdates];
+//    [self.tableView endUpdates];
 }
+
+
 
 
 - (void)pressedParametersBarButtonItem
@@ -187,10 +198,14 @@
 - (void)loadNews
 {
     //reset and populate news array
-
-    
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         NSLog(@"%@",NSStringFromSelector(_cmd));
+        
+        dispatch_async(self.mainQueue, ^{
+            NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
+            [self.newsArray removeAllObjects];
+            [self.tableView deleteRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
+        });
 
         self.pageNumber = 1;
         DissociatedNewsLoader *newsLoader = [[DissociatedNewsLoader alloc] init];
@@ -199,14 +214,29 @@
         dispatch_async(self.mainQueue, ^{
             self.newsLoader = newsLoader;
             self.newsArray = [newNews mutableCopy];
-            [self.tableView reloadData];
+            NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
+            [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
+//            [self.tableView reloadData];
             NSLog(@"finished loadNews");
         });
     });
 }
 
 #pragma mark - UITableViewDataSource
+- (NSArray *)indexPathArrayForRangeFromStart:(NSInteger)start toEnd:(NSInteger)end inSection:(NSInteger)section
+{
+    //returns an array of index paths in the given range
+    //used by the tableview when inserting/deleting rows
+    NSMutableArray *rangeArray = [[NSMutableArray alloc] init];
+    for (NSInteger i = start; i < end; i++) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:section];
+        [rangeArray addObject:path];
+    }
+    return rangeArray;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    NSLog(@"%lu",(unsigned long)self.newsArray.count);
     return [self.newsArray count];
 }
 
@@ -247,26 +277,62 @@
 
 
 #pragma mark - UITableViewDelegate
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    NSString *cellReuseIdentifier = @"NewsFeedCell";
+//    NewsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
+//    
+//    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
+//    
+//    cell.titleLabel.text = [story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    cell.titleLabel.numberOfLines = 0;
+//    cell.contentLabel.text = [story.content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+//    cell.contentLabel.numberOfLines = 8;
+//    cell.dateLabel.text = @"january 23, 4567";
+//    
+//    if (story.imageUrl) {
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
+//            
+//            dispatch_async(self.mainQueue, ^{
+//                cell.image.image = [[UIImage alloc] initWithData:imageData];
+//                [cell layoutSubviews];
+//            });
+//        });
+//    } else {
+//        cell.image.image = nil;
+//        cell.image.frame = CGRectMake(0, 0, 0, 0);
+//    }
+//    [cell layoutSubviews];
+//    return cell.frame.size.height;
+//}
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (self.pageNumber < 16) {
-        if (indexPath.row >= self.newsArray.count - 1) {
-            dispatch_barrier_async(self.newsLoaderQueue, ^{
-                NSLog(@"%@",NSStringFromSelector(_cmd));
-                
-                self.pageNumber++;
-                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
-                
-                dispatch_async(self.mainQueue, ^{
-                    [self.newsArray addObjectsFromArray:newNews];
-                    [self.tableView reloadData];
-                });
-            });
-        }
-    }
-}
-
+//
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (self.pageNumber < 16) {
+//        if (indexPath.row >= self.newsArray.count - 1) {
+//            dispatch_barrier_async(self.newsLoaderQueue, ^{
+//                NSLog(@"%@, %d",NSStringFromSelector(_cmd), indexPath.row);
+//                
+//                self.pageNumber++;
+//                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
+//                
+//                dispatch_async(self.mainQueue, ^{
+//                    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
+//                    
+//                    [self.newsArray addObjectsFromArray:newNews];
+//
+////                    [self.tableView beginUpdates];
+//                    [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
+////                    [self.tableView endUpdates];
+////                    [self.tableView reloadData];
+//                });
+//            });
+//        }
+//    }
+//}
 
 #pragma mark - UISearchBarDelegate
 
