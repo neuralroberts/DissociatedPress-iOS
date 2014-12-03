@@ -26,10 +26,10 @@
 {
     self = [super init];
     if (self) {
-        self.titleTokens = [[NSMutableArray alloc] init];
-        self.titleTokenContext = [[NSMutableDictionary alloc] init];
-        self.contentTokens = [[NSMutableArray alloc] init];
-        self.contentTokenContext = [[NSMutableDictionary alloc] init];
+        self.titleTokens = [NSMutableArray array];
+        self.titleTokenContext = [NSMutableDictionary dictionary];
+        self.contentTokens = [NSMutableArray array];
+        self.contentTokenContext = [NSMutableDictionary dictionary];
         self.tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
         self.dissociateByWord = [NSNumber numberWithBool:[[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"]];
     }
@@ -39,7 +39,7 @@
 
 - (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)page
 {
-    NSMutableArray *results = [[NSMutableArray alloc] init];
+    NSMutableArray *results = [NSMutableArray array];
     for (NSString *query in queries) {
         [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:page]];
     }
@@ -85,7 +85,7 @@
     if ([self.dissociateByWord boolValue]) {
         stringEnumerationOptions = NSStringEnumerationByWords;
     }
-    NSMutableArray *token = [[NSMutableArray alloc] init];
+    NSMutableArray *token = [NSMutableArray array];
     [sourceString enumerateSubstringsInRange:NSMakeRange(0, sourceString.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
         substring = [sourceString substringWithRange:enclosingRange];
         [token addObject:substring];
@@ -96,7 +96,7 @@
             while ([token count] > 0) {
                 NSString *tokenString = [token componentsJoinedByString:@""];
                 [tokenArray addObject:tokenString];
-                if (!tokenContext[tokenString]) tokenContext[tokenString] = [[NSMutableArray alloc] init];
+                if (!tokenContext[tokenString]) tokenContext[tokenString] = [NSMutableArray array];
                 [tokenContext[tokenString] addObject:[NSNumber numberWithInteger:(tokenArray.count - 1)]];
                 [token removeObjectAtIndex:0];
             }
@@ -104,7 +104,7 @@
         } else if (token.count == self.tokenSize) {
             NSString *tokenString = [token componentsJoinedByString:@""];
             [tokenArray addObject:tokenString];
-            if (!tokenContext[tokenString]) tokenContext[tokenString] = [[NSMutableArray alloc] init];
+            if (!tokenContext[tokenString]) tokenContext[tokenString] = [NSMutableArray array];
             [tokenContext[tokenString] addObject:[NSNumber numberWithInteger:(tokenArray.count - 1)]];
         }
     }];

@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "NewsStory.h"
+#import "NewsLabel.h"
 
 @interface NewsTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) NewsStory *newsStory;
-@property (strong, nonatomic) UILabel *titleLabel;
-@property (strong, nonatomic) UILabel *dateLabel;
-@property (strong, nonatomic) UILabel *contentLabel;
+@property (strong, nonatomic) NewsLabel *titleLabel;
+@property (strong, nonatomic) NewsLabel *dateLabel;
+@property (strong, nonatomic) NewsLabel *contentLabel;
 @property (strong, nonatomic) UIImageView *thumbnail;
 @property (strong, nonatomic) UIView *cardView;
 

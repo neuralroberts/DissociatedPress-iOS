@@ -47,7 +47,7 @@
     self.thumbnail.layer.borderWidth = 1.0f;
     [self.cardView addSubview:self.thumbnail];
     
-    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel = [[NewsLabel alloc] init];
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor whiteColor];
@@ -55,7 +55,7 @@
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
-    self.contentLabel = [[UILabel alloc] init];
+    self.contentLabel = [[NewsLabel alloc] init];
     self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.contentLabel.textColor = [UIColor blackColor];
     self.contentLabel.backgroundColor = [UIColor whiteColor];
@@ -63,7 +63,7 @@
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.contentLabel];
     
-    self.dateLabel = [[UILabel alloc] init];
+    self.dateLabel = [[NewsLabel alloc] init];
     self.dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.dateLabel.textColor = [UIColor colorWithRed:0.0 green:0.4 blue:0.13 alpha:1.0];
     self.dateLabel.backgroundColor = [UIColor whiteColor];
@@ -71,8 +71,8 @@
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.dateLabel];
     
-    self.hasThumbnailConstraints = [[NSMutableArray alloc] init];
-    self.noThumbnailConstraints = [[NSMutableArray alloc] init];
+    self.hasThumbnailConstraints = [NSMutableArray array];
+    self.noThumbnailConstraints = [NSMutableArray array];
     
     [self applyConstraints];
 
@@ -161,12 +161,6 @@
                                                                 multiplier:1
                                                                   constant:16]];
     
-//    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-//
-//    [self.dateLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-//    
-//    [self.contentLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing
                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -190,6 +184,7 @@
                                                               attribute:NSLayoutAttributeTop
                                                              multiplier:1
                                                                constant:16]];
+//                                                               priority:999]];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                               attribute:NSLayoutAttributeLeading
@@ -214,6 +209,7 @@
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:8]];
+//                                                               priority:999]];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentLabel
                                                               attribute:NSLayoutAttributeTop
@@ -222,6 +218,7 @@
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:8]];
+//                                                               priority:999]];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing
@@ -238,6 +235,7 @@
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:16]];
+//                                                               priority:999]];
 
     [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                attribute:NSLayoutAttributeWidth
@@ -247,9 +245,9 @@
                                                               multiplier:1
                                                                 constant:0]];
 
-//    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-//
-//    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+
+    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
 
     [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                attribute:NSLayoutAttributeHeight
@@ -276,6 +274,7 @@
                                                                          attribute:NSLayoutAttributeCenterY
                                                                         multiplier:1
                                                                           constant:0]];
+//                                                                          priority:999]];
 
     [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                          attribute:NSLayoutAttributeLeading
@@ -292,6 +291,7 @@
                                                                          attribute:NSLayoutAttributeTop
                                                                         multiplier:1
                                                                           constant:16]];
+//                                                                          priority:999]];
 
     [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cardView
                                                                          attribute:NSLayoutAttributeBottom
@@ -300,6 +300,7 @@
                                                                          attribute:NSLayoutAttributeBottom
                                                                         multiplier:1
                                                                           constant:16]];
+//                                                                          priority:999]];
     
     //nothumbnail
     [self.noThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel
@@ -309,14 +310,6 @@
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1
                                                                          constant:16]];
-    
-//    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-//                                                              attribute:NSLayoutAttributeHeight
-//                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-//                                                                 toItem:nil
-//                                                              attribute:NSLayoutAttributeNotAnAttribute
-//                                                             multiplier:1
-//                                                               constant:200]];
 }
 
 @end

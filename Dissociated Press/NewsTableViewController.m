@@ -46,8 +46,8 @@
 - (NSMutableArray *)searchBars
 {
     if (!_searchBars) {
-        NSMutableDictionary *nameMap = [[NSMutableDictionary alloc] init];
-        NSMutableArray *searchBars = [[NSMutableArray alloc] init];
+        NSMutableDictionary *nameMap = [NSMutableDictionary dictionary];
+        NSMutableArray *searchBars = [NSMutableArray array];
         for (int i = 0; i < 5; i++) {
             UISearchBar *searchBar = [[UISearchBar alloc] init];
             [self.newsHeaderView addSubview:searchBar];
@@ -233,7 +233,7 @@
 {
     //returns an array of index paths in the given range
     //used by the tableview when inserting/deleting rows
-    NSMutableArray *rangeArray = [[NSMutableArray alloc] init];
+    NSMutableArray *rangeArray = [NSMutableArray array];
     for (NSInteger i = start; i < end; i++) {
         NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:section];
         [rangeArray addObject:path];
@@ -265,7 +265,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.sizingCell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
-    
+
     [self.sizingCell setNeedsLayout];
     [self.sizingCell layoutIfNeeded];
     
@@ -274,7 +274,6 @@
     NSLog(@"%f",calculatedHeight);
     return calculatedHeight;
 }
-
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
