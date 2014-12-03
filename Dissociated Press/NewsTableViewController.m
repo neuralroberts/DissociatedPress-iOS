@@ -26,6 +26,7 @@
 @property (strong, nonatomic) dispatch_queue_t newsLoaderQueue;
 @property (strong, nonatomic) dispatch_queue_t mainQueue;
 
+@property (strong, nonatomic) NewsTableViewCell *sizingCell;
 @end
 
 @implementation NewsTableViewController
@@ -121,8 +122,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.tableView registerNib:[UINib nibWithNibName:@"NewsTableViewCell" bundle:nil] forCellReuseIdentifier:@"NewsFeedCell"];
-    //   [self.tableView registerClass:[NewsTableViewCell class] forCellReuseIdentifier:@"NewsFeedCell"];
+    /*
+     *create a cell instance to use for autolayout sizing
+     */
+    self.sizingCell = [[NewsTableViewCell alloc] initWithReuseIdentifier:nil];
+    self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.sizingCell.hidden = YES;
+    [self.tableView addSubview:self.sizingCell];
+    self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 0);
+    
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -166,7 +174,7 @@
     self.newsLoader = nil;
     [self.tableView deleteRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
     
-//    [self.tableView reloadData];
+    //    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -174,20 +182,18 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    //reload data so that cells are layed out properly after rotation
-//    [self.tableView reloadData];
-//    [self.tableView setNeedsUpdateConstraints];
-//    [self.tableView layoutSubviews];
-//    [self.tableView beginUpdates];
-//    [self.tableView endUpdates];
-}
-
-
-
+//
+//- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+//{
+//    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+//    //reload data so that cells are layed out properly after rotation
+////    [self.tableView reloadData];
+////    [self.tableView setNeedsUpdateConstraints];
+////    [self.tableView layoutSubviews];
+////    [self.tableView beginUpdates];
+////    [self.tableView endUpdates];
+//}
+//
 
 - (void)pressedParametersBarButtonItem
 {
@@ -206,7 +212,7 @@
             [self.newsArray removeAllObjects];
             [self.tableView deleteRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
         });
-
+        
         self.pageNumber = 1;
         DissociatedNewsLoader *newsLoader = [[DissociatedNewsLoader alloc] init];
         NSArray *newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
@@ -216,7 +222,7 @@
             self.newsArray = [newNews mutableCopy];
             NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
-//            [self.tableView reloadData];
+            //            [self.tableView reloadData];
             NSLog(@"finished loadNews");
         });
     });
@@ -243,70 +249,31 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *cellReuseIdentifier = @"NewsFeedCell";
-    NewsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
-    
-    cell.titleLabel.text = [story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    cell.titleLabel.numberOfLines = 0;
-    cell.contentLabel.text = [story.content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    cell.contentLabel.numberOfLines = 8;
-    
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-    cell.dateLabel.text = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:story.date]];
-    
-    if (story.imageUrl) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
-            
-            dispatch_async(self.mainQueue, ^{
-                cell.image.image = [[UIImage alloc] initWithData:imageData];
-                [cell layoutSubviews];
-            });
-        });
-    } else {
-        cell.image.image = nil;
-        cell.image.frame = CGRectMake(0, 0, 0, 0);
+    NewsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
+    if (cell == nil) {
+        cell = [[NewsTableViewCell alloc] initWithReuseIdentifier:cellReuseIdentifier];
     }
-    [cell layoutSubviews];
+    
+    cell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
+    
     return cell;
 }
 
 
 #pragma mark - UITableViewDelegate
-//
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSString *cellReuseIdentifier = @"NewsFeedCell";
-//    NewsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier forIndexPath:indexPath];
-//    
-//    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
-//    
-//    cell.titleLabel.text = [story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-//    cell.titleLabel.numberOfLines = 0;
-//    cell.contentLabel.text = [story.content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-//    cell.contentLabel.numberOfLines = 8;
-//    cell.dateLabel.text = @"january 23, 4567";
-//    
-//    if (story.imageUrl) {
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//            NSData *imageData = [NSData dataWithContentsOfURL:story.imageUrl];
-//            
-//            dispatch_async(self.mainQueue, ^{
-//                cell.image.image = [[UIImage alloc] initWithData:imageData];
-//                [cell layoutSubviews];
-//            });
-//        });
-//    } else {
-//        cell.image.image = nil;
-//        cell.image.frame = CGRectMake(0, 0, 0, 0);
-//    }
-//    [cell layoutSubviews];
-//    return cell.frame.size.height;
-//}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.sizingCell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
+    
+    [self.sizingCell setNeedsLayout];
+    [self.sizingCell layoutIfNeeded];
+    
+    CGFloat calculatedHeight = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    
+    NSLog(@"%f",calculatedHeight);
+    return calculatedHeight;
+}
 
 //
 //- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -315,13 +282,13 @@
 //        if (indexPath.row >= self.newsArray.count - 1) {
 //            dispatch_barrier_async(self.newsLoaderQueue, ^{
 //                NSLog(@"%@, %d",NSStringFromSelector(_cmd), indexPath.row);
-//                
+//
 //                self.pageNumber++;
 //                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
-//                
+//
 //                dispatch_async(self.mainQueue, ^{
 //                    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
-//                    
+//
 //                    [self.newsArray addObjectsFromArray:newNews];
 //
 ////                    [self.tableView beginUpdates];

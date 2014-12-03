@@ -59,10 +59,12 @@
         
         NSDictionary *imageDictionary = resultDictionary[@"image"];
         if (imageDictionary) {
+            story.hasThumbnail = YES;
             story.imageHeight = [imageDictionary[@"tbHeight"] floatValue];
             story.imageWidth = [imageDictionary[@"tbWidth"] floatValue];
             story.imageUrl = [NSURL URLWithString:imageDictionary[@"tbUrl"]];
         } else {
+            story.hasThumbnail = NO;
             story.imageHeight = 0.0;
             story.imageWidth = 0.0;
         }

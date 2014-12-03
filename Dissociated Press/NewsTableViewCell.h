@@ -7,13 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NewsStory.h"
 
 @interface NewsTableViewCell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *dateLabel;
-@property (weak, nonatomic) IBOutlet UILabel *contentLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *image;
-@property (weak, nonatomic) IBOutlet UIView *cardView;
+@property (strong, nonatomic) NewsStory *newsStory;
+@property (strong, nonatomic) UILabel *titleLabel;
+@property (strong, nonatomic) UILabel *dateLabel;
+@property (strong, nonatomic) UILabel *contentLabel;
+@property (strong, nonatomic) UIImageView *thumbnail;
+@property (strong, nonatomic) UIView *cardView;
+
+- (instancetype)initWithReuseIdentifier:(NSString*)reuseIdentifier;
 
 @end

@@ -15,6 +15,7 @@
 @property (strong, nonatomic) NSString* content;
 @property (strong, nonatomic) NSDate *date;
 @property (strong, nonatomic) NSURL* url;
+@property (nonatomic, assign) BOOL hasThumbnail;
 @property (strong, nonatomic) NSURL* imageUrl;
 @property (readwrite) CGFloat imageWidth;
 @property (readwrite) CGFloat imageHeight;
