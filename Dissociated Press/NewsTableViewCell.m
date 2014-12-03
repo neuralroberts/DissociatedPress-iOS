@@ -161,11 +161,11 @@
                                                                 multiplier:1
                                                                   constant:16]];
     
-    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-
-    [self.dateLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
-    
-    [self.contentLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//
+//    [self.dateLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    
+//    [self.contentLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing
@@ -247,9 +247,9 @@
                                                               multiplier:1
                                                                 constant:0]];
 
-    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-
-    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+//
+//    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
 
     [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                attribute:NSLayoutAttributeHeight
@@ -309,6 +309,14 @@
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1
                                                                          constant:16]];
+    
+//    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+//                                                              attribute:NSLayoutAttributeHeight
+//                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+//                                                                 toItem:nil
+//                                                              attribute:NSLayoutAttributeNotAnAttribute
+//                                                             multiplier:1
+//                                                               constant:200]];
 }
 
 @end

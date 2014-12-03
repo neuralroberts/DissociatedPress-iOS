@@ -275,31 +275,31 @@
     return calculatedHeight;
 }
 
-//
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (self.pageNumber < 16) {
-//        if (indexPath.row >= self.newsArray.count - 1) {
-//            dispatch_barrier_async(self.newsLoaderQueue, ^{
-//                NSLog(@"%@, %d",NSStringFromSelector(_cmd), indexPath.row);
-//
-//                self.pageNumber++;
-//                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
-//
-//                dispatch_async(self.mainQueue, ^{
-//                    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
-//
-//                    [self.newsArray addObjectsFromArray:newNews];
-//
-////                    [self.tableView beginUpdates];
-//                    [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
-////                    [self.tableView endUpdates];
-////                    [self.tableView reloadData];
-//                });
-//            });
-//        }
-//    }
-//}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.pageNumber < 16) {
+        if (indexPath.row >= self.newsArray.count - 1) {
+            dispatch_barrier_async(self.newsLoaderQueue, ^{
+                NSLog(@"%@, %d",NSStringFromSelector(_cmd), indexPath.row);
+
+                self.pageNumber++;
+                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
+
+                dispatch_async(self.mainQueue, ^{
+                    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
+
+                    [self.newsArray addObjectsFromArray:newNews];
+
+//                    [self.tableView beginUpdates];
+                    [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
+//                    [self.tableView endUpdates];
+//                    [self.tableView reloadData];
+                });
+            });
+        }
+    }
+}
 
 #pragma mark - UISearchBarDelegate
 
