@@ -20,7 +20,6 @@
 		4364570F1A12981100C7DF66 /* DissociatedNewsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4364570E1A12981100C7DF66 /* DissociatedNewsLoader.m */; };
 		43DA00581A142B40008F0C53 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43DA00561A142B40008F0C53 /* SettingsViewController.m */; };
 		43F75BA81A17E1450059FF33 /* NewsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F75BA61A17E1450059FF33 /* NewsTableViewCell.m */; };
-		43F75BA91A17E1450059FF33 /* NewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43F75BA71A17E1450059FF33 /* NewsTableViewCell.xib */; };
 		516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */; };
 /* End PBXBuildFile section */
 
@@ -62,7 +61,6 @@
 		43DA00561A142B40008F0C53 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		43F75BA51A17E1450059FF33 /* NewsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsTableViewCell.h; sourceTree = "<group>"; };
 		43F75BA61A17E1450059FF33 /* NewsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsTableViewCell.m; sourceTree = "<group>"; };
-		43F75BA71A17E1450059FF33 /* NewsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NewsTableViewCell.xib; sourceTree = "<group>"; };
 		9C70F543166701BD2A94167D /* Pods-Dissociated Press.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.release.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.release.xcconfig"; sourceTree = "<group>"; };
 		9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Dissociated Press.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -203,7 +201,6 @@
 			children = (
 				43F75BA51A17E1450059FF33 /* NewsTableViewCell.h */,
 				43F75BA61A17E1450059FF33 /* NewsTableViewCell.m */,
-				43F75BA71A17E1450059FF33 /* NewsTableViewCell.xib */,
 				433AA0931A2F97430028477F /* NewsLabel.h */,
 				433AA0941A2F97430028477F /* NewsLabel.m */,
 			);
@@ -292,7 +289,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				43383D821A1155F800D58D0F /* LaunchScreen.xib in Resources */,
-				43F75BA91A17E1450059FF33 /* NewsTableViewCell.xib in Resources */,
 				43383D7F1A1155F800D58D0F /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -271,7 +271,6 @@
     
     CGFloat calculatedHeight = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
     
-    NSLog(@"%f",calculatedHeight);
     return calculatedHeight;
 }
 

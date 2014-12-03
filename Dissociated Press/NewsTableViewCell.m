@@ -43,8 +43,6 @@
     self.thumbnail = [[UIImageView alloc] init];
     self.thumbnail.contentMode = UIViewContentModeScaleAspectFit;
     self.thumbnail.translatesAutoresizingMaskIntoConstraints = NO;
-    self.thumbnail.layer.borderColor = [UIColor greenColor].CGColor;
-    self.thumbnail.layer.borderWidth = 1.0f;
     [self.cardView addSubview:self.thumbnail];
     
     self.titleLabel = [[NewsLabel alloc] init];
@@ -55,14 +53,6 @@
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
-    self.contentLabel = [[NewsLabel alloc] init];
-    self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    self.contentLabel.textColor = [UIColor blackColor];
-    self.contentLabel.backgroundColor = [UIColor whiteColor];
-    self.contentLabel.numberOfLines = 8;
-    self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.cardView addSubview:self.contentLabel];
-    
     self.dateLabel = [[NewsLabel alloc] init];
     self.dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.dateLabel.textColor = [UIColor colorWithRed:0.0 green:0.4 blue:0.13 alpha:1.0];
@@ -70,6 +60,14 @@
     self.dateLabel.numberOfLines = 1;
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.dateLabel];
+    
+    self.contentLabel = [[NewsLabel alloc] init];
+    self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.contentLabel.textColor = [UIColor blackColor];
+    self.contentLabel.backgroundColor = [UIColor whiteColor];
+    self.contentLabel.numberOfLines = 8;
+    self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.cardView addSubview:self.contentLabel];
     
     self.hasThumbnailConstraints = [NSMutableArray array];
     self.noThumbnailConstraints = [NSMutableArray array];
@@ -112,7 +110,7 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
-    
+
     if (self.newsStory.hasThumbnail) {
         [self.cardView removeConstraints:self.noThumbnailConstraints];
         [self.cardView addConstraints:self.hasThumbnailConstraints];
@@ -161,9 +159,13 @@
                                                                 multiplier:1
                                                                   constant:16]];
     
+    /*
+     *cardview's subviews constraints
+     */
+    
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                              relatedBy:NSLayoutRelationEqual
                                                                  toItem:self.titleLabel
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
@@ -171,7 +173,15 @@
     
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.dateLabel
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                              attribute:NSLayoutAttributeTrailing
+                                                              relatedBy:NSLayoutRelationEqual
                                                                  toItem:self.contentLabel
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
@@ -184,7 +194,6 @@
                                                               attribute:NSLayoutAttributeTop
                                                              multiplier:1
                                                                constant:16]];
-//                                                               priority:999]];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                               attribute:NSLayoutAttributeLeading
@@ -209,7 +218,6 @@
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:8]];
-//                                                               priority:999]];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentLabel
                                                               attribute:NSLayoutAttributeTop
@@ -218,15 +226,6 @@
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:8]];
-//                                                               priority:999]];
-
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:16]];
 
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeBottom
@@ -235,7 +234,6 @@
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:16]];
-//                                                               priority:999]];
 
     [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                attribute:NSLayoutAttributeWidth
@@ -274,7 +272,6 @@
                                                                          attribute:NSLayoutAttributeCenterY
                                                                         multiplier:1
                                                                           constant:0]];
-//                                                                          priority:999]];
 
     [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                          attribute:NSLayoutAttributeLeading
@@ -291,7 +288,6 @@
                                                                          attribute:NSLayoutAttributeTop
                                                                         multiplier:1
                                                                           constant:16]];
-//                                                                          priority:999]];
 
     [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cardView
                                                                          attribute:NSLayoutAttributeBottom
@@ -300,7 +296,6 @@
                                                                          attribute:NSLayoutAttributeBottom
                                                                         multiplier:1
                                                                           constant:16]];
-//                                                                          priority:999]];
     
     //nothumbnail
     [self.noThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel

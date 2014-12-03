@@ -22,9 +22,9 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     self.preferredMaxLayoutWidth = CGRectGetWidth(self.bounds);
-    NSLog(@"preferred width %f",self.preferredMaxLayoutWidth);
+
     [super layoutSubviews];
 }
 
