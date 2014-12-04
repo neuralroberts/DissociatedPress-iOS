@@ -10,4 +10,6 @@
 
 @interface NewsTableViewController : UITableViewController
 
+- (void)touchedStepper:(UIStepper *)sender;
+
 @end

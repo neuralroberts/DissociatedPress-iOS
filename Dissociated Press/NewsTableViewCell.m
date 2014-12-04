@@ -7,7 +7,6 @@
 //
 
 #import "NewsTableViewCell.h"
-#import "NSLayoutConstraint+Priority.h"
 
 @interface NewsTableViewCell ()
 
