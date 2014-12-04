@@ -49,7 +49,7 @@
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor whiteColor];
-    self.titleLabel.numberOfLines = 0;
+    self.titleLabel.numberOfLines = 2;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
@@ -65,7 +65,7 @@
     self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.contentLabel.textColor = [UIColor blackColor];
     self.contentLabel.backgroundColor = [UIColor whiteColor];
-    self.contentLabel.numberOfLines = 8;
+    self.contentLabel.numberOfLines = 4;
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.contentLabel];
     

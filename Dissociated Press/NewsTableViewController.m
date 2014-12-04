@@ -25,7 +25,7 @@
 @property (nonatomic) int pageNumber;
 @property (strong, nonatomic) dispatch_queue_t newsLoaderQueue;
 @property (strong, nonatomic) dispatch_queue_t mainQueue;
-
+@property (strong, nonatomic) NSMutableDictionary *rowHeightCache;
 @property (strong, nonatomic) NewsTableViewCell *sizingCell;
 @end
 
@@ -36,7 +36,7 @@
 - (UIView *)newsHeaderView
 {
     if (!_newsHeaderView) {
-        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"prophecy",@"lagos",@"ebola",@"endangered", nil];
+        self.queries = [[NSMutableArray alloc] initWithObjects:@"florida man",@"degrasse",@"nuclear",@"ebola",@"endangered", nil];
         UIView *newsHeaderView = [[UIView alloc] init];
         _newsHeaderView = newsHeaderView;
     }
@@ -168,32 +168,11 @@
     [super viewWillDisappear:animated];
     //set datasource to nil for cleaner look during segue
     self.navigationController.title = nil;
-    
-    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
+    NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
     self.newsArray = nil;
     self.newsLoader = nil;
-    [self.tableView deleteRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
-    
-    //    [self.tableView reloadData];
+    [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-//
-//- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-//{
-//    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-//    //reload data so that cells are layed out properly after rotation
-////    [self.tableView reloadData];
-////    [self.tableView setNeedsUpdateConstraints];
-////    [self.tableView layoutSubviews];
-////    [self.tableView beginUpdates];
-////    [self.tableView endUpdates];
-//}
-//
 
 - (void)pressedParametersBarButtonItem
 {
@@ -205,14 +184,14 @@
 {
     //reset and populate news array
     dispatch_barrier_async(self.newsLoaderQueue, ^{
-        NSLog(@"%@",NSStringFromSelector(_cmd));
         
         dispatch_async(self.mainQueue, ^{
-            NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
+            NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.newsArray removeAllObjects];
-            [self.tableView deleteRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
         });
         
+        self.rowHeightCache = [NSMutableDictionary dictionary];
         self.pageNumber = 1;
         DissociatedNewsLoader *newsLoader = [[DissociatedNewsLoader alloc] init];
         NSArray *newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
@@ -220,10 +199,8 @@
         dispatch_async(self.mainQueue, ^{
             self.newsLoader = newsLoader;
             self.newsArray = [newNews mutableCopy];
-            NSArray *rangeArray = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
-            [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
-            //            [self.tableView reloadData];
-            NSLog(@"finished loadNews");
+            NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
+            [self.tableView insertRowsAtIndexPaths:rangeToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
         });
     });
 }
@@ -242,7 +219,6 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"%lu",(unsigned long)self.newsArray.count);
     return [self.newsArray count];
 }
 
@@ -250,9 +226,7 @@
 {
     NSString *cellReuseIdentifier = @"NewsFeedCell";
     NewsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
-    if (cell == nil) {
-        cell = [[NewsTableViewCell alloc] initWithReuseIdentifier:cellReuseIdentifier];
-    }
+    if (cell == nil) cell = [[NewsTableViewCell alloc] initWithReuseIdentifier:cellReuseIdentifier];
     
     cell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
     
@@ -264,12 +238,22 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.sizingCell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
+    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
+    
+    NSNumber *cachedHeight = self.rowHeightCache[story.uniqueIdentifier];
+    
+    if (cachedHeight != nil) {
+        return [cachedHeight floatValue];
+    }
+    
+    self.sizingCell.newsStory = story;
 
     [self.sizingCell setNeedsLayout];
     [self.sizingCell layoutIfNeeded];
     
     CGFloat calculatedHeight = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    
+    self.rowHeightCache[story.uniqueIdentifier] = @(calculatedHeight);
     
     return calculatedHeight;
 }
@@ -279,20 +263,13 @@
     if (self.pageNumber < 16) {
         if (indexPath.row >= self.newsArray.count - 1) {
             dispatch_barrier_async(self.newsLoaderQueue, ^{
-                NSLog(@"%@, %d",NSStringFromSelector(_cmd), indexPath.row);
-
                 self.pageNumber++;
                 NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.headerStepper.value)] pageNumber:self.pageNumber];
 
                 dispatch_async(self.mainQueue, ^{
-                    NSArray *rangeArray = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
-
+                    NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
                     [self.newsArray addObjectsFromArray:newNews];
-
-//                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:rangeArray withRowAnimation:UITableViewRowAnimationAutomatic];
-//                    [self.tableView endUpdates];
-//                    [self.tableView reloadData];
+                    [self.tableView insertRowsAtIndexPaths:rangeToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
                 });
             });
         }

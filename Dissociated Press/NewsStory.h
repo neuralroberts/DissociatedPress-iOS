@@ -19,5 +19,5 @@
 @property (strong, nonatomic) NSURL* imageUrl;
 @property (readwrite) CGFloat imageWidth;
 @property (readwrite) CGFloat imageHeight;
-
+@property (strong, nonatomic) NSUUID *uniqueIdentifier;
 @end
