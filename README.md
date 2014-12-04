@@ -24,6 +24,7 @@ Requirements
 Credits
 ====================
 * [MWFeedParser][2]  
+* [This blog post for autolayout help][3]
 
 License
 ====================
@@ -61,3 +62,4 @@ Contact
 
   [1]: http://en.wikipedia.org/wiki/Dissociated_press
   [2]: https://github.com/mwaterfall/MWFeedParser
+  [3]: http://johnszumski.com/blog/auto-layout-for-table-view-cells-with-dynamic-heights
