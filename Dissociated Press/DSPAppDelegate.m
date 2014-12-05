@@ -20,7 +20,13 @@
     // Override point for customization after application launch.
     [self setupUserDefaults];
     
-    DSPNewsTVC *newsTVC = [[DSPNewsTVC alloc] init];
+    DSPNewsTVC *newsTVC;
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        newsTVC = [[DSPNewsTVC alloc] initWithStyle:UITableViewStylePlain];
+    } else {
+        newsTVC = [[DSPNewsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    }
+    
     UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
     navigationVC.navigationBarHidden = NO;
     navigationVC.navigationBar.barTintColor = [UIColor groupTableViewBackgroundColor];

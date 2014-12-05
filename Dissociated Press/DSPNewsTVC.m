@@ -51,7 +51,8 @@
     
     self.queries = [NSMutableArray array];
     
-    //create and configure the parameter control
+    self.newsLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
+    
     UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"\u2699" style:UIBarButtonItemStylePlain target:self action:@selector(pressedParametersBarButtonItem)];
     parametersBarButtonItem.tintColor = [UIColor darkGrayColor];
     UIFont *font = [UIFont fontWithName:@"Helvetica" size:24.0];
@@ -62,8 +63,6 @@
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
     refreshButton.tintColor = [UIColor darkGrayColor];
     self.navigationItem.leftBarButtonItem = refreshButton;
-    
-    self.newsLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -138,7 +137,6 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (section == 0) return self.newsHeaderView;
-    
     return nil;
 }
 
@@ -153,10 +151,7 @@
     DSPNewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
     
     NSNumber *cachedHeight = self.rowHeightCache[story.uniqueIdentifier];
-    
-    if (cachedHeight != nil) {
-        return [cachedHeight floatValue];
-    }
+    if (cachedHeight != nil) return [cachedHeight floatValue];
     
     self.sizingCell.newsStory = story;
     
