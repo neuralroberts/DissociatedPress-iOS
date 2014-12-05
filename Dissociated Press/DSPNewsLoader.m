@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
 
-#import "NewsLoader.h"
-#import "NewsStory.h"
+#import "DSPNewsLoader.h"
+#import "DSPNewsStory.h"
 #import "NSString+HTML.h"
 
 
 
-@implementation NewsLoader
+@implementation DSPNewsLoader
 
 - (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber
 {
@@ -46,7 +46,7 @@
     
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
-        NewsStory *story = [[NewsStory alloc] init];
+        DSPNewsStory *story = [[DSPNewsStory alloc] init];
         story.uniqueIdentifier = [[NSUUID alloc] init];
         story.title = [resultDictionary[@"titleNoFormatting"] stringByConvertingHTMLToPlainText];
         story.content = [resultDictionary[@"content"] stringByConvertingHTMLToPlainText];

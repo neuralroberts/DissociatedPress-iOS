@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NewsLoader : NSObject
+@interface DSPNewsLoader : NSObject
 
 - (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)page;
 

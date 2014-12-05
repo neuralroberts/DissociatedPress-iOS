@@ -6,9 +6,9 @@
 //
 //
 
-#import "NewsLabel.h"
+#import "DSPNewsLabel.h"
 
-@implementation NewsLabel
+@implementation DSPNewsLabel
 
 - (id)init {
     self = [super init];

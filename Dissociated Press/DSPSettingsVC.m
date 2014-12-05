@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
 
-#import "SettingsViewController.h"
+#import "DSPSettingsVC.h"
 
 #define NUM_SECTIONS 1
 
@@ -14,7 +14,7 @@
 
 #define NUM_ROWS_SETTINGS 2
 
-@interface SettingsViewController ()
+@interface DSPSettingsVC ()
 
 @property (nonatomic) NSInteger tokenSize;
 @property (nonatomic, strong) UISlider *tokenSizeSlider;
@@ -25,7 +25,7 @@
 
 @end
 
-@implementation SettingsViewController
+@implementation DSPSettingsVC
 
 - (UISlider *)tokenSizeSlider
 {

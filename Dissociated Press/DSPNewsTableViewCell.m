@@ -6,16 +6,16 @@
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
 
-#import "NewsTableViewCell.h"
+#import "DSPNewsTableViewCell.h"
 
-@interface NewsTableViewCell ()
+@interface DSPNewsTableViewCell ()
 
 @property (strong, nonatomic) NSMutableArray *hasThumbnailConstraints;
 @property (strong, nonatomic) NSMutableArray *noThumbnailConstraints;
 
 @end
 
-@implementation NewsTableViewCell
+@implementation DSPNewsTableViewCell
 
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -44,15 +44,15 @@
     self.thumbnail.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.thumbnail];
     
-    self.titleLabel = [[NewsLabel alloc] init];
+    self.titleLabel = [[DSPNewsLabel alloc] init];
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor whiteColor];
-    self.titleLabel.numberOfLines = 2;
+    self.titleLabel.numberOfLines = 3;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
-    self.dateLabel = [[NewsLabel alloc] init];
+    self.dateLabel = [[DSPNewsLabel alloc] init];
     self.dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.dateLabel.textColor = [UIColor colorWithRed:0.0 green:0.4 blue:0.13 alpha:1.0];
     self.dateLabel.backgroundColor = [UIColor whiteColor];
@@ -60,7 +60,7 @@
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.dateLabel];
     
-    self.contentLabel = [[NewsLabel alloc] init];
+    self.contentLabel = [[DSPNewsLabel alloc] init];
     self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.contentLabel.textColor = [UIColor blackColor];
     self.contentLabel.backgroundColor = [UIColor whiteColor];
@@ -77,7 +77,7 @@
 }
 
 
-- (void)setNewsStory:(NewsStory *)newsStory
+- (void)setNewsStory:(DSPNewsStory *)newsStory
 {
     _newsStory = newsStory;
     

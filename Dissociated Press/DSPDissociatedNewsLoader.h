@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NewsLoader.h"
+#import "DSPNewsLoader.h"
 
-@interface DissociatedNewsLoader : NewsLoader
+@interface DSPDissociatedNewsLoader : DSPNewsLoader
 
 - (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)page;
 

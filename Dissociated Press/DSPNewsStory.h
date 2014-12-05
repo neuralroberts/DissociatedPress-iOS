@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface NewsStory : NSObject
+@interface DSPNewsStory : NSObject
 
 @property (strong, nonatomic) NSString* title;
 @property (strong, nonatomic) NSString* content;

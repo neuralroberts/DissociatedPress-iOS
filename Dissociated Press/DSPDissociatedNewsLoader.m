@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
 
-#import "DissociatedNewsLoader.h"
-#import "NewsStory.h"
+#import "DSPDissociatedNewsLoader.h"
+#import "DSPNewsStory.h"
 
-@interface DissociatedNewsLoader ()
+@interface DSPDissociatedNewsLoader ()
 
 @property (strong, nonatomic) NSMutableArray *titleTokens;
 @property (strong, nonatomic) NSMutableDictionary *titleTokenContext;
@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSNumber *dissociateByWord;
 @end
 
-@implementation DissociatedNewsLoader
+@implementation DSPDissociatedNewsLoader
 
 - (instancetype)init
 {
@@ -52,7 +52,7 @@
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     NSMutableDictionary *contentSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     //tokenize each story and add it to the token lists
-    for (NewsStory *story in results) {
+    for (DSPNewsStory *story in results) {
         NSNumber *storyHash  = [NSNumber numberWithUnsignedInteger:[story hash]];
         
         NSUInteger seedIndex = [self.titleTokens count]; //index of the first token to be added for story.title
@@ -67,7 +67,7 @@
     }
     
     //rewrite each story using the collected tokens
-    for (NewsStory *story in results) {
+    for (DSPNewsStory *story in results) {
         NSNumber *storyHash = [NSNumber numberWithUnsignedInteger:[story hash]];
         NSString *titleSeed = titleSeeds[storyHash];
         story.title = [self reassociateWithSeed:titleSeed tokens:self.titleTokens context:self.titleTokenContext];

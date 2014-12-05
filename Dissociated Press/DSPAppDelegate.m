@@ -6,21 +6,21 @@
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
 
-#import "AppDelegate.h"
-#import "NewsTableViewController.h"
+#import "DSPAppDelegate.h"
+#import "DSPNewsTVC.h"
 
-@interface AppDelegate ()
+@interface DSPAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation DSPAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [self setupUserDefaults];
     
-    NewsTableViewController *newsTVC = [[NewsTableViewController alloc] init];
+    DSPNewsTVC *newsTVC = [[DSPNewsTVC alloc] init];
     UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
     navigationVC.navigationBarHidden = NO;
     navigationVC.navigationBar.barTintColor = [UIColor groupTableViewBackgroundColor];

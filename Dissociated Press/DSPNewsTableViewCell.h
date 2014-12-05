@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NewsStory.h"
-#import "NewsLabel.h"
+#import "DSPNewsStory.h"
+#import "DSPNewsLabel.h"
 
-@interface NewsTableViewCell : UITableViewCell
+@interface DSPNewsTableViewCell : UITableViewCell
 
-@property (strong, nonatomic) NewsStory *newsStory;
-@property (strong, nonatomic) NewsLabel *titleLabel;
-@property (strong, nonatomic) NewsLabel *dateLabel;
-@property (strong, nonatomic) NewsLabel *contentLabel;
+@property (strong, nonatomic) DSPNewsStory *newsStory;
+@property (strong, nonatomic) DSPNewsLabel *titleLabel;
+@property (strong, nonatomic) DSPNewsLabel *dateLabel;
+@property (strong, nonatomic) DSPNewsLabel *contentLabel;
 @property (strong, nonatomic) UIImageView *thumbnail;
 @property (strong, nonatomic) UIView *cardView;
 

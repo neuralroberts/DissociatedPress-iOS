@@ -6,11 +6,11 @@
 //
 //
 
-#import "DPNewsHeaderView.h"
+#import "DSPNewsHeaderView.h"
 
 #define NUM_MAX_SEARCHBARS 3
 
-@implementation DPNewsHeaderView
+@implementation DSPNewsHeaderView
 
 - (instancetype)init
 {
@@ -58,7 +58,7 @@
     return self;
 }
 
-- (void)setTableViewController:(NewsTableViewController<UISearchBarDelegate> *)tableViewController
+- (void)setTableViewController:(DSPNewsTVC<UISearchBarDelegate> *)tableViewController
 {
     for (UISearchBar *searchBar in self.searchBars) {
         searchBar.delegate = tableViewController;

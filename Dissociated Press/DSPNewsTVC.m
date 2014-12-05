@@ -6,29 +6,29 @@
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
 
-#import "NewsTableViewController.h"
-#import "NewsStory.h"
-#import "NewsLoader.h"
-#import "DissociatedNewsLoader.h"
-#import "SettingsViewController.h"
-#import "NewsTableViewCell.h"
-#import "DPNewsHeaderView.h"
+#import "DSPNewsTVC.h"
+#import "DSPNewsStory.h"
+#import "DSPNewsLoader.h"
+#import "DSPDissociatedNewsLoader.h"
+#import "DSPSettingsVC.h"
+#import "DSPNewsTableViewCell.h"
+#import "DSPNewsHeaderView.h"
 
-@interface NewsTableViewController () <UISearchBarDelegate>
+@interface DSPNewsTVC () <UISearchBarDelegate>
 
-@property (strong, nonatomic) DPNewsHeaderView *newsHeaderView;
+@property (strong, nonatomic) DSPNewsHeaderView *newsHeaderView;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 
 @property (strong, nonatomic) NSMutableArray *newsArray;
-@property (strong, nonatomic) DissociatedNewsLoader *newsLoader;
+@property (strong, nonatomic) DSPDissociatedNewsLoader *newsLoader;
 @property (nonatomic) int pageNumber;
 @property (strong, nonatomic) dispatch_queue_t newsLoaderQueue;
 
 @property (strong, nonatomic) NSMutableDictionary *rowHeightCache;
-@property (strong, nonatomic) NewsTableViewCell *sizingCell;
+@property (strong, nonatomic) DSPNewsTableViewCell *sizingCell;
 @end
 
-@implementation NewsTableViewController
+@implementation DSPNewsTVC
 
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
@@ -37,13 +37,13 @@
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    self.newsHeaderView = [[DPNewsHeaderView alloc] init];
+    self.newsHeaderView = [[DSPNewsHeaderView alloc] init];
     self.newsHeaderView.tableViewController = self;
     
     /*
      *create a cell instance to use for autolayout sizing
      */
-    self.sizingCell = [[NewsTableViewCell alloc] initWithReuseIdentifier:nil];
+    self.sizingCell = [[DSPNewsTableViewCell alloc] initWithReuseIdentifier:nil];
     self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.sizingCell.hidden = YES;
     [self.tableView addSubview:self.sizingCell];
@@ -104,7 +104,7 @@
         
         self.rowHeightCache = [NSMutableDictionary dictionary];
         self.pageNumber = 1;
-        DissociatedNewsLoader *newsLoader = [[DissociatedNewsLoader alloc] init];
+        DSPDissociatedNewsLoader *newsLoader = [[DSPDissociatedNewsLoader alloc] init];
         NSArray *newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -124,8 +124,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *cellReuseIdentifier = @"NewsFeedCell";
-    NewsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
-    if (cell == nil) cell = [[NewsTableViewCell alloc] initWithReuseIdentifier:cellReuseIdentifier];
+    DSPNewsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
+    if (cell == nil) cell = [[DSPNewsTableViewCell alloc] initWithReuseIdentifier:cellReuseIdentifier];
     
     cell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
     
@@ -150,7 +150,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
+    DSPNewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
     
     NSNumber *cachedHeight = self.rowHeightCache[story.uniqueIdentifier];
     
@@ -215,7 +215,7 @@
 
 - (void)pressedParametersBarButtonItem
 {
-    SettingsViewController *settingsVC = [[SettingsViewController alloc] init];
+    DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] init];
     [self.navigationController pushViewController:settingsVC animated:YES];
 }
 
