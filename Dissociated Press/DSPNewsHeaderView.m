@@ -23,7 +23,7 @@
     self.layer.shadowOffset = CGSizeMake(0,0);
     self.layer.shadowRadius = 4;
 
-    NSArray *queries = @[@"florida man",@"",@"",@"",@""];
+    NSArray *queries = @[@"florida man",@"fluoridation",@"ctulhu",@"ebola",@"granola"];
     self.searchBars = [NSMutableArray array];
     for (int i = 0; i < NUM_MAX_SEARCHBARS; i++) {
         UISearchBar *searchBar = [[UISearchBar alloc] init];
@@ -69,17 +69,20 @@
 
 - (void)applyConstraints
 {
+    NSLayoutConstraint *constraint;
     for (int numSearchBar = 0; numSearchBar < NUM_MAX_SEARCHBARS; numSearchBar++) {
         UISearchBar *searchBar = self.searchBars[numSearchBar];
         [searchBar setContentCompressionResistancePriority:(UILayoutPriorityDefaultHigh - numSearchBar) forAxis:UILayoutConstraintAxisVertical];
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:searchBar
-                                                         attribute:NSLayoutAttributeLeading
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeLeading
-                                                        multiplier:1
-                                                          constant:110]];
+        constraint = [NSLayoutConstraint constraintWithItem:searchBar
+                                                  attribute:NSLayoutAttributeLeading
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.stepper
+                                                  attribute:NSLayoutAttributeTrailing
+                                                 multiplier:1
+                                                   constant:8];
+        constraint.priority = UILayoutPriorityDefaultHigh;
+        [self addConstraint:constraint];
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self
                                                          attribute:NSLayoutAttributeTrailing
@@ -125,19 +128,14 @@
                                                     multiplier:1
                                                       constant:8]];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.stepper
-                                                     attribute:NSLayoutAttributeLeading
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self attribute:NSLayoutAttributeLeading
-                                                    multiplier:1
-                                                      constant:8]];
-    
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.searchBars[0]
-                                                     attribute:NSLayoutAttributeLeading
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self.stepper
-                                                     attribute:NSLayoutAttributeTrailing
-                                                    multiplier:1
-                                                      constant:8]];
+    constraint = [NSLayoutConstraint constraintWithItem:self.stepper
+                                              attribute:NSLayoutAttributeLeading
+                                              relatedBy:NSLayoutRelationEqual
+                                                 toItem:self attribute:NSLayoutAttributeLeading
+                                             multiplier:1
+                                               constant:8];
+    constraint.priority = UILayoutPriorityDefaultHigh;
+    [self addConstraint:constraint];
+
 }
 @end
