@@ -7,8 +7,8 @@ An iOS app which fetches news using the Google Feed API and generates new, bette
 
 Supports changing of parameters (token size, word/letter based tokenization) and merging of multiple queries to build the source text.
 
-![screenshot1](http://i.imgur.com/qKSeMYj.png)
-![screenshot2](http://i.imgur.com/Wty44IK.png)
+![screenshot1](http://i.imgur.com/fcmDTr0.png)
+![screenshot2](http://i.imgur.com/qKSeMYj.png)
 
 Installation
 ====================
@@ -19,7 +19,7 @@ open DissociatedPress-iOS.xcworkspace
 Requirements
 ====================
 * Xcode
-* iOS 8.0 or higher
+* iOS 7.0 or higher
 
 Credits
 ====================
