@@ -22,7 +22,8 @@
     
     NewsTableViewController *newsTVC = [[NewsTableViewController alloc] init];
     UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
-    
+    navigationVC.navigationBarHidden = NO;
+    navigationVC.navigationBar.barTintColor = [UIColor groupTableViewBackgroundColor];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = navigationVC;
     [self.window makeKeyAndVisible];

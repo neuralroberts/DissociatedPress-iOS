@@ -39,7 +39,6 @@
     
     self.newsHeaderView = [[DPNewsHeaderView alloc] init];
     self.newsHeaderView.tableViewController = self;
-    self.tableView.tableHeaderView = self.newsHeaderView;
     
     /*
      *create a cell instance to use for autolayout sizing
@@ -54,12 +53,14 @@
     
     //create and configure the parameter control
     UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"\u2699" style:UIBarButtonItemStylePlain target:self action:@selector(pressedParametersBarButtonItem)];
+    parametersBarButtonItem.tintColor = [UIColor darkGrayColor];
     UIFont *font = [UIFont fontWithName:@"Helvetica" size:24.0];
     NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, nil];
     [parametersBarButtonItem setTitleTextAttributes:dict forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = parametersBarButtonItem;
     
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
+    refreshButton.tintColor = [UIColor darkGrayColor];
     self.navigationItem.leftBarButtonItem = refreshButton;
     
     self.newsLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
@@ -87,7 +88,7 @@
 
 - (void)loadNews
 {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < self.newsHeaderView.stepper.maximumValue; i++) {
         UISearchBar *searchBar = self.newsHeaderView.searchBars[i];
         self.queries[i] = searchBar.text;
     }
@@ -116,18 +117,6 @@
 }
 
 #pragma mark - UITableViewDataSource
-- (NSArray *)indexPathArrayForRangeFromStart:(NSInteger)start toEnd:(NSInteger)end inSection:(NSInteger)section
-{
-    //returns an array of index paths in the given range
-    //used by the tableview when inserting/deleting rows
-    NSMutableArray *rangeArray = [NSMutableArray array];
-    for (NSInteger i = start; i < end; i++) {
-        NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:section];
-        [rangeArray addObject:path];
-    }
-    return rangeArray;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.newsArray count];
 }
@@ -145,6 +134,19 @@
 
 
 #pragma mark - UITableViewDelegate
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) return self.newsHeaderView;
+    
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) return 44.0 * self.newsHeaderView.stepper.value;
+    return 0;
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -186,6 +188,18 @@
     }
 }
 
+- (NSArray *)indexPathArrayForRangeFromStart:(NSInteger)start toEnd:(NSInteger)end inSection:(NSInteger)section
+{
+    //returns an array of index paths in the given range
+    //used by the tableview when inserting/deleting rows
+    NSMutableArray *rangeArray = [NSMutableArray array];
+    for (NSInteger i = start; i < end; i++) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:section];
+        [rangeArray addObject:path];
+    }
+    return rangeArray;
+}
+
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -196,19 +210,7 @@
 
 - (void)touchedStepper:(UIStepper *)sender
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
-    NSLog(@"%@",self.newsHeaderView.tableViewController);
-    self.newsHeaderView.frame = CGRectMake(self.newsHeaderView.frame.origin.x,
-                                           self.newsHeaderView.frame.origin.y,
-                                           self.newsHeaderView.frame.size.width,
-                                           44.0 * sender.value);
-    
-    self.tableView.tableHeaderView = self.newsHeaderView;
-    
-    [self.newsHeaderView setNeedsUpdateConstraints];
-    [self.newsHeaderView setNeedsLayout];
-    
-    [self loadNews];
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)pressedParametersBarButtonItem

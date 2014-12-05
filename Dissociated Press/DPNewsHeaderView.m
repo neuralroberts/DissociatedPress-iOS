@@ -8,18 +8,26 @@
 
 #import "DPNewsHeaderView.h"
 
+#define NUM_MAX_SEARCHBARS 3
+
 @implementation DPNewsHeaderView
 
 - (instancetype)init
 {
     self = [super init];
     
-    self.backgroundColor = [UIColor colorWithRed:0.788 green:0.788 blue:0.788 alpha:0.9];
     
+    self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    self.layer.shadowOpacity = 0.4;
+    self.layer.shadowColor = [[UIColor darkGrayColor] CGColor];
+    self.layer.shadowOffset = CGSizeMake(0,0);
+    self.layer.shadowRadius = 4;
+
     NSArray *queries = @[@"florida man",@"",@"",@"",@""];
     self.searchBars = [NSMutableArray array];
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < NUM_MAX_SEARCHBARS; i++) {
         UISearchBar *searchBar = [[UISearchBar alloc] init];
+        searchBar.backgroundImage = [[UIImage alloc] init];
         [self addSubview:searchBar];
         [self.searchBars addObject:searchBar];
         [searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
@@ -33,11 +41,13 @@
     
     self.stepper = [[UIStepper alloc] init];
     self.stepper.minimumValue = 1;
-    self.stepper.maximumValue = 5;
+    self.stepper.maximumValue = NUM_MAX_SEARCHBARS;
     self.stepper.value = 1;
     [self addSubview:self.stepper];
     self.stepper.translatesAutoresizingMaskIntoConstraints = NO;
-    
+    self.stepper.backgroundColor = [UIColor whiteColor];
+    self.stepper.tintColor = [UIColor darkGrayColor];
+    self.stepper.layer.cornerRadius = 5.f;
     self.frame = CGRectMake(self.frame.origin.x,
                             self.frame.origin.y,
                             self.frame.size.width,
@@ -59,7 +69,7 @@
 
 - (void)applyConstraints
 {
-    for (int numSearchBar = 0; numSearchBar < 5; numSearchBar++) {
+    for (int numSearchBar = 0; numSearchBar < NUM_MAX_SEARCHBARS; numSearchBar++) {
         UISearchBar *searchBar = self.searchBars[numSearchBar];
         [searchBar setContentCompressionResistancePriority:(UILayoutPriorityDefaultHigh - numSearchBar) forAxis:UILayoutConstraintAxisVertical];
         
@@ -96,7 +106,7 @@
                                                              attribute:NSLayoutAttributeBottom
                                                             multiplier:1
                                                               constant:0]];
-            if (numSearchBar == 4) {//pin the last searchbar to the bottom of the superview
+            if (numSearchBar == NUM_MAX_SEARCHBARS - 1) {//pin the last searchbar to the bottom of the superview
                 [self addConstraint:[NSLayoutConstraint constraintWithItem:self
                                                                  attribute:NSLayoutAttributeBottom
                                                                  relatedBy:NSLayoutRelationEqual
