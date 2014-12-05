@@ -121,31 +121,26 @@
 
 - (void)applyConstraints
 {
-    NSLayoutConstraint *constraint;
     /*
      *constraints between cardView and contentView
      */
     [self.contentView removeConstraints:self.contentView.constraints];
+
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.contentView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:8]];
     
-    constraint = [NSLayoutConstraint constraintWithItem:self.cardView
-                                              attribute:NSLayoutAttributeTop
-                                              relatedBy:NSLayoutRelationEqual
-                                                 toItem:self.contentView
-                                              attribute:NSLayoutAttributeTop
-                                             multiplier:1
-                                               constant:8];
-    constraint.priority = 999;
-    [self.contentView addConstraint:constraint];
-    
-    constraint = [NSLayoutConstraint constraintWithItem:self.contentView
-                                              attribute:NSLayoutAttributeBottom
-                                              relatedBy:NSLayoutRelationEqual
-                                                 toItem:self.cardView
-                                              attribute:NSLayoutAttributeBottom
-                                             multiplier:1
-                                               constant:8];
-    constraint.priority = 1000;
-    [self.contentView addConstraint:constraint];
+    [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8]];
     
     [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                                  attribute:NSLayoutAttributeLeading

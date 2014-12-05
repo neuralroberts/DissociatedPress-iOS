@@ -47,7 +47,7 @@
     self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.sizingCell.hidden = YES;
     [self.tableView addSubview:self.sizingCell];
-    self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 0);
+    self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 300);
     
     self.queries = [NSMutableArray array];
     
