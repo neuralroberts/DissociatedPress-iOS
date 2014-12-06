@@ -24,6 +24,7 @@
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         newsTVC = [[DSPNewsTVC alloc] initWithStyle:UITableViewStylePlain];
     } else {
+        //use grouped style for iphone so that header's don't float
         newsTVC = [[DSPNewsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     }
     

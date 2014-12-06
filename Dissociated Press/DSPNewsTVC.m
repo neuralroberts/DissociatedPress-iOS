@@ -18,7 +18,7 @@
 
 @property (strong, nonatomic) DSPNewsHeaderView *newsHeaderView;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
-
+@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) NSMutableArray *newsArray;
 @property (strong, nonatomic) DSPDissociatedNewsLoader *newsLoader;
 @property (nonatomic) int pageNumber;
@@ -63,6 +63,9 @@
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
     refreshButton.tintColor = [UIColor darkGrayColor];
     self.navigationItem.leftBarButtonItem = refreshButton;
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.tableView addSubview:self.refreshControl];
+    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -96,6 +99,7 @@
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self.refreshControl beginRefreshing];
             NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.newsArray removeAllObjects];
             [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -107,6 +111,7 @@
         NSArray *newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self.refreshControl endRefreshing];
             self.newsLoader = newsLoader;
             self.newsArray = [newNews mutableCopy];
             NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
