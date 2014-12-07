@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */; };
 		43383D741A1155F800D58D0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D731A1155F800D58D0F /* main.m */; };
 		43383D771A1155F800D58D0F /* DSPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D761A1155F800D58D0F /* DSPAppDelegate.m */; };
 		43383D7F1A1155F800D58D0F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43383D7E1A1155F800D58D0F /* Images.xcassets */; };
@@ -35,6 +36,8 @@
 
 /* Begin PBXFileReference section */
 		0016EFF84082FA186E4B9BBE /* Pods-Dissociated Press.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.debug.xcconfig"; sourceTree = "<group>"; };
+		433530E81A3294D10008BC39 /* DSPTopStoriesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopStoriesTVC.h; sourceTree = "<group>"; };
+		433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopStoriesTVC.m; sourceTree = "<group>"; };
 		43383D6E1A1155F800D58D0F /* Dissociated Press.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dissociated Press.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43383D721A1155F800D58D0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		43383D731A1155F800D58D0F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -156,6 +159,8 @@
 			children = (
 				43383D951A11573000D58D0F /* DSPNewsTVC.h */,
 				43383D961A11573000D58D0F /* DSPNewsTVC.m */,
+				433530E81A3294D10008BC39 /* DSPTopStoriesTVC.h */,
+				433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */,
 				43DA00551A142B40008F0C53 /* DSPSettingsVC.h */,
 				43DA00561A142B40008F0C53 /* DSPSettingsVC.m */,
 			);
@@ -334,6 +339,7 @@
 			files = (
 				439A925B1A31070D00A42B5F /* DSPNewsHeaderView.m in Sources */,
 				4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */,
+				433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */,
 				43383D9B1A117C7E00D58D0F /* DSPNewsStory.m in Sources */,
 				43383D971A11573000D58D0F /* DSPNewsTVC.m in Sources */,
 				43383D9E1A117CE400D58D0F /* DSPNewsLoader.m in Sources */,

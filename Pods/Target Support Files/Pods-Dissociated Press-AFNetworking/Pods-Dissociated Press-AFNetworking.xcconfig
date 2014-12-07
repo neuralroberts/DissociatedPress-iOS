@@ -1,0 +1,1 @@
+PODS_DISSOCIATED_PRESS_AFNETWORKING_OTHER_LDFLAGS = -framework "CoreGraphics" -framework "MobileCoreServices" -framework "Security" -framework "SystemConfiguration"

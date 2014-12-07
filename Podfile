@@ -5,6 +5,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'Dissociated Press' do
 pod 'MWFeedParser/NSString+HTML'
+pod 'RedditKit', '~> 1.3.0'
 end
 
 target 'Dissociated PressTests' do

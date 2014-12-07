@@ -8,6 +8,7 @@
 
 #import "DSPAppDelegate.h"
 #import "DSPNewsTVC.h"
+#import "DSPTopStoriesTVC.h"
 
 @interface DSPAppDelegate ()
 
@@ -31,8 +32,16 @@
     UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
     navigationVC.navigationBarHidden = NO;
     navigationVC.navigationBar.barTintColor = [UIColor groupTableViewBackgroundColor];
+    navigationVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
+    
+    DSPTopStoriesTVC *topTVC = [[DSPTopStoriesTVC alloc] init];
+    topTVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemTopRated tag:1];
+    
+    UITabBarController *tabController = [[UITabBarController alloc] init];
+    tabController.viewControllers = @[navigationVC, topTVC];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = navigationVC;
+    self.window.rootViewController = tabController;
     [self.window makeKeyAndVisible];
     
     return YES;
