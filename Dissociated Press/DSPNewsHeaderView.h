@@ -11,7 +11,7 @@
 
 @interface DSPNewsHeaderView : UIView
 
-@property (strong, nonatomic) DSPNewsTVC<UISearchBarDelegate> *tableViewController;
+@property (weak, nonatomic) DSPNewsTVC<UISearchBarDelegate> *tableViewController;
 @property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars
 @property (nonatomic, strong) UIStepper *stepper;
 @end
