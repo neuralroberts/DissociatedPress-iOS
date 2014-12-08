@@ -10,6 +10,10 @@
 #import "DSPNewsStory.h"
 #import "DSPNewsLabel.h"
 
+@protocol DSPNewsCellDelegate <NSObject>
+- (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath*)cellIndex;
+@end
+
 @interface DSPNewsTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) DSPNewsStory *newsStory;
@@ -18,7 +22,11 @@
 @property (strong, nonatomic) DSPNewsLabel *contentLabel;
 @property (strong, nonatomic) UIImageView *thumbnail;
 @property (strong, nonatomic) UIView *cardView;
+@property (weak, nonatomic) id<DSPNewsCellDelegate>delegate;
+@property (strong, nonatomic) NSIndexPath *indexPath;
 
 - (instancetype)initWithReuseIdentifier:(NSString*)reuseIdentifier;
 
 @end
+
+

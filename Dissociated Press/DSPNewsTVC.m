@@ -11,7 +11,6 @@
 #import "DSPNewsLoader.h"
 #import "DSPDissociatedNewsLoader.h"
 #import "DSPSettingsVC.h"
-#import "DSPNewsTableViewCell.h"
 #import "DSPNewsHeaderView.h"
 
 @interface DSPNewsTVC () <UISearchBarDelegate>
@@ -132,6 +131,8 @@
     if (cell == nil) cell = [[DSPNewsTableViewCell alloc] initWithReuseIdentifier:cellReuseIdentifier];
     
     cell.newsStory = [self.newsArray objectAtIndex:indexPath.row];
+    cell.delegate = self;
+    cell.indexPath = indexPath;
     
     return cell;
 }
@@ -217,6 +218,11 @@
 {
     DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] init];
     [self.navigationController pushViewController:settingsVC animated:YES];
+}
+
+- (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex
+{
+    NSLog(@"%@, %ld",NSStringFromSelector(_cmd), (long)cellIndex.row);
 }
 
 @end

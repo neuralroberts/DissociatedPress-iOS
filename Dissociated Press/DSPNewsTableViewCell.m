@@ -12,7 +12,7 @@
 
 @property (strong, nonatomic) NSMutableArray *hasThumbnailConstraints;
 @property (strong, nonatomic) NSMutableArray *noThumbnailConstraints;
-
+@property (strong, nonatomic) UIButton *actionButton;
 @end
 
 @implementation DSPNewsTableViewCell
@@ -68,6 +68,11 @@
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.contentLabel];
     
+    self.actionButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.actionButton addTarget:self action:@selector(didClickActionButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.cardView addSubview:self.actionButton];
+    
     self.hasThumbnailConstraints = [NSMutableArray array];
     self.noThumbnailConstraints = [NSMutableArray array];
     
@@ -76,6 +81,12 @@
     return self;
 }
 
+- (void)didClickActionButton
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didClickActionButtonInCellAtIndexPath:)]) {
+        [self.delegate didClickActionButtonInCellAtIndexPath:self.indexPath];
+    }
+}
 
 - (void)setNewsStory:(DSPNewsStory *)newsStory
 {
@@ -178,13 +189,31 @@
                                                              multiplier:1
                                                                constant:16]];
     
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
+                                                              attribute:NSLayoutAttributeLeading
                                                               relatedBy:NSLayoutRelationEqual
                                                                  toItem:self.contentLabel
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
                                                                constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                              attribute:NSLayoutAttributeTrailing
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.actionButton
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentLabel
+                                                              attribute:NSLayoutAttributeBaseline
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.actionButton
+                                                              attribute:NSLayoutAttributeBaseline
+                                                             multiplier:1
+                                                               constant:0]];
+    
+    [self.actionButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                               attribute:NSLayoutAttributeTop

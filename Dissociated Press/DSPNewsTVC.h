@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DSPNewsTableViewCell.h"
 
-@interface DSPNewsTVC : UITableViewController
+@interface DSPNewsTVC : UITableViewController <DSPNewsCellDelegate>
+
+- (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex;
 
 - (void)touchedStepper:(UIStepper *)sender;
 
