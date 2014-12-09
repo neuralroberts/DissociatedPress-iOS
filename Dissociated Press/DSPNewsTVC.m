@@ -5,6 +5,7 @@
 //  Created by Joseph Wilkerson on 11/10/14.
 //  Copyright (c) 2014 Joseph Wilkerson. All rights reserved.
 //
+#import <RedditKit/RedditKit.h>
 
 #import "DSPNewsTVC.h"
 #import "DSPNewsStory.h"
@@ -12,6 +13,7 @@
 #import "DSPDissociatedNewsLoader.h"
 #import "DSPSettingsVC.h"
 #import "DSPNewsHeaderView.h"
+#import "DSPAuthenticationManager.h"
 
 @interface DSPNewsTVC () <UISearchBarDelegate>
 
@@ -25,6 +27,8 @@
 
 @property (strong, nonatomic) NSMutableDictionary *rowHeightCache;
 @property (strong, nonatomic) DSPNewsTableViewCell *sizingCell;
+
+@property (strong, nonatomic) DSPAuthenticationManager *authenticationManager;
 @end
 
 @implementation DSPNewsTVC
@@ -32,6 +36,7 @@
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -201,7 +206,7 @@
     return rangeArray;
 }
 
-#pragma mark - UISearchBarDelegate
+#pragma mark - Delegate methods
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
@@ -223,6 +228,48 @@
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex
 {
     NSLog(@"%@, %ld",NSStringFromSelector(_cmd), (long)cellIndex.row);
+    DSPNewsStory *story = self.newsArray[cellIndex.row];
+    
+    void(^postStoryAtIndexPath)(DSPNewsStory*, NSIndexPath*) = ^void(DSPNewsStory *story, NSIndexPath *indexPath) {
+        NSLog(@"logged in as %@",[[RKClient sharedClient] currentUser]);
+        //        DSPRedditPostViewController *postViewController = [[DSPRedditPostViewController alloc] init];
+        //        postViewController.story = story;
+        //        [self.navigationController pushViewController:postViewController animated:YES];
+        //        [[RKClient sharedClient] needsCaptchaWithCompletion:^(BOOL result, NSError *error) {
+        //            if (result == YES) {
+        //                NSLog(@"needs captcha");
+        //                [[RKClient sharedClient] newCaptchaIdentifierWithCompletion:^(id object, NSError *error) {
+        //                    NSString *captchaIdentifier = object;
+        //                    [[RKClient sharedClient] imageForCaptchaIdentifier:captchaIdentifier completion:^(id object, NSError *error) {
+        //                        NSLog(@"%@\n, %@",object, error);
+        //                        self.navigationItem.titleView = [[UIImageView alloc] initWithImage:object];
+        //                    }];
+        //                }];
+        //            } else {
+        //                NSLog(@"no captcha needed");
+        //            }
+        //        }];
+        
+        //
+        //        NSURLSessionTask *urlSessionTask = [[RKClient sharedClient] submitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:nil captchaValue:nil completion:^(NSError *error) {
+        //            if (!error) {
+        //                NSLog(@"should post here");
+        //            } else {
+        //                NSLog(@"Failed to post, with error: %@", error);
+        //            }
+        //        }];
+        
+    };
+    
+    if ([[RKClient sharedClient] isSignedIn]) {
+        postStoryAtIndexPath(story, cellIndex);
+    } else {
+        self.authenticationManager = [[DSPAuthenticationManager alloc] init];
+        
+        [self.authenticationManager signInWithCompletion:^{
+            postStoryAtIndexPath(story, cellIndex);
+        }];
+    }
 }
 
 @end
