@@ -28,17 +28,15 @@
         //use grouped style for iphone so that header's don't float
         newsTVC = [[DSPNewsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     }
-    
-    UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
-    navigationVC.navigationBarHidden = NO;
-    navigationVC.navigationBar.barTintColor = [UIColor groupTableViewBackgroundColor];
-    navigationVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
+    newsTVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
+    UINavigationController *newsNavigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
     
     DSPTopStoriesTVC *topTVC = [[DSPTopStoriesTVC alloc] init];
     topTVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemTopRated tag:1];
+    UINavigationController *topNavigationVC = [[UINavigationController alloc] initWithRootViewController:topTVC];
     
     UITabBarController *tabController = [[UITabBarController alloc] init];
-    tabController.viewControllers = @[navigationVC, topTVC];
+    tabController.viewControllers = @[newsNavigationVC, topNavigationVC];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabController;

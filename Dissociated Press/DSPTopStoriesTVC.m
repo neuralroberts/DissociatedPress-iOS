@@ -15,12 +15,16 @@
 @property (strong, nonatomic) NSArray *links;
 @property (strong, nonatomic) dispatch_queue_t linkLoaderQueue;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (nonatomic, getter = isLoadingNewLinks) BOOL loadingNewLinks;
+
 @end
 
 @implementation DSPTopStoriesTVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.navigationItem.title = @"Top Stories";
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -31,9 +35,7 @@
     [self.refreshControl addTarget:self action:@selector(resetLinks) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
-    self.currentPagination = nil;
-    self.links = [NSArray array];
-    [self loadNewLinks];
+    [self resetLinks];
 }
 
 - (void)resetLinks
@@ -52,9 +54,11 @@
 
 - (void)loadNewLinks
 {
+    self.loadingNewLinks = YES;
+    
     __weak __typeof(self)weakSelf = self;
     
-    [[RKClient sharedClient] linksInSubredditWithName:@"circlejerk" pagination:self.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
+    [[RKClient sharedClient] linksInSubredditWithName:@"NewsSalad" pagination:self.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
         if (!error)
         {
             [[weakSelf tableView] beginUpdates];
@@ -66,7 +70,9 @@
             weakSelf.currentPagination = pagination;
             
             [[weakSelf tableView] endUpdates];
-            [self.refreshControl endRefreshing];
+            [weakSelf.refreshControl endRefreshing];
+            
+            weakSelf.loadingNewLinks = NO;
         }
         else
         {
@@ -113,7 +119,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row >= self.links.count - 1) {
+    if (!self.loadingNewLinks && indexPath.row >= self.links.count - 1) {
         [self loadNewLinks];
     }
 }

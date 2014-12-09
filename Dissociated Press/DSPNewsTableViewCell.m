@@ -68,7 +68,8 @@
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.contentLabel];
     
-    self.actionButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.actionButton setImage:[UIImage imageNamed:@"UIButtonBarAction"] forState:UIControlStateNormal];
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.actionButton addTarget:self action:@selector(didClickActionButton) forControlEvents:UIControlEventTouchUpInside];
     [self.cardView addSubview:self.actionButton];
@@ -214,6 +215,9 @@
                                                                constant:0]];
     
     [self.actionButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.actionButton setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.actionButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [self.actionButton setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                               attribute:NSLayoutAttributeTop
