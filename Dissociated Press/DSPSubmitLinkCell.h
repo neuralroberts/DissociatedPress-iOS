@@ -23,7 +23,6 @@
 @property (strong, nonatomic) UIImageView *captchaImageView;
 @property (strong, nonatomic) UITextField *captchaTextField;
 @property (strong, nonatomic) UIButton *captchaRefreshButton;
-@property (strong, nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) UIView *cardView;
 
 - (instancetype)initWithReuseIdentifier:(NSString*)reuseIdentifier;

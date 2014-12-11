@@ -26,28 +26,23 @@
     }
 }
 
-+ (void)signInWithUsername:(NSString *)username password:(NSString *)password completion:(AuthenticationSuccessBlock)completion
++ (void)signInWithUsername:(NSString *)username password:(NSString *)password completion:(AuthenticationSuccessBlock)completion;
 {
+    [[RKClient sharedClient] signOut];
+    
     [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
-        if (error)
-        {
-            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                     message:error.localizedFailureReason
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil];
-            [errorAlertView show];
-        }
-        else
+        if (!error)
         {
             for (NSString *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
                 [SSKeychain deletePasswordForService:@"DissociatedPress" account:account error:nil];
             }
             [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:nil];
+              
         }
-        if (completion)
-        {
-            dispatch_async(dispatch_get_main_queue(), completion);
+        if (completion) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(error);
+            });
         }
     }];
 }

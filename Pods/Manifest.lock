@@ -23,6 +23,7 @@ PODS:
   - Mantle (1.5.1):
     - Mantle/extobjc
   - Mantle/extobjc (1.5.1)
+  - MBProgressHUD (0.9)
   - MWFeedParser/NSString+HTML (1.0.1)
   - RedditKit (1.3.0):
     - AFNetworking (~> 2.3)
@@ -30,6 +31,7 @@ PODS:
   - SSKeychain (1.2.2)
 
 DEPENDENCIES:
+  - MBProgressHUD (~> 0.9)
   - MWFeedParser/NSString+HTML
   - RedditKit (~> 1.3.0)
   - SSKeychain (~> 1.2.2)
@@ -37,6 +39,7 @@ DEPENDENCIES:
 SPEC CHECKSUMS:
   AFNetworking: 0f54cb5d16ce38c1b76948faffb8d5fb705021c7
   Mantle: d7c5ac734579ec751c58fecbf56189853056c58c
+  MBProgressHUD: 2038dbcf3dce73215abed6001657043d53aa79a8
   MWFeedParser: 003cbf5398e99a7f2057fbe9583054fd1b84be72
   RedditKit: 2f315962111262298195fa1b72a3a5ef1480887a
   SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9

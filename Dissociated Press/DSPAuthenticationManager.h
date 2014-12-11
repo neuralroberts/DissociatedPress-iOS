@@ -7,7 +7,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^AuthenticationSuccessBlock)();
+typedef void(^AuthenticationSuccessBlock)(NSError *error);
 
 @interface DSPAuthenticationManager : NSObject
 

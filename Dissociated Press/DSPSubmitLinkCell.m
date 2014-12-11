@@ -7,6 +7,7 @@
 //
 
 #import "DSPSubmitLinkCell.h"
+#import <MBProgressHUD.h>
 
 @interface DSPSubmitLinkCell ()
 
@@ -73,12 +74,6 @@
     [self.captchaRefreshButton addTarget:self action:@selector(didClickCaptchaRefresh) forControlEvents:UIControlEventTouchUpInside];
     [self.cardView addSubview:self.captchaRefreshButton];
     
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    [self.activityIndicator stopAnimating];
-    self.activityIndicator.hidesWhenStopped = YES;
-    self.activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.cardView addSubview: self.activityIndicator];
-    
     self.defaultConstraints = [NSMutableArray array];
     self.captchaConstraints = [NSMutableArray array];
     
@@ -109,7 +104,7 @@
         self.captchaTextField.layer.borderWidth = 0.5f;
         self.captchaTextField.layer.borderColor = [[UIColor redColor]CGColor];
     } else {
-        self.captchaTextField.layer.borderWidth = 0.5;
+        self.captchaTextField.layer.borderWidth = 0.5f;
         self.captchaTextField.layer.borderColor = [[UIColor blackColor] CGColor];
     }
     
@@ -141,9 +136,11 @@
         [self.cardView addConstraints:self.captchaConstraints];
         
         if (self.captchaImageView.image == nil) {
-            [self.activityIndicator startAnimating];
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.cardView animated:YES];
+            hud.color = [UIColor clearColor];
+            hud.activityIndicatorColor = [UIColor blackColor];
         } else {
-            [self.activityIndicator stopAnimating];
+            [MBProgressHUD hideHUDForView:self.cardView animated:YES];
         }
     }
 }
@@ -315,22 +312,6 @@
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self.captchaImageView
                                                                     attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1
-                                                                     constant:0]];
-    
-    [self.captchaConstraints addObject:[NSLayoutConstraint constraintWithItem:self.activityIndicator
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.cardView
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1
-                                                                     constant:0]];
-    
-    [self.captchaConstraints addObject:[NSLayoutConstraint constraintWithItem:self.activityIndicator
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.cardView
-                                                                    attribute:NSLayoutAttributeCenterX
                                                                    multiplier:1
                                                                      constant:0]];
 }

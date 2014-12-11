@@ -60,7 +60,7 @@
 
 - (void)setupReddit
 {
-    [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.333 by neuralroberts"];
+    [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.333 /r/NewsSalad"];
     [DSPAuthenticationManager loginWithKeychainWithCompletion:nil];
 }
 

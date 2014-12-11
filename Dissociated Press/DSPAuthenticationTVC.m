@@ -8,6 +8,7 @@
 
 #import "DSPAuthenticationTVC.h"
 #import <RedditKit/RedditKit.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import "DSPAuthenticationManager.h"
 
 @interface DSPAuthenticationTVC () <UITextFieldDelegate, UIAlertViewDelegate>
@@ -15,7 +16,6 @@
 @property (strong, nonatomic) UITextField *usernameTextField;
 @property (strong, nonatomic) UITextField *passwordTextField;
 @property (strong, nonatomic) UIButton *createAccountButton;
-@property (strong, nonatomic) UIActivityIndicatorView *activityIndicator;
 @end
 
 @implementation DSPAuthenticationTVC
@@ -96,10 +96,6 @@
     self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
     self.navigationItem.rightBarButtonItem = self.doneButton;
     
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.activityIndicator.hidesWhenStopped = YES;
-    [self.view addSubview:self.activityIndicator];
-    
     [self updateDoneButtonStatus];
 }
 
@@ -109,13 +105,29 @@
         return;
     }
     
-    [self.activityIndicator startAnimating];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak __typeof(self)weakSelf = self;
-    [DSPAuthenticationManager signInWithUsername:self.usernameTextField.text password:self.passwordTextField.text completion:^{
-        [weakSelf.activityIndicator stopAnimating];
+    [DSPAuthenticationManager signInWithUsername:self.usernameTextField.text password:self.passwordTextField.text completion:^(NSError *error){
+        [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+        
+        if (error) {
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Login error"
+                                                                     message:error.localizedFailureReason
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+            [errorAlertView show];
+        }
         
         if ([[RKClient sharedClient] isSignedIn]) {
-            [weakSelf.navigationController popViewControllerAnimated:YES];
+            NSString *username = [[[RKClient sharedClient] currentUser] username];
+            NSString *alertMessage = [NSString stringWithFormat:@"Logged in as %@",username];
+            UIAlertView *loginAlertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
+                                                                     message:alertMessage
+                                                                    delegate:self
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+            [loginAlertView show];
         }
     }];
 }
@@ -230,6 +242,10 @@
         if (buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.reddit.com/login"]];
         }
+    }
+    
+    if ([alertView.title isEqualToString:@"Logged in"]) {
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

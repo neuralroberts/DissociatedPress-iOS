@@ -10,7 +10,7 @@
 #import <RedditKit/RedditKit.h>
 #import "DSPAuthenticationTVC.h"
 
-@interface DSPSubmitLinkTVC ()
+@interface DSPSubmitLinkTVC () <UIAlertViewDelegate>
 @property (strong, nonatomic) NSMutableArray *cellsIndex;
 @property (strong, nonatomic) UIBarButtonItem *submitButton;
 @property (strong, nonatomic) NSString *captchaIdentifier;
@@ -28,9 +28,19 @@
     
     [[RKClient sharedClient] submitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:self.captchaIdentifier captchaValue:self.captchaText completion:^(NSError *error) {
         if (!error) {
-            NSLog(@"should post here");
+            UIAlertView *submissionAlertVew = [[UIAlertView alloc] initWithTitle:@"Post successful"
+                                                                         message:nil
+                                                                        delegate:self
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil];
+            [submissionAlertVew show];
         } else {
-            NSLog(@"Failed to post, with error: %@", error);
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                     message:error.localizedFailureReason
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+            [errorAlertView show];
         }
     }];
 }
@@ -178,6 +188,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if ([[RKClient sharedClient] isSignedIn]) {
             cell.subtitleLabel.text = [[[RKClient sharedClient] currentUser] username];
+            cell.subtitleLabel.textColor = [UIColor darkGrayColor];
         } else {
             cell.subtitleLabel.text = @"You must be logged into reddit to post";
             cell.subtitleLabel.textColor = [UIColor redColor];
@@ -231,6 +242,13 @@
 {
     self.captchaText = textfield.text;
     [self updateSubmitButtonStatus];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if ([alertView.title isEqualToString:@"Post successful"]) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 
