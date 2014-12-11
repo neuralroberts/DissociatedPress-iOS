@@ -90,7 +90,8 @@
 - (void)setDelegate:(id<DSPSubmitLinkCellDelegate,UITextFieldDelegate>)delegate
 {
     _delegate = delegate;
-    self.captchaTextField.delegate = delegate;
+    self.captchaTextField.delegate = _delegate;
+    [self.captchaTextField addTarget:self action:@selector(textFieldTextDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
 - (void)didClickCaptchaRefresh
@@ -99,6 +100,21 @@
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(getNewCaptcha)]) {
         [self.delegate getNewCaptcha];
+    }
+}
+
+- (void)textFieldTextDidChange:(UITextField *)textfield
+{
+    if ([self.captchaTextField.text length] <= 0) {
+        self.captchaTextField.layer.borderWidth = 0.5f;
+        self.captchaTextField.layer.borderColor = [[UIColor redColor]CGColor];
+    } else {
+        self.captchaTextField.layer.borderWidth = 0.5;
+        self.captchaTextField.layer.borderColor = [[UIColor blackColor] CGColor];
+    }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(textFieldTextDidChange:)]) {
+        [self.delegate textFieldTextDidChange:textfield];
     }
 }
 

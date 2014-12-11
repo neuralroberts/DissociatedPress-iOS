@@ -9,6 +9,8 @@
 #import "DSPAppDelegate.h"
 #import "DSPNewsTVC.h"
 #import "DSPTopStoriesTVC.h"
+#import "DSPAuthenticationTVC.h"
+#import <RedditKit/RedditKit.h>
 
 @interface DSPAppDelegate ()
 
@@ -20,6 +22,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [self setupUserDefaults];
+    [self setupReddit];
     
     DSPNewsTVC *newsTVC;
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
@@ -53,6 +56,12 @@
         [defaults setBool:NO forKey:@"dissociateByWordParameter"];
     }
     [defaults setBool:YES forKey:@"hasLaunched"];
+}
+
+- (void)setupReddit
+{
+    [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.333 by neuralroberts"];
+    [DSPAuthenticationTVC loginWithKeychainWithCompletion:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

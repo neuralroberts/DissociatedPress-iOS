@@ -14,6 +14,7 @@
 @interface DSPSubmitLinkTVC : UITableViewController <UITextFieldDelegate, DSPSubmitLinkCellDelegate>
 
 - (void)getNewCaptcha;
+- (void)textFieldTextDidChange:(UITextField *)textfield;
 - (BOOL)textFieldShouldReturn:(UITextField *)textField;
 
 @property (strong, nonatomic) DSPNewsStory *story;

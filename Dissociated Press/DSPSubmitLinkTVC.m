@@ -8,6 +8,7 @@
 
 #import "DSPSubmitLinkTVC.h"
 #import <RedditKit/RedditKit.h>
+#import "DSPAuthenticationTVC.h"
 
 @interface DSPSubmitLinkTVC ()
 @property (strong, nonatomic) NSMutableArray *cellsIndex;
@@ -23,46 +24,15 @@
 
 - (void)submitPost
 {
-    //    void(^postStoryAtIndexPath)(DSPNewsStory*, NSIndexPath*) = ^void(DSPNewsStory *story, NSIndexPath *indexPath) {
-    //        NSLog(@"logged in as %@",[[RKClient sharedClient] currentUser]);
-    //        //        DSPRedditPostViewController *postViewController = [[DSPRedditPostViewController alloc] init];
-    //        //        postViewController.story = story;
-    //        //        [self.navigationController pushViewController:postViewController animated:YES];
-    //        //        [[RKClient sharedClient] needsCaptchaWithCompletion:^(BOOL result, NSError *error) {
-    //        //            if (result == YES) {
-    //        //                NSLog(@"needs captcha");
-    //        //                [[RKClient sharedClient] newCaptchaIdentifierWithCompletion:^(id object, NSError *error) {
-    //        //                    NSString *captchaIdentifier = object;
-    //        //                    [[RKClient sharedClient] imageForCaptchaIdentifier:captchaIdentifier completion:^(id object, NSError *error) {
-    //        //                        NSLog(@"%@\n, %@",object, error);
-    //        //                        self.navigationItem.titleView = [[UIImageView alloc] initWithImage:object];
-    //        //                    }];
-    //        //                }];
-    //        //            } else {
-    //        //                NSLog(@"no captcha needed");
-    //        //            }
-    //        //        }];
-    //
-    //        //
-    //        //        NSURLSessionTask *urlSessionTask = [[RKClient sharedClient] submitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:nil captchaValue:nil completion:^(NSError *error) {
-    //        //            if (!error) {
-    //        //                NSLog(@"should post here");
-    //        //            } else {
-    //        //                NSLog(@"Failed to post, with error: %@", error);
-    //        //            }
-    //        //        }];
-    //
-    //    };
-    //
-    //    if ([[RKClient sharedClient] isSignedIn]) {
-    //        postStoryAtIndexPath(story, cellIndex);
-    //    } else {
-    //        self.authenticationManager = [[DSPAuthenticationManager alloc] init];
-    //
-    //        [self.authenticationManager signInWithCompletion:^{
-    //            postStoryAtIndexPath(story, cellIndex);
-    //        }];
-    //    }
+    DSPNewsStory *story = self.story;
+    
+    [[RKClient sharedClient] submitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:self.captchaIdentifier captchaValue:self.captchaText completion:^(NSError *error) {
+        if (!error) {
+            NSLog(@"should post here");
+        } else {
+            NSLog(@"Failed to post, with error: %@", error);
+        }
+    }];
 }
 
 - (void)viewDidLoad {
@@ -72,6 +42,11 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     self.navigationItem.title = @"Submit to reddit";
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
+                                                                 style:UIBarButtonItemStyleBordered
+                                                                target:nil
+                                                                action:nil];
+    [self.navigationItem setBackBarButtonItem:backItem];
     
     self.sizingCell = [[DSPSubmitLinkCell alloc] initWithReuseIdentifier:nil];
     self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -79,7 +54,7 @@
     [self.tableView addSubview:self.sizingCell];
     self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 300);
     
-    self.submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Submit" style:UIBarButtonItemStyleBordered target:self action:nil];
+    self.submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Submit" style:UIBarButtonItemStyleBordered target:self action:@selector(submitPost)];
     self.submitButton.enabled = NO;
     self.navigationItem.rightBarButtonItem = self.submitButton;
     
@@ -90,11 +65,8 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if ([[RKClient sharedClient] isSignedIn]) {
-        self.submitButton.enabled = YES;
-    } else {
-        self.submitButton.enabled = NO;
-    }
+    [self.tableView reloadData];
+    [self updateSubmitButtonStatus];
 }
 
 - (void)updateSubmitButtonStatus
@@ -118,7 +90,7 @@
 - (void)getNewCaptcha
 {
     self.captchaText = @"";
-
+    
     for (NSString *cellType in self.cellsIndex) {
         if ([cellType isEqualToString:@"captchaCell"]) {
             NSArray *indexPathsToDelete = [self indexPathArrayForRangeFromStart:self.cellsIndex.count-1 toEnd:self.cellsIndex.count inSection:0];
@@ -132,7 +104,6 @@
     [[RKClient sharedClient] needsCaptchaWithCompletion:^(BOOL result, NSError *error) {
         if (result == YES) {
             self.captchaNeeded = YES;
-            NSLog(@"needs captcha");
             self.captchaImage = nil;
             NSArray *indexPathsToInsert = [self indexPathArrayForRangeFromStart:self.cellsIndex.count toEnd:self.cellsIndex.count+1 inSection:0];
             [self.tableView beginUpdates];
@@ -143,7 +114,6 @@
             [[RKClient sharedClient] newCaptchaIdentifierWithCompletion:^(id object, NSError *error) {
                 self.captchaIdentifier = object;
                 [[RKClient sharedClient] imageForCaptchaIdentifier:self.captchaIdentifier completion:^(id object, NSError *error) {
-                    NSLog(@"%@\n, %@",object, error);
                     self.captchaImage = object;
                     NSArray *indexPathsToReload = [self indexPathArrayForRangeFromStart:self.cellsIndex.count-1 toEnd:self.cellsIndex.count inSection:0];
                     [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -153,7 +123,6 @@
             self.captchaNeeded = NO;
             self.captchaIdentifier = nil;
             self.captchaImage = nil;
-            NSLog(@"no captcha needed");
         }
     }];
     
@@ -208,7 +177,7 @@
         cell.titleLabel.text = @"Username";
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if ([[RKClient sharedClient] isSignedIn]) {
-            cell.detailTextLabel.text = [[[RKClient sharedClient] currentUser] username];
+            cell.subtitleLabel.text = [[[RKClient sharedClient] currentUser] username];
         } else {
             cell.subtitleLabel.text = @"You must be logged into reddit to post";
             cell.subtitleLabel.textColor = [UIColor redColor];
@@ -235,16 +204,33 @@
     
     return calculatedHeight;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *cellType = self.cellsIndex[indexPath.row];
+    
+    if ([cellType isEqualToString:@"userCell"]) {
+        DSPAuthenticationTVC *authenticationTVC = [[DSPAuthenticationTVC alloc] init];
+        [self.navigationController pushViewController:authenticationTVC animated:YES];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     [textField resignFirstResponder];
     self.captchaText = textField.text;
     [self updateSubmitButtonStatus];
     
     return YES;
+}
+
+- (void)textFieldTextDidChange:(UITextField *)textfield
+{
+    self.captchaText = textfield.text;
+    [self updateSubmitButtonStatus];
 }
 
 

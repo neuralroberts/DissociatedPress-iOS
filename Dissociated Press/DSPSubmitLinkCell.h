@@ -11,6 +11,7 @@
 
 @protocol DSPSubmitLinkCellDelegate <NSObject>
 - (void)getNewCaptcha;
+- (void)textFieldTextDidChange:(UITextField *)textfield;
 @end
 
 @interface DSPSubmitLinkCell : UITableViewCell
