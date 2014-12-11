@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DSPNewsLabel : UILabel
+@interface DSPLabel : UILabel
 
 @end

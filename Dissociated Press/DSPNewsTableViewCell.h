@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DSPNewsStory.h"
-#import "DSPNewsLabel.h"
+#import "DSPLabel.h"
 
 @protocol DSPNewsCellDelegate <NSObject>
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath*)cellIndex;
@@ -17,9 +17,9 @@
 @interface DSPNewsTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) DSPNewsStory *newsStory;
-@property (strong, nonatomic) DSPNewsLabel *titleLabel;
-@property (strong, nonatomic) DSPNewsLabel *dateLabel;
-@property (strong, nonatomic) DSPNewsLabel *contentLabel;
+@property (strong, nonatomic) DSPLabel *titleLabel;
+@property (strong, nonatomic) DSPLabel *dateLabel;
+@property (strong, nonatomic) DSPLabel *contentLabel;
 @property (strong, nonatomic) UIImageView *thumbnail;
 @property (strong, nonatomic) UIView *cardView;
 @property (weak, nonatomic) id<DSPNewsCellDelegate>delegate;

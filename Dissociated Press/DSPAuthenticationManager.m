@@ -31,25 +31,7 @@
     {
         [[self signInAlertView] show];
     } else {
-        __weak __typeof(self)weakSelf = self;
-        [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
-            if (error)
-            {
-                UIAlertView *errorAlertView = [weakSelf signInAlertView];
-                errorAlertView.message = error.localizedFailureReason;
-                
-                [errorAlertView show];
-            }
-            else
-            {
-                [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:nil];
-                if (self.authenticationSuccessBlock)
-                {
-                    dispatch_async(dispatch_get_main_queue(), self.authenticationSuccessBlock);
-                }
-            }
-        }];
-        
+        [self signInWithUsername:username password:password];
     }
 }
 
@@ -80,26 +62,30 @@
         {
             return;
         }
-        
-        __weak __typeof(self)weakSelf = self;
-        [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
-            if (error)
-            {
-                UIAlertView *errorAlertView = [weakSelf signInAlertView];
-                errorAlertView.message = error.localizedFailureReason;
-                
-                [errorAlertView show];
-            } 
-            else
-            {
-                [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:nil];
-                if (self.authenticationSuccessBlock)
-                {
-                    dispatch_async(dispatch_get_main_queue(), self.authenticationSuccessBlock);
-                }
-            }
-        }];
+        [self signInWithUsername:username password:password];
     }
+}
+
+- (void)signInWithUsername:(NSString *)username password:(NSString *)password
+{
+    __weak __typeof(self)weakSelf = self;
+    [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
+        if (error)
+        {
+            UIAlertView *errorAlertView = [weakSelf signInAlertView];
+            errorAlertView.message = error.localizedFailureReason;
+            
+            [errorAlertView show];
+        }
+        else
+        {
+            [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:nil];
+            if (self.authenticationSuccessBlock)
+            {
+                dispatch_async(dispatch_get_main_queue(), self.authenticationSuccessBlock);
+            }
+        }
+    }];
 }
 
 @end

@@ -44,7 +44,7 @@
     self.thumbnail.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.thumbnail];
     
-    self.titleLabel = [[DSPNewsLabel alloc] init];
+    self.titleLabel = [[DSPLabel alloc] init];
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor whiteColor];
@@ -52,7 +52,7 @@
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
-    self.dateLabel = [[DSPNewsLabel alloc] init];
+    self.dateLabel = [[DSPLabel alloc] init];
     self.dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.dateLabel.textColor = [UIColor colorWithRed:0.0 green:0.4 blue:0.13 alpha:1.0];
     self.dateLabel.backgroundColor = [UIColor whiteColor];
@@ -60,7 +60,7 @@
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.dateLabel];
     
-    self.contentLabel = [[DSPNewsLabel alloc] init];
+    self.contentLabel = [[DSPLabel alloc] init];
     self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.contentLabel.textColor = [UIColor blackColor];
     self.contentLabel.backgroundColor = [UIColor whiteColor];
