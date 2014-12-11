@@ -9,8 +9,12 @@
 
 typedef void(^AuthenticationSuccessBlock)();
 
-@interface DSPAuthenticationManager : NSObject <UIAlertViewDelegate>
+@interface DSPAuthenticationManager : NSObject
 
-- (void)signInWithCompletion:(AuthenticationSuccessBlock)completion;
++ (void)loginWithKeychainWithCompletion:(AuthenticationSuccessBlock)completion;
++ (void)signInWithUsername:(NSString *)username password:(NSString *)password completion:(AuthenticationSuccessBlock)completion;
+
++ (NSString *)passwordForDissociatedPress;
++ (NSString *)usernameForDissociatedPress;
 
 @end

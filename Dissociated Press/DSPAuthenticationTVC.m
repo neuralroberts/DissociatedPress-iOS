@@ -8,7 +8,7 @@
 
 #import "DSPAuthenticationTVC.h"
 #import <RedditKit/RedditKit.h>
-#import <SSKeychain/SSKeychain.h>
+#import "DSPAuthenticationManager.h"
 
 @interface DSPAuthenticationTVC () <UITextFieldDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) UIBarButtonItem *doneButton;
@@ -20,45 +20,7 @@
 
 @implementation DSPAuthenticationTVC
 
-+ (void)loginWithKeychainWithCompletion:(LoginSuccessBlock)completion
-{
-    NSDictionary *account = [[SSKeychain accountsForService:@"DissociatedPress"] firstObject];
-    NSString *username = account[@"acct"];
-    NSString *password = [SSKeychain passwordForService:@"DissociatedPress" account:username error:nil];
-    [DSPAuthenticationTVC signInWithUsername:username password:password completion:completion];
-}
 
-+ (void)signInWithUsername:(NSString *)username password:(NSString *)password completion:(LoginSuccessBlock)completion
-{
-    [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
-        if (error)
-        {
-            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                     message:error.localizedFailureReason
-                                                                    delegate:nil
-                                                           cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil];
-            [errorAlertView show];
-        }
-        else
-        {
-            for (NSString *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
-                [SSKeychain deletePasswordForService:@"DissociatedPress" account:account error:nil];
-            }
-            [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:nil];
-        }
-        if (completion)
-        {
-            dispatch_async(dispatch_get_main_queue(), completion);
-        }
-    }];
-}
-
-- (NSDictionary *)account
-{
-    NSDictionary *account = [[SSKeychain accountsForService:@"DissociatedPress"] firstObject];
-    return account;
-}
 
 - (UITextField *)usernameTextField
 {
@@ -74,7 +36,7 @@
         usernameTextField.borderStyle = UITextBorderStyleBezel;
         [usernameTextField addTarget:self action:@selector(updateDoneButtonStatus) forControlEvents:UIControlEventEditingChanged];
         
-        NSString *username = [self account][@"acct"];
+        NSString *username = [DSPAuthenticationManager usernameForDissociatedPress];
         if ([username length] > 0) {
             usernameTextField.text = username;
         }
@@ -99,7 +61,7 @@
         passwordTextField.borderStyle = UITextBorderStyleBezel;
         [passwordTextField addTarget:self action:@selector(updateDoneButtonStatus) forControlEvents:UIControlEventEditingChanged];
         
-        NSString *password = [SSKeychain passwordForService:@"DissociatedPress" account:([self account][@"acct"]) error:nil];
+        NSString *password = [DSPAuthenticationManager passwordForDissociatedPress];
         if ([password length] > 0) {
             passwordTextField.text = password;
         }
@@ -149,7 +111,7 @@
     
     [self.activityIndicator startAnimating];
     __weak __typeof(self)weakSelf = self;
-    [DSPAuthenticationTVC signInWithUsername:self.usernameTextField.text password:self.passwordTextField.text completion:^{
+    [DSPAuthenticationManager signInWithUsername:self.usernameTextField.text password:self.passwordTextField.text completion:^{
         [weakSelf.activityIndicator stopAnimating];
         
         if ([[RKClient sharedClient] isSignedIn]) {
@@ -220,8 +182,6 @@
 
 - (void)pinView:(UIView *)view toSuperview:(UIView *)superview
 {
-    //    [superview removeConstraints:superview.constraints];
-    
     [superview addConstraint:[NSLayoutConstraint constraintWithItem:view
                                                           attribute:NSLayoutAttributeLeading
                                                           relatedBy:NSLayoutRelationEqual

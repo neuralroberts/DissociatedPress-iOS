@@ -12,8 +12,4 @@ typedef void(^LoginSuccessBlock)();
 
 @interface DSPAuthenticationTVC : UITableViewController
 
-
-+ (void)loginWithKeychainWithCompletion:(LoginSuccessBlock)completion;
-+ (void)signInWithUsername:(NSString *)username password:(NSString *)password completion:(LoginSuccessBlock)completion;
-
 @end

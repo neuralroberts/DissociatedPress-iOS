@@ -9,7 +9,7 @@
 #import "DSPAppDelegate.h"
 #import "DSPNewsTVC.h"
 #import "DSPTopStoriesTVC.h"
-#import "DSPAuthenticationTVC.h"
+#import "DSPAuthenticationManager.h"
 #import <RedditKit/RedditKit.h>
 
 @interface DSPAppDelegate ()
@@ -61,7 +61,7 @@
 - (void)setupReddit
 {
     [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.333 by neuralroberts"];
-    [DSPAuthenticationTVC loginWithKeychainWithCompletion:nil];
+    [DSPAuthenticationManager loginWithKeychainWithCompletion:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
