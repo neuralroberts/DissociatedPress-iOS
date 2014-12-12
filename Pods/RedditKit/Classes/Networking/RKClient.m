@@ -44,7 +44,7 @@ NSString * const RKClientErrorDomain = @"RKClientErrorDomain";
         sharedRKClient = [[RKClient alloc] init];
     });
     
-    NSLog(@"\nused: %lu, \nremaining: %lu, \ntime to reset:%f\n\n",(unsigned long)[sharedRKClient rateLimitedRequestsUsed], (unsigned long)[sharedRKClient rateLimitedRequestsRemaining], [sharedRKClient timeUntilRateLimitReset]);
+//    NSLog(@"\nused: %lu, \nremaining: %lu, \ntime to reset:%f\n\n",(unsigned long)[sharedRKClient rateLimitedRequestsUsed], (unsigned long)[sharedRKClient rateLimitedRequestsRemaining], [sharedRKClient timeUntilRateLimitReset]);
     return sharedRKClient;
 }
 

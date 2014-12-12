@@ -54,6 +54,7 @@
     if (![defaults boolForKey:@"hasLaunched"]) {
         [defaults setInteger:3 forKey:@"tokenSizeParameter"];
         [defaults setBool:NO forKey:@"dissociateByWordParameter"];
+        [defaults setBool:YES forKey:@"includeComment"];
     }
     [defaults setBool:YES forKey:@"hasLaunched"];
 }

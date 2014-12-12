@@ -16,6 +16,8 @@
 - (void)getNewCaptcha;
 - (void)textFieldTextDidChange:(UITextField *)textfield;
 - (BOOL)textFieldShouldReturn:(UITextField *)textField;
+- (void)commentSwitchDidChange:(UISwitch *)commentSwitch;
+
 
 @property (strong, nonatomic) DSPNewsStory *story;
 @property (nonatomic) NSUInteger tokenLength;

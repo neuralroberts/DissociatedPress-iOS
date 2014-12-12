@@ -57,6 +57,10 @@
     self.subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.subtitleLabel];
     
+    self.commentSwitch = [[UISwitch alloc] init];
+    self.commentSwitch.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.cardView addSubview:self.commentSwitch];
+    
     self.captchaImageView = [[UIImageView alloc] init];
     self.captchaImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.captchaImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -87,7 +91,9 @@
     _delegate = delegate;
     self.captchaTextField.delegate = _delegate;
     [self.captchaTextField addTarget:self action:@selector(textFieldTextDidChange:) forControlEvents:UIControlEventEditingChanged];
+    [self.commentSwitch addTarget:_delegate action:@selector(commentSwitchDidChange:) forControlEvents:UIControlEventValueChanged];
 }
+
 
 - (void)didClickCaptchaRefresh
 {
@@ -123,12 +129,22 @@
         self.captchaImageView.hidden = YES;
         self.captchaTextField.hidden = YES;
         self.captchaRefreshButton.hidden = YES;
+        
+        if (self.isCommentCell) {
+            self.commentSwitch.hidden = NO;
+            BOOL commentsOn = [[NSUserDefaults standardUserDefaults] boolForKey:@"includeComment"];
+            [self.commentSwitch setOn:commentsOn animated:NO];
+        } else {
+            self.commentSwitch.hidden = YES;
+        }
+        
         [self.cardView removeConstraints:self.captchaConstraints];
         [self.cardView addConstraints:self.defaultConstraints];
         
     } else if (self.isCaptchaCell) {
         self.titleLabel.hidden = YES;
         self.subtitleLabel.hidden = YES;
+        self.commentSwitch.hidden = YES;
         self.captchaImageView.hidden = NO;
         self.captchaTextField.hidden = NO;
         self.captchaRefreshButton.hidden = NO;
@@ -200,13 +216,29 @@
                                                                    multiplier:1
                                                                      constant:8]];
     
-    [self.defaultConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                                    attribute:NSLayoutAttributeTrailing
+    [self.defaultConstraints addObject:[NSLayoutConstraint constraintWithItem:self.commentSwitch
+                                                                    attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self.titleLabel
                                                                     attribute:NSLayoutAttributeTrailing
                                                                    multiplier:1
+                                                                     constant:16]];
+    
+    [self.defaultConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                    relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                       toItem:self.commentSwitch
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1
                                                                      constant:8]];
+    
+    [self.defaultConstraints addObject:[NSLayoutConstraint constraintWithItem:self.commentSwitch
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self.titleLabel
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                   multiplier:1
+                                                                     constant:0]];
     
     [self.defaultConstraints addObject:[NSLayoutConstraint constraintWithItem:self.subtitleLabel
                                                                     attribute:NSLayoutAttributeTop

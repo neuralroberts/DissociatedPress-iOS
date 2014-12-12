@@ -18,6 +18,7 @@
 @property (strong, nonatomic) UIImage *captchaImage;
 @property (strong, nonatomic) NSString *captchaText;
 @property (nonatomic, assign) BOOL captchaNeeded;
+@property (nonatomic, assign) BOOL includeComment;
 @property (strong, nonatomic) DSPSubmitLinkCell *sizingCell;
 @end
 
@@ -25,12 +26,9 @@
 
 - (void)submitPost
 {
-    NSLog(@"%@",[self commentString]);
-    
     DSPNewsStory *story = self.story;
     
     [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:self.captchaIdentifier captchaValue:self.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
-        NSLog(@"%@",responseObject);
         if (!error) {
             UIAlertView *submissionAlertVew = [[UIAlertView alloc] initWithTitle:@"Post successful"
                                                                          message:nil
@@ -39,12 +37,15 @@
                                                                otherButtonTitles:nil];
             [submissionAlertVew show];
             
-            if (YES) {
-                //                [[RKClient sharedClient] submitComment:[self commentString] onThingWithFullName:story.title completion:^(NSError *error) {
-                //                    if (error) {
-                //                        NSLog(@"%@",error);
-                //                    }
-                //                }];
+            if (self.includeComment) {
+                NSString *submittedLinkName = [responseObject  valueForKeyPath:@"json.data.name"];
+                [[RKClient sharedClient] submitComment:[self commentString] onThingWithFullName:submittedLinkName completion:^(NSError *error) {
+                    if (error) {
+                        NSLog(@"%@",error);
+                    } else {
+                        NSLog(@"submitted comment");
+                    }
+                }];
             }
         } else {
             UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:nil
@@ -55,7 +56,6 @@
             [errorAlertView show];
         }
     }];
-
 }
 
 - (void)updateSubmitButtonStatus
@@ -102,6 +102,8 @@
     
     self.cellsIndex = [NSMutableArray arrayWithObjects:@"titleCell", @"linkCell", @"userCell", @"commentCell", nil];
     
+    self.includeComment = [[NSUserDefaults standardUserDefaults] boolForKey:@"includeComment"];
+    
     [self getNewCaptcha];
 }
 
@@ -115,6 +117,7 @@
 {
     self.captchaText = @"";
     
+    //if there is already a captcha cell, remove it
     for (NSString *cellType in self.cellsIndex) {
         if ([cellType isEqualToString:@"captchaCell"]) {
             NSArray *indexPathsToDelete = [self indexPathArrayForRangeFromStart:self.cellsIndex.count-1 toEnd:self.cellsIndex.count inSection:0];
@@ -125,6 +128,8 @@
         }
     }
     
+    //check whether captcha is needed
+    //if so, grab one and add it to the table
     [[RKClient sharedClient] needsCaptchaWithCompletion:^(BOOL result, NSError *error) {
         if (result == YES) {
             self.captchaNeeded = YES;
@@ -157,7 +162,8 @@
 {
     NSMutableString *commentString = [[NSMutableString alloc] initWithString:@""];
     
-    [commentString appendString:[NSString stringWithFormat:@"**%@**  \n\n",self.story.title]];
+    NSString *title = [self.story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    [commentString appendString:[NSString stringWithFormat:@"**%@**  \n\n",title]];
     [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.content]];
     [commentString appendString:@"&nbsp;\n\n"];
     [commentString appendString:[NSString stringWithFormat:@"*[seed story](%@)*  \n",[self.story.url absoluteString]]];
@@ -209,6 +215,8 @@
 - (DSPSubmitLinkCell *)configureCell:(DSPSubmitLinkCell *)cell ForCellType:(NSString *)cellType
 {
     cell.isCaptchaCell = NO;
+    cell.isCommentCell = NO;
+    cell.subtitleLabel.numberOfLines = 2;
     if ([cellType isEqualToString:@"titleCell"]) {
         cell.titleLabel.text = @"Title";
         cell.subtitleLabel.text = self.story.title;
@@ -225,7 +233,17 @@
             cell.subtitleLabel.text = @"You must be logged into reddit to post";
             cell.subtitleLabel.textColor = [UIColor redColor];
         }
-    } else if ([cellType isEqualToString:@"captchaCell"]) {
+    } else if ([cellType isEqualToString:@"commentCell"]) {
+        cell.isCommentCell = YES;
+        cell.delegate = self;
+        cell.subtitleLabel.numberOfLines = 0;
+        cell.titleLabel.text = @"Include comment?";
+        if (self.includeComment) {
+            cell.subtitleLabel.text = [self commentString];
+        } else {
+            cell.subtitleLabel.text = nil;
+        }
+    }else if ([cellType isEqualToString:@"captchaCell"]) {
         cell.delegate = self;
         cell.captchaImageView.image = self.captchaImage;
         cell.isCaptchaCell = YES;
@@ -281,6 +299,17 @@
     if ([alertView.title isEqualToString:@"Post successful"]) {
         [self.navigationController popViewControllerAnimated:YES];
     }
+}
+
+- (void)commentSwitchDidChange:(UISwitch *)commentSwitch
+{
+    self.includeComment = commentSwitch.on;
+
+    [[NSUserDefaults standardUserDefaults] setBool:self.includeComment forKey:@"includeComment"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSArray *indexesToReload = [self indexPathArrayForRangeFromStart:3 toEnd:4 inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:indexesToReload withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 

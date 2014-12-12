@@ -111,7 +111,7 @@
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifier];
     
     RKLink *link = self.links[indexPath.row];
-    
+
     cell.textLabel.text = link.title;
     
     return cell;
