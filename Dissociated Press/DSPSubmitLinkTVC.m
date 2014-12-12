@@ -8,6 +8,7 @@
 
 #import "DSPSubmitLinkTVC.h"
 #import <RedditKit/RedditKit.h>
+#import "RKClient+DSP.h"
 #import "DSPAuthenticationTVC.h"
 
 @interface DSPSubmitLinkTVC () <UIAlertViewDelegate>
@@ -24,9 +25,12 @@
 
 - (void)submitPost
 {
+    NSLog(@"%@",[self commentString]);
+    
     DSPNewsStory *story = self.story;
     
-    [[RKClient sharedClient] submitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:self.captchaIdentifier captchaValue:self.captchaText completion:^(NSError *error) {
+    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:self.captchaIdentifier captchaValue:self.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
+        NSLog(@"%@",responseObject);
         if (!error) {
             UIAlertView *submissionAlertVew = [[UIAlertView alloc] initWithTitle:@"Post successful"
                                                                          message:nil
@@ -34,6 +38,14 @@
                                                                cancelButtonTitle:@"OK"
                                                                otherButtonTitles:nil];
             [submissionAlertVew show];
+            
+            if (YES) {
+                //                [[RKClient sharedClient] submitComment:[self commentString] onThingWithFullName:story.title completion:^(NSError *error) {
+                //                    if (error) {
+                //                        NSLog(@"%@",error);
+                //                    }
+                //                }];
+            }
         } else {
             UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:nil
                                                                      message:error.localizedFailureReason
@@ -43,7 +55,27 @@
             [errorAlertView show];
         }
     }];
+
 }
+
+- (void)updateSubmitButtonStatus
+{
+    if ([[RKClient sharedClient] isSignedIn]) {
+        if (self.captchaNeeded == YES) {
+            
+            if ([self.captchaText length] > 0) {
+                self.submitButton.enabled = YES;
+            } else {
+                self.submitButton.enabled = NO;
+            }
+        } else {
+            self.submitButton.enabled = YES;
+        }
+    } else {
+        self.submitButton.enabled = NO;
+    }
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -68,7 +100,7 @@
     self.submitButton.enabled = NO;
     self.navigationItem.rightBarButtonItem = self.submitButton;
     
-    self.cellsIndex = [NSMutableArray arrayWithObjects:@"titleCell", @"linkCell", @"userCell", nil];
+    self.cellsIndex = [NSMutableArray arrayWithObjects:@"titleCell", @"linkCell", @"userCell", @"commentCell", nil];
     
     [self getNewCaptcha];
 }
@@ -77,24 +109,6 @@
 {
     [self.tableView reloadData];
     [self updateSubmitButtonStatus];
-}
-
-- (void)updateSubmitButtonStatus
-{
-    if ([[RKClient sharedClient] isSignedIn]) {
-        if (self.captchaNeeded == YES) {
-            
-            if ([self.captchaText length] > 0) {
-                self.submitButton.enabled = YES;
-            } else {
-                self.submitButton.enabled = NO;
-            }
-        } else {
-            self.submitButton.enabled = YES;
-        }
-    } else {
-        self.submitButton.enabled = NO;
-    }
 }
 
 - (void)getNewCaptcha
@@ -137,6 +151,24 @@
     }];
     
     [self updateSubmitButtonStatus];
+}
+
+- (NSString *)commentString
+{
+    NSMutableString *commentString = [[NSMutableString alloc] initWithString:@""];
+    
+    [commentString appendString:[NSString stringWithFormat:@"**%@**  \n\n",self.story.title]];
+    [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.content]];
+    [commentString appendString:@"&nbsp;\n\n"];
+    [commentString appendString:[NSString stringWithFormat:@"*[seed story](%@)*  \n",[self.story.url absoluteString]]];
+    if (self.dissociateByWord) {
+        [commentString appendString:[NSString stringWithFormat:@"*token length: %d words*  \n", self.tokenLength]];
+    } else {
+        [commentString appendString:[NSString stringWithFormat:@"*token length: %d characters*  \n", self.tokenLength]];
+    }
+    [commentString appendString:[NSString stringWithFormat:@"*original queries: %@*",[self.queries componentsJoinedByString:@", "]]];
+    
+    return commentString;
 }
 
 - (NSArray *)indexPathArrayForRangeFromStart:(NSInteger)start toEnd:(NSInteger)end inSection:(NSInteger)section

@@ -18,5 +18,8 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField;
 
 @property (strong, nonatomic) DSPNewsStory *story;
+@property (nonatomic) NSUInteger tokenLength;
+@property (nonatomic, assign) BOOL dissociateByWord;
+@property (strong, nonatomic) NSArray *queries;
 
 @end

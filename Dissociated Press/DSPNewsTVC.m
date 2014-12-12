@@ -229,6 +229,9 @@
     
     DSPSubmitLinkTVC *submissionVC = [[DSPSubmitLinkTVC alloc] init];
     submissionVC.story = story;
+    submissionVC.tokenLength = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
+    submissionVC.dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
+    submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)];
     [self.navigationController pushViewController:submissionVC animated:YES];
 }
 

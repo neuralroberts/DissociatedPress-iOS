@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */; };
+		43380B451A3B729F00C194DF /* RKClient+DSP.m in Sources */ = {isa = PBXBuildFile; fileRef = 43380B441A3B729F00C194DF /* RKClient+DSP.m */; };
 		43383D741A1155F800D58D0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D731A1155F800D58D0F /* main.m */; };
 		43383D771A1155F800D58D0F /* DSPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D761A1155F800D58D0F /* DSPAppDelegate.m */; };
 		43383D7F1A1155F800D58D0F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43383D7E1A1155F800D58D0F /* Images.xcassets */; };
@@ -43,6 +44,8 @@
 		0016EFF84082FA186E4B9BBE /* Pods-Dissociated Press.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.debug.xcconfig"; sourceTree = "<group>"; };
 		433530E81A3294D10008BC39 /* DSPTopStoriesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopStoriesTVC.h; sourceTree = "<group>"; };
 		433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopStoriesTVC.m; sourceTree = "<group>"; };
+		43380B431A3B729F00C194DF /* RKClient+DSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RKClient+DSP.h"; sourceTree = "<group>"; };
+		43380B441A3B729F00C194DF /* RKClient+DSP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RKClient+DSP.m"; sourceTree = "<group>"; };
 		43383D6E1A1155F800D58D0F /* Dissociated Press.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dissociated Press.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43383D721A1155F800D58D0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		43383D731A1155F800D58D0F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -120,6 +123,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		43380B461A3B72AB00C194DF /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				43380B431A3B729F00C194DF /* RKClient+DSP.h */,
+				43380B441A3B729F00C194DF /* RKClient+DSP.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		43383D6F1A1155F800D58D0F /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +149,7 @@
 				43383D9F1A117CEA00D58D0F /* Model */,
 				43F75BA21A17E0ED0059FF33 /* Views */,
 				43383D981A11573800D58D0F /* View Controllers */,
+				43380B461A3B72AB00C194DF /* Categories */,
 				43383D7E1A1155F800D58D0F /* Images.xcassets */,
 				43383D801A1155F800D58D0F /* LaunchScreen.xib */,
 				43383D711A1155F800D58D0F /* Supporting Files */,
@@ -368,6 +381,7 @@
 				43383D9B1A117C7E00D58D0F /* DSPNewsStory.m in Sources */,
 				43383D971A11573000D58D0F /* DSPNewsTVC.m in Sources */,
 				43B5DFC51A36610E00D1877A /* DSPAuthenticationManager.m in Sources */,
+				43380B451A3B729F00C194DF /* RKClient+DSP.m in Sources */,
 				43383D9E1A117CE400D58D0F /* DSPNewsLoader.m in Sources */,
 				43383D771A1155F800D58D0F /* DSPAppDelegate.m in Sources */,
 				43383D741A1155F800D58D0F /* main.m in Sources */,
