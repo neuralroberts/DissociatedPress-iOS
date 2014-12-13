@@ -9,6 +9,7 @@
 #import "DSPAppDelegate.h"
 #import "DSPNewsTVC.h"
 #import "DSPTopStoriesTVC.h"
+#import "DSPSettingsVC.h"
 #import "DSPAuthenticationManager.h"
 #import <RedditKit/RedditKit.h>
 
@@ -38,8 +39,12 @@
     topTVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemTopRated tag:1];
     UINavigationController *topNavigationVC = [[UINavigationController alloc] initWithRootViewController:topTVC];
     
+    DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] init];
+    settingsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"UIButtonBarGear"] tag:2];
+    UINavigationController *settingsNavigationVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
+    
     UITabBarController *tabController = [[UITabBarController alloc] init];
-    tabController.viewControllers = @[newsNavigationVC, topNavigationVC];
+    tabController.viewControllers = @[newsNavigationVC, topNavigationVC, settingsNavigationVC];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabController;

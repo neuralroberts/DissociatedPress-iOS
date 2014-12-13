@@ -167,11 +167,7 @@
     [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.content]];
     [commentString appendString:@"&nbsp;\n\n"];
     [commentString appendString:[NSString stringWithFormat:@"*[seed story](%@)*  \n",[self.story.url absoluteString]]];
-    if (self.dissociateByWord) {
-        [commentString appendString:[NSString stringWithFormat:@"*token length: %d words*  \n", self.tokenLength]];
-    } else {
-        [commentString appendString:[NSString stringWithFormat:@"*token length: %d characters*  \n", self.tokenLength]];
-    }
+    [commentString appendString:[NSString stringWithFormat:@"*%@*  \n",self.tokenDescriptionString]];
     [commentString appendString:[NSString stringWithFormat:@"*original queries: %@*",[self.queries componentsJoinedByString:@", "]]];
     
     return commentString;

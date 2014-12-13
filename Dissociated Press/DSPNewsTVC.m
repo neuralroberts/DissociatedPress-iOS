@@ -11,7 +11,6 @@
 #import "DSPNewsStory.h"
 #import "DSPNewsLoader.h"
 #import "DSPDissociatedNewsLoader.h"
-#import "DSPSettingsVC.h"
 #import "DSPNewsHeaderView.h"
 #import "DSPSubmitLinkTVC.h"
 
@@ -55,43 +54,20 @@
     
     self.newsLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
     
-    UIBarButtonItem *parametersBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"\u2699" style:UIBarButtonItemStylePlain target:self action:@selector(pressedParametersBarButtonItem)];
-    parametersBarButtonItem.tintColor = [UIColor darkGrayColor];
-    UIFont *font = [UIFont fontWithName:@"Helvetica" size:24.0];
-    NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, nil];
-    [parametersBarButtonItem setTitleTextAttributes:dict forState:UIControlStateNormal];
-    self.navigationItem.rightBarButtonItem = parametersBarButtonItem;
-    
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
     refreshButton.tintColor = [UIColor darkGrayColor];
     self.navigationItem.leftBarButtonItem = refreshButton;
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.tableView addSubview:self.refreshControl];
     [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    NSInteger tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
-    NSString *dissociateBy = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"] ? @"word" : @"character";
-    self.navigationItem.title = [NSString stringWithFormat:@"n = %ld, dissociate by %@",(long)tokenSize,dissociateBy];
+    
     [self loadNews];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    //set datasource to nil for cleaner look during segue
-    self.navigationController.title = nil;
-    NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
-    self.newsArray = nil;
-    self.newsLoader = nil;
-    [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)loadNews
 {
+    self.navigationItem.title = [self tokenDescriptionString];
+    
     for (int i = 0; i < self.newsHeaderView.stepper.maximumValue; i++) {
         UISearchBar *searchBar = self.newsHeaderView.searchBars[i];
         self.queries[i] = searchBar.text;
@@ -217,22 +193,29 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)pressedParametersBarButtonItem
-{
-    DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] init];
-    [self.navigationController pushViewController:settingsVC animated:YES];
-}
-
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex
 {
     DSPNewsStory *story = self.newsArray[cellIndex.row];
     
     DSPSubmitLinkTVC *submissionVC = [[DSPSubmitLinkTVC alloc] init];
     submissionVC.story = story;
-    submissionVC.tokenLength = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
-    submissionVC.dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
+    submissionVC.tokenDescriptionString = [self tokenDescriptionString];
     submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)];
     [self.navigationController pushViewController:submissionVC animated:YES];
+}
+
+- (NSString *)tokenDescriptionString
+{
+    NSMutableString *tokenDescriptionString = [[NSMutableString alloc] initWithString:@"Token size: "];
+    NSInteger tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
+    BOOL dissociateByWord = [[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"];
+    
+    [tokenDescriptionString appendString:[NSString stringWithFormat:@"%ld ", (long)tokenSize]];
+    if (dissociateByWord) [tokenDescriptionString appendString:@"Word"];
+    else [tokenDescriptionString appendString:@"Character"];
+    if (tokenSize > 1) [tokenDescriptionString appendString:@"s"];
+    
+    return tokenDescriptionString;
 }
 
 @end

@@ -20,8 +20,7 @@
 
 
 @property (strong, nonatomic) DSPNewsStory *story;
-@property (nonatomic) NSUInteger tokenLength;
-@property (nonatomic, assign) BOOL dissociateByWord;
+@property (nonatomic, strong) NSString *tokenDescriptionString;
 @property (strong, nonatomic) NSArray *queries;
 
 @end
