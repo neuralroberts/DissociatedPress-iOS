@@ -10,6 +10,7 @@
 
 @interface DSPNewsLoader : NSObject
 
-- (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)page;
+- (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber;
+- (NSArray *)loadNewsForTopic:(NSString *)topic pageNumber:(int)pageNumber;
 
 @end

@@ -14,4 +14,7 @@
 @property (weak, nonatomic) DSPNewsTVC<UISearchBarDelegate> *tableViewController;
 @property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars
 @property (nonatomic, strong) UIStepper *stepper;
+
+- (CGFloat)headerHeight;
+
 @end

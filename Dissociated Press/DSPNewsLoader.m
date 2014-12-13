@@ -16,16 +16,37 @@
 
 - (NSArray *)loadNewsForQuery:(NSString *)query pageNumber:(int)pageNumber
 {
-    //check that query isn't empty
     if (![[query stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] length]) {
+        //check that query isn't empty
         return nil;
     }
     
     NSString *escapedQuery = [query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     int start = (pageNumber - 1) * 4;
-    NSString *urlString = [NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/news?v=1.0&start=%d&q=%@&topic=", start, escapedQuery];
+    NSString *urlString = [NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/news?v=1.0&start=%d&q=%@", start, escapedQuery];
     NSURL *url = [NSURL URLWithString:urlString];
+    
+    return [self loadNewsForURL:url];
+}
+
+- (NSArray *)loadNewsForTopic:(NSString *)topic pageNumber:(int)pageNumber
+{
+    NSArray *validTopics = @[@"h",@"w",@"b",@"n",@"t",@"el",@"p",@"e",@"s",@"m"];
+    
+    if (![validTopics containsObject:topic]) {
+        return nil;
+    }
+    
+    int start = (pageNumber - 1) * 4;
+    NSString *urlString = [NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/news?v=1.0&start=%d&q=&topic=%@", start,topic];
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    return [self loadNewsForURL:url];
+}
+
+- (NSArray *)loadNewsForURL:(NSURL *)url
+{
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setValue:@"https://github.com/neuralroberts/DissociatedPress-iOS" forHTTPHeaderField:@"Referer"];
     

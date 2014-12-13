@@ -58,6 +58,11 @@
     return self;
 }
 
+- (CGFloat)headerHeight
+{
+    return MAX(44.0, 44.0 * self.stepper.value);
+}
+
 - (void)setTableViewController:(DSPNewsTVC<UISearchBarDelegate> *)tableViewController
 {
     for (UISearchBar *searchBar in self.searchBars) {

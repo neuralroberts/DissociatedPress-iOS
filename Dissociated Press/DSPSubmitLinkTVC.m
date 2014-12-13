@@ -42,8 +42,6 @@
                 [[RKClient sharedClient] submitComment:[self commentString] onThingWithFullName:submittedLinkName completion:^(NSError *error) {
                     if (error) {
                         NSLog(@"%@",error);
-                    } else {
-                        NSLog(@"submitted comment");
                     }
                 }];
             }
@@ -300,7 +298,7 @@
 - (void)commentSwitchDidChange:(UISwitch *)commentSwitch
 {
     self.includeComment = commentSwitch.on;
-
+    
     [[NSUserDefaults standardUserDefaults] setBool:self.includeComment forKey:@"includeComment"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     

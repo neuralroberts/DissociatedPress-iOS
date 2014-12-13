@@ -19,6 +19,7 @@
 @property (strong, nonatomic) DSPNewsHeaderView *newsHeaderView;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (strong, nonatomic) UISegmentedControl *queryTypeControl;
 @property (strong, nonatomic) NSMutableArray *newsArray;
 @property (strong, nonatomic) DSPDissociatedNewsLoader *newsLoader;
 @property (nonatomic) int pageNumber;
@@ -56,7 +57,15 @@
     
     UIBarButtonItem *refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadNews)];
     refreshButton.tintColor = [UIColor darkGrayColor];
-    self.navigationItem.leftBarButtonItem = refreshButton;
+    self.navigationItem.rightBarButtonItem = refreshButton;
+    
+    self.queryTypeControl = [[UISegmentedControl alloc] initWithItems:@[@"S",@"T"]];
+    self.queryTypeControl.tintColor = [UIColor darkGrayColor];
+    self.queryTypeControl.selectedSegmentIndex = 0;
+    [self.queryTypeControl addTarget:self action:@selector(changedQueryType:) forControlEvents:UIControlEventValueChanged];
+    UIBarButtonItem *controlButton = [[UIBarButtonItem alloc] initWithCustomView:self.queryTypeControl];
+    self.navigationItem.leftBarButtonItem = controlButton;
+    
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.tableView addSubview:self.refreshControl];
     [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
@@ -81,12 +90,18 @@
             NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.newsArray removeAllObjects];
             [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
         });
         
         self.rowHeightCache = [NSMutableDictionary dictionary];
         self.pageNumber = 1;
         DSPDissociatedNewsLoader *newsLoader = [[DSPDissociatedNewsLoader alloc] init];
-        NSArray *newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
+        NSArray *newNews = @[];
+        if (self.queryTypeControl.selectedSegmentIndex == 0) {
+            newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
+        } else {
+            newNews = [newsLoader loadDissociatedNewsForTopics:@[@"h"] pageNumber:self.pageNumber];
+        }
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.refreshControl endRefreshing];
@@ -121,13 +136,25 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) return self.newsHeaderView;
+    if (self.queryTypeControl.selectedSegmentIndex == 0) {
+        if (section == 0) return self.newsHeaderView;
+    } else {
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
+                                                                self.tableView.bounds.size.width,
+                                                                44.0)];
+        view.backgroundColor = [UIColor greenColor];
+        return view;
+    }
     return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) return 44.0 * self.newsHeaderView.stepper.value;
+    if (self.queryTypeControl.selectedSegmentIndex == 0) {
+        if (section == 0) return [self.newsHeaderView headerHeight];
+    } else {
+        return 44.0;
+    }
     return 0;
 }
 
@@ -156,7 +183,12 @@
         if (indexPath.row >= self.newsArray.count - 1) {
             dispatch_barrier_async(self.newsLoaderQueue, ^{
                 self.pageNumber++;
-                NSArray *newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
+                NSArray *newNews = @[];
+                if (self.queryTypeControl.selectedSegmentIndex == 0) {
+                    newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
+                } else {
+                    newNews = [self.newsLoader loadDissociatedNewsForTopics:@[@"h"] pageNumber:self.pageNumber];
+                }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:self.newsArray.count toEnd:(self.newsArray.count + newNews.count) inSection:0];
@@ -216,6 +248,11 @@
     if (tokenSize > 1) [tokenDescriptionString appendString:@"s"];
     
     return tokenDescriptionString;
+}
+
+- (void)changedQueryType:(UISegmentedControl *)segmentedControl;
+{
+    [self loadNews];
 }
 
 @end

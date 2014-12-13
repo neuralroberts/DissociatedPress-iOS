@@ -11,6 +11,7 @@
 
 @interface DSPDissociatedNewsLoader : DSPNewsLoader
 
-- (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)page;
+- (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)pageNumber;
+- (NSArray *)loadDissociatedNewsForTopics:(NSArray *)topics pageNumber:(int)pageNumber;
 
 @end

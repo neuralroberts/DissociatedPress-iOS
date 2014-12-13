@@ -36,19 +36,42 @@
     return self;
 }
 
-
-- (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)page
+- (NSArray *)loadDissociatedNewsForTopics:(NSArray *)topics pageNumber:(int)pageNumber
 {
     NSMutableArray *results = [NSMutableArray array];
-    for (NSString *query in queries) {
-        [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:page]];
+    
+    for (NSString *topic in topics) {
+        [results addObjectsFromArray:[super loadNewsForTopic:topic pageNumber:pageNumber]];
     }
+    
     //shuffle stories
     for (int i = 0; i < results.count; i++)
     {
         [results exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform(i+1)];
     }
     
+    return [self dissociateResults:results];
+}
+
+- (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)pageNumber
+{
+    NSMutableArray *results = [NSMutableArray array];
+    
+    for (NSString *query in queries) {
+        [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:pageNumber]];
+    }
+
+    //shuffle stories
+    for (int i = 0; i < results.count; i++)
+    {
+        [results exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform(i+1)];
+    }
+    
+    return [self dissociateResults:results];
+}
+
+- (NSArray *)dissociateResults:(NSArray *)results
+{
     NSMutableDictionary *titleSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     NSMutableDictionary *contentSeeds = [[NSMutableDictionary alloc] initWithCapacity:results.count];
     //tokenize each story and add it to the token lists
@@ -76,6 +99,7 @@
         story.content = [self reassociateWithSeed:contentSeed tokens:self.contentTokens context:self.contentTokenContext];
         
     }
+    
     return results;
 }
 
