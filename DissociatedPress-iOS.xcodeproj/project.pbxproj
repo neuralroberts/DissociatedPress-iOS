@@ -19,7 +19,8 @@
 		43383D9E1A117CE400D58D0F /* DSPNewsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 43383D9D1A117CE400D58D0F /* DSPNewsLoader.m */; };
 		433AA0951A2F97430028477F /* DSPLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 433AA0941A2F97430028477F /* DSPLabel.m */; };
 		4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4364570E1A12981100C7DF66 /* DSPDissociatedNewsLoader.m */; };
-		439A925B1A31070D00A42B5F /* DSPNewsHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 439A925A1A31070D00A42B5F /* DSPNewsHeaderView.m */; };
+		439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */; };
+		43A149BE1A3CED1300D5A545 /* DSPTopicHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */; };
 		43B5DFC51A36610E00D1877A /* DSPAuthenticationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */; };
 		43CFA1261A37C7B20023A7FD /* DSPSubmitLinkTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 43CFA1251A37C7B20023A7FD /* DSPSubmitLinkTVC.m */; };
 		43CFA1291A38D7B40023A7FD /* DSPSubmitLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43CFA1281A38D7B40023A7FD /* DSPSubmitLinkCell.m */; };
@@ -66,8 +67,10 @@
 		433AA0941A2F97430028477F /* DSPLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPLabel.m; sourceTree = "<group>"; };
 		4364570D1A12981100C7DF66 /* DSPDissociatedNewsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPDissociatedNewsLoader.h; sourceTree = "<group>"; };
 		4364570E1A12981100C7DF66 /* DSPDissociatedNewsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPDissociatedNewsLoader.m; sourceTree = "<group>"; };
-		439A92591A31070D00A42B5F /* DSPNewsHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPNewsHeaderView.h; sourceTree = "<group>"; };
-		439A925A1A31070D00A42B5F /* DSPNewsHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPNewsHeaderView.m; sourceTree = "<group>"; };
+		439A92591A31070D00A42B5F /* DSPQueryHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPQueryHeaderView.h; sourceTree = "<group>"; };
+		439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPQueryHeaderView.m; sourceTree = "<group>"; };
+		43A149BC1A3CED1300D5A545 /* DSPTopicHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopicHeaderView.h; sourceTree = "<group>"; };
+		43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopicHeaderView.m; sourceTree = "<group>"; };
 		43B5DFC31A36610E00D1877A /* DSPAuthenticationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPAuthenticationManager.h; sourceTree = "<group>"; };
 		43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPAuthenticationManager.m; sourceTree = "<group>"; };
 		43B5DFC91A36B35700D1877A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
@@ -233,8 +236,10 @@
 				43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */,
 				433AA0931A2F97430028477F /* DSPLabel.h */,
 				433AA0941A2F97430028477F /* DSPLabel.m */,
-				439A92591A31070D00A42B5F /* DSPNewsHeaderView.h */,
-				439A925A1A31070D00A42B5F /* DSPNewsHeaderView.m */,
+				439A92591A31070D00A42B5F /* DSPQueryHeaderView.h */,
+				439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */,
+				43A149BC1A3CED1300D5A545 /* DSPTopicHeaderView.h */,
+				43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */,
 				43CFA1271A38D7B40023A7FD /* DSPSubmitLinkCell.h */,
 				43CFA1281A38D7B40023A7FD /* DSPSubmitLinkCell.m */,
 			);
@@ -374,7 +379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				439A925B1A31070D00A42B5F /* DSPNewsHeaderView.m in Sources */,
+				439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */,
 				43CFA12C1A3917F20023A7FD /* DSPAuthenticationTVC.m in Sources */,
 				4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */,
 				433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */,
@@ -383,6 +388,7 @@
 				43B5DFC51A36610E00D1877A /* DSPAuthenticationManager.m in Sources */,
 				43380B451A3B729F00C194DF /* RKClient+DSP.m in Sources */,
 				43383D9E1A117CE400D58D0F /* DSPNewsLoader.m in Sources */,
+				43A149BE1A3CED1300D5A545 /* DSPTopicHeaderView.m in Sources */,
 				43383D771A1155F800D58D0F /* DSPAppDelegate.m in Sources */,
 				43383D741A1155F800D58D0F /* main.m in Sources */,
 				43F75BA81A17E1450059FF33 /* DSPNewsTableViewCell.m in Sources */,

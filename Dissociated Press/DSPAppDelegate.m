@@ -48,6 +48,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabController;
+    self.window.tintColor = [UIColor darkGrayColor];
     [self.window makeKeyAndVisible];
     
     return YES;

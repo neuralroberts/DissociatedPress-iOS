@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DSPNewsTVC.h"
 
-@interface DSPNewsHeaderView : UIView
+@interface DSPQueryHeaderView : UIView
 
 @property (weak, nonatomic) DSPNewsTVC<UISearchBarDelegate> *tableViewController;
 @property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars

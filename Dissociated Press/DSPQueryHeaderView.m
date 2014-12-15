@@ -6,11 +6,11 @@
 //
 //
 
-#import "DSPNewsHeaderView.h"
+#import "DSPQueryHeaderView.h"
 
 #define NUM_MAX_SEARCHBARS 3
 
-@implementation DSPNewsHeaderView
+@implementation DSPQueryHeaderView
 
 - (instancetype)init
 {

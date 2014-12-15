@@ -11,12 +11,14 @@
 #import "DSPNewsStory.h"
 #import "DSPNewsLoader.h"
 #import "DSPDissociatedNewsLoader.h"
-#import "DSPNewsHeaderView.h"
+#import "DSPQueryHeaderView.h"
+#import "DSPTopicHeaderView.h"
 #import "DSPSubmitLinkTVC.h"
 
 @interface DSPNewsTVC () <UISearchBarDelegate>
 
-@property (strong, nonatomic) DSPNewsHeaderView *newsHeaderView;
+@property (strong, nonatomic) DSPQueryHeaderView *queryHeaderView;
+@property (strong, nonatomic) DSPTopicHeaderView *topicHeaderView;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UISegmentedControl *queryTypeControl;
@@ -39,8 +41,10 @@
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    self.newsHeaderView = [[DSPNewsHeaderView alloc] init];
-    self.newsHeaderView.tableViewController = self;
+    self.queryHeaderView = [[DSPQueryHeaderView alloc] init];
+    self.queryHeaderView.tableViewController = self;
+    
+    self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     
     /*
      *create a cell instance to use for autolayout sizing
@@ -77,8 +81,8 @@
 {
     self.navigationItem.title = [self tokenDescriptionString];
     
-    for (int i = 0; i < self.newsHeaderView.stepper.maximumValue; i++) {
-        UISearchBar *searchBar = self.newsHeaderView.searchBars[i];
+    for (int i = 0; i < self.queryHeaderView.stepper.maximumValue; i++) {
+        UISearchBar *searchBar = self.queryHeaderView.searchBars[i];
         self.queries[i] = searchBar.text;
     }
     
@@ -98,9 +102,9 @@
         DSPDissociatedNewsLoader *newsLoader = [[DSPDissociatedNewsLoader alloc] init];
         NSArray *newNews = @[];
         if (self.queryTypeControl.selectedSegmentIndex == 0) {
-            newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
+            newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)] pageNumber:self.pageNumber];
         } else {
-            newNews = [newsLoader loadDissociatedNewsForTopics:@[@"h"] pageNumber:self.pageNumber];
+            newNews = [newsLoader loadDissociatedNewsForTopics:@[@"h", @"w", @"b", @"n", @"t", @"p"] pageNumber:self.pageNumber];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -137,13 +141,9 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
-        if (section == 0) return self.newsHeaderView;
+        if (section == 0) return self.queryHeaderView;
     } else {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0,
-                                                                self.tableView.bounds.size.width,
-                                                                44.0)];
-        view.backgroundColor = [UIColor greenColor];
-        return view;
+        if (section == 0) return self.topicHeaderView;
     }
     return nil;
 }
@@ -151,9 +151,9 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
-        if (section == 0) return [self.newsHeaderView headerHeight];
+        if (section == 0) return [self.queryHeaderView headerHeight];
     } else {
-        return 44.0;
+        if (section == 0) return [self.topicHeaderView headerHeight];
     }
     return 0;
 }
@@ -185,9 +185,9 @@
                 self.pageNumber++;
                 NSArray *newNews = @[];
                 if (self.queryTypeControl.selectedSegmentIndex == 0) {
-                    newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)] pageNumber:self.pageNumber];
+                    newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)] pageNumber:self.pageNumber];
                 } else {
-                    newNews = [self.newsLoader loadDissociatedNewsForTopics:@[@"h"] pageNumber:self.pageNumber];
+                    newNews = [self.newsLoader loadDissociatedNewsForTopics:@[@"h", @"w", @"b", @"n", @"t", @"p"] pageNumber:self.pageNumber];
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -225,6 +225,7 @@
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex
 {
     DSPNewsStory *story = self.newsArray[cellIndex.row];
@@ -232,7 +233,7 @@
     DSPSubmitLinkTVC *submissionVC = [[DSPSubmitLinkTVC alloc] init];
     submissionVC.story = story;
     submissionVC.tokenDescriptionString = [self tokenDescriptionString];
-    submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.newsHeaderView.stepper.value)];
+    submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)];
     [self.navigationController pushViewController:submissionVC animated:YES];
 }
 
