@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "DSPNewsTableViewCell.h"
+#import "DSPQueryHeaderView.h"
 
 
-@interface DSPNewsTVC : UITableViewController <DSPNewsCellDelegate>
+
+@interface DSPNewsTVC : UITableViewController <DSPNewsCellDelegate, DSPQueryHeaderDelegate, UISearchBarDelegate>
 
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex;
-
 - (void)touchedStepper:(UIStepper *)sender;
 
 @end

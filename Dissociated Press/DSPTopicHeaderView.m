@@ -40,8 +40,8 @@
     [self.headerButton addTarget:self action:@selector(pressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.headerButton];
     
-    NSArray *topics = @[@"Headlines", @"World", @"Business", @"Nation", @"Technology", @"Elections", @"Entertainment", @"Sports", @"Health"];
-
+    NSArray *topics = @[@"Headlines", @"World", @"Business", @"Nation", @"Technology", @"Elections", @"Politics", @"Entertainment", @"Sports", @"Health"];
+    
     [self applyConstraints];
     
     return self;

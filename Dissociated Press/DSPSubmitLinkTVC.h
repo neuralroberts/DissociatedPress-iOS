@@ -22,5 +22,7 @@
 @property (strong, nonatomic) DSPNewsStory *story;
 @property (nonatomic, strong) NSString *tokenDescriptionString;
 @property (strong, nonatomic) NSArray *queries;
+@property (strong, nonatomic) NSArray *topics;
+
 
 @end

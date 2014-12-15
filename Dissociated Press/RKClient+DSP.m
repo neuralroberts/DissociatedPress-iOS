@@ -1,6 +1,6 @@
 //
 //  RKClient+DSP.m
-//  Pods
+//  A category for RKClient which includes a JSON responseObject in the completion block of submitLink methods
 //
 //  Created by Joseph Wilkerson on 12/12/14.
 //

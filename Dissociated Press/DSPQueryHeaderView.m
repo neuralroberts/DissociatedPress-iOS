@@ -23,7 +23,7 @@
     self.layer.shadowOffset = CGSizeMake(0,0);
     self.layer.shadowRadius = 4;
 
-    NSArray *queries = @[@"florida man",@"fluoridation",@"ctulhu",@"ebola",@"granola"];
+    NSArray *queries = @[@"florida man",@"fluoridation",@"pro-state agitators",@"ebola",@"granola"];
     self.searchBars = [NSMutableArray array];
     for (int i = 0; i < NUM_MAX_SEARCHBARS; i++) {
         UISearchBar *searchBar = [[UISearchBar alloc] init];
@@ -63,13 +63,15 @@
     return MAX(44.0, 44.0 * self.stepper.value);
 }
 
-- (void)setTableViewController:(DSPNewsTVC<UISearchBarDelegate> *)tableViewController
+
+- (void)setDelegate:(id<DSPQueryHeaderDelegate,UISearchBarDelegate>)delegate
 {
     for (UISearchBar *searchBar in self.searchBars) {
-        searchBar.delegate = tableViewController;
+        searchBar.delegate = delegate;
     }
-    [self.stepper addTarget:self.tableViewController action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
-    _tableViewController = tableViewController;
+    [self.stepper addTarget:delegate action:@selector(touchedStepper:) forControlEvents:UIControlEventValueChanged];
+
+    _delegate = delegate;
 }
 
 - (void)applyConstraints

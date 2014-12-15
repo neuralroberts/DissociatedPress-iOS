@@ -103,11 +103,12 @@
     
     if (newsStory.hasThumbnail) {
         self.thumbnail.hidden = NO;
+        __weak __typeof(self)weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSData *imageData = [NSData dataWithContentsOfURL:newsStory.imageUrl];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.thumbnail.image = [[UIImage alloc] initWithData:imageData];
+                weakSelf.thumbnail.image = [[UIImage alloc] initWithData:imageData];
             });
         });
     } else {

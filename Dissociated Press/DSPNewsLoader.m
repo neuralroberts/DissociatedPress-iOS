@@ -31,15 +31,25 @@
 }
 
 - (NSArray *)loadNewsForTopic:(NSString *)topic pageNumber:(int)pageNumber
-{
-    NSArray *validTopics = @[@"h",@"w",@"b",@"n",@"t",@"el",@"p",@"e",@"s",@"m"];
+{    
+    NSDictionary *abbreviatedTopics = @{@"Headlines":@"h",
+                                        @"World":@"w",
+                                        @"Business":@"b",
+                                        @"Nation":@"n",
+                                        @"Technology":@"t",
+                                        @"Elections":@"el",
+                                        @"Politics":@"p",
+                                        @"Entertainment":@"e",
+                                        @"Sports":@"s",
+                                        @"Health":@"m"};
     
-    if (![validTopics containsObject:topic]) {
+    NSString *abbreviatedTopic = abbreviatedTopics[topic];
+    if (!abbreviatedTopic) {
         return nil;
     }
     
     int start = (pageNumber - 1) * 4;
-    NSString *urlString = [NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/news?v=1.0&start=%d&q=&topic=%@", start,topic];
+    NSString *urlString = [NSString stringWithFormat:@"https://ajax.googleapis.com/ajax/services/search/news?v=1.0&start=%d&q=&topic=%@", start, abbreviatedTopic];
     NSURL *url = [NSURL URLWithString:urlString];
     
     return [self loadNewsForURL:url];

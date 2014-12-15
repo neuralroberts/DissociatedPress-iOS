@@ -10,6 +10,8 @@
 #import <RedditKit/RedditKit.h>
 #import "RKClient+DSP.h"
 #import "DSPAuthenticationTVC.h"
+#import <MBProgressHUD/MBProgressHUD.h>
+
 
 @interface DSPSubmitLinkTVC () <UIAlertViewDelegate>
 @property (strong, nonatomic) NSMutableArray *cellsIndex;
@@ -28,8 +30,13 @@
 {
     DSPNewsStory *story = self.story;
     
-    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:self.captchaIdentifier captchaValue:self.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
-        if (!error) {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    __weak  __typeof(self)weakSelf = self;
+    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
+        NSString *submittedLinkName = [responseObject  valueForKeyPath:@"json.data.name"];
+
+        if (!error && submittedLinkName) {
             UIAlertView *submissionAlertVew = [[UIAlertView alloc] initWithTitle:@"Post successful"
                                                                          message:nil
                                                                         delegate:self
@@ -37,9 +44,8 @@
                                                                otherButtonTitles:nil];
             [submissionAlertVew show];
             
-            if (self.includeComment) {
-                NSString *submittedLinkName = [responseObject  valueForKeyPath:@"json.data.name"];
-                [[RKClient sharedClient] submitComment:[self commentString] onThingWithFullName:submittedLinkName completion:^(NSError *error) {
+            if (weakSelf.includeComment) {
+                [[RKClient sharedClient] submitComment:[weakSelf commentString] onThingWithFullName:submittedLinkName completion:^(NSError *error) {
                     if (error) {
                         NSLog(@"%@",error);
                     }
@@ -53,6 +59,8 @@
                                                            otherButtonTitles:nil];
             [errorAlertView show];
         }
+        
+        [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
     }];
 }
 
@@ -128,28 +136,30 @@
     
     //check whether captcha is needed
     //if so, grab one and add it to the table
+    
+    __weak __typeof(self)weakSelf = self;
     [[RKClient sharedClient] needsCaptchaWithCompletion:^(BOOL result, NSError *error) {
         if (result == YES) {
-            self.captchaNeeded = YES;
-            self.captchaImage = nil;
-            NSArray *indexPathsToInsert = [self indexPathArrayForRangeFromStart:self.cellsIndex.count toEnd:self.cellsIndex.count+1 inSection:0];
-            [self.tableView beginUpdates];
-            [self.cellsIndex addObject:@"captchaCell"];
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView endUpdates];
+            weakSelf.captchaNeeded = YES;
+            weakSelf.captchaImage = nil;
+            NSArray *indexPathsToInsert = [weakSelf indexPathArrayForRangeFromStart:weakSelf.cellsIndex.count toEnd:weakSelf.cellsIndex.count+1 inSection:0];
+            [weakSelf.tableView beginUpdates];
+            [weakSelf.cellsIndex addObject:@"captchaCell"];
+            [weakSelf.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
+            [weakSelf.tableView endUpdates];
             
             [[RKClient sharedClient] newCaptchaIdentifierWithCompletion:^(id object, NSError *error) {
-                self.captchaIdentifier = object;
-                [[RKClient sharedClient] imageForCaptchaIdentifier:self.captchaIdentifier completion:^(id object, NSError *error) {
-                    self.captchaImage = object;
-                    NSArray *indexPathsToReload = [self indexPathArrayForRangeFromStart:self.cellsIndex.count-1 toEnd:self.cellsIndex.count inSection:0];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+                weakSelf.captchaIdentifier = object;
+                [[RKClient sharedClient] imageForCaptchaIdentifier:weakSelf.captchaIdentifier completion:^(id object, NSError *error) {
+                    weakSelf.captchaImage = object;
+                    NSArray *indexPathsToReload = [weakSelf indexPathArrayForRangeFromStart:weakSelf.cellsIndex.count-1 toEnd:weakSelf.cellsIndex.count inSection:0];
+                    [weakSelf.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
                 }];
             }];
         } else {
-            self.captchaNeeded = NO;
-            self.captchaIdentifier = nil;
-            self.captchaImage = nil;
+            weakSelf.captchaNeeded = NO;
+            weakSelf.captchaIdentifier = nil;
+            weakSelf.captchaImage = nil;
         }
     }];
     
@@ -166,7 +176,12 @@
     [commentString appendString:@"&nbsp;\n\n"];
     [commentString appendString:[NSString stringWithFormat:@"*[seed story](%@)*  \n",[self.story.url absoluteString]]];
     [commentString appendString:[NSString stringWithFormat:@"*%@*  \n",self.tokenDescriptionString]];
-    [commentString appendString:[NSString stringWithFormat:@"*original queries: %@*",[self.queries componentsJoinedByString:@", "]]];
+    if (self.queries) {
+        [commentString appendString:[NSString stringWithFormat:@"*original queries: %@*",[self.queries componentsJoinedByString:@", "]]];
+    }
+    if (self.topics) {
+        [commentString appendString:[NSString stringWithFormat:@"*original topics: %@*",[self.topics componentsJoinedByString:@", "]]];
+    }
     
     return commentString;
 }

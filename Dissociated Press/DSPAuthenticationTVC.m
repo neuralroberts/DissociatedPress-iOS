@@ -107,7 +107,7 @@
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     __weak __typeof(self)weakSelf = self;
-    [DSPAuthenticationManager signInWithUsername:self.usernameTextField.text password:self.passwordTextField.text completion:^(NSError *error){
+    [DSPAuthenticationManager signInWithUsername:weakSelf.usernameTextField.text password:weakSelf.passwordTextField.text completion:^(NSError *error){
         [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
         
         if (error) {
@@ -124,7 +124,7 @@
             NSString *alertMessage = [NSString stringWithFormat:@"Logged in as %@",username];
             UIAlertView *loginAlertView = [[UIAlertView alloc] initWithTitle:@"Logged in"
                                                                      message:alertMessage
-                                                                    delegate:self
+                                                                    delegate:weakSelf
                                                            cancelButtonTitle:@"OK"
                                                            otherButtonTitles:nil];
             [loginAlertView show];

@@ -33,6 +33,7 @@
     [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
         if (!error)
         {
+            //if login was successful, overwrite any credentials in the keychain with the current one
             for (NSString *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
                 [SSKeychain deletePasswordForService:@"DissociatedPress" account:account error:nil];
             }

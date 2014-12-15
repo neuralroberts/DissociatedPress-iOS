@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DSPNewsTVC.h"
+
+@protocol DSPQueryHeaderDelegate <NSObject>
+- (void)touchedStepper:(UIStepper *)sender;
+@end
 
 @interface DSPQueryHeaderView : UIView
 
-@property (weak, nonatomic) DSPNewsTVC<UISearchBarDelegate> *tableViewController;
+@property (weak, nonatomic) id<DSPQueryHeaderDelegate, UISearchBarDelegate>delegate;
 @property (strong, nonatomic) NSMutableArray *searchBars; // array of uisearchbars
 @property (nonatomic, strong) UIStepper *stepper;
 
