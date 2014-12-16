@@ -11,13 +11,14 @@
 #import "DSPNewsStory.h"
 #import "DSPNewsLoader.h"
 #import "DSPDissociatedNewsLoader.h"
-#import "DSPTopicHeaderView.h"
 #import "DSPSubmitLinkTVC.h"
+
 
 @interface DSPNewsTVC ()
 
 @property (strong, nonatomic) DSPQueryHeaderView *queryHeaderView;
 @property (strong, nonatomic) DSPTopicHeaderView *topicHeaderView;
+@property (strong, nonatomic) UIPopoverController *topicsPopover;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) NSMutableArray *topics; //array of strings;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
@@ -37,7 +38,10 @@
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
+    
+    self.queries = [NSMutableArray array];
+    self.topics = [NSMutableArray arrayWithObjects:@"Headlines", nil];
+    
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -45,6 +49,7 @@
     self.queryHeaderView.delegate = self;
     
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
+    self.topicHeaderView.delegate = self;
     
     /*
      *create a cell instance to use for autolayout sizing
@@ -54,9 +59,6 @@
     self.sizingCell.hidden = YES;
     [self.tableView addSubview:self.sizingCell];
     self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 300);
-    
-    self.queries = [NSMutableArray array];
-    self.topics = [NSMutableArray arrayWithObjects:@"Headlines", @"World", @"Business", @"Technology", @"Politics", nil];
     
     self.newsLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
     
@@ -76,6 +78,12 @@
     [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
     
     [self loadNews];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    // Dispose of any resources that can be recreated.
 }
 
 - (void)loadNews
@@ -224,6 +232,37 @@
 - (void)touchedStepper:(UIStepper *)sender
 {
     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)touchedTopicHeader
+{
+    DSPTopicsTVC *topicsTVC = [[DSPTopicsTVC alloc] initWithStyle:UITableViewStyleGrouped];
+    topicsTVC.delegate = self;
+    topicsTVC.selectedTopics = self.topics;
+    
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        self.topicsPopover = [[UIPopoverController alloc] initWithContentViewController:topicsTVC];
+        self.topicsPopover.delegate = self;
+        topicsTVC.preferredContentSize = CGSizeMake(320, topicsTVC.tableViewHeight+44.0);
+        [self.topicsPopover presentPopoverFromRect:self.topicHeaderView.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:topicsTVC];
+        [self presentViewController:navigationVC animated:YES completion:nil];
+    }
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+    [self loadNews];
+}
+
+- (void)didDismissTopicsTVC
+{
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        [self.topicsPopover dismissPopoverAnimated:YES];
+    } else {
+        [self loadNews];
+    }
 }
 
 

@@ -42,7 +42,7 @@
     DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] init];
     settingsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"UIButtonBarGear"] tag:2];
     UINavigationController *settingsNavigationVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
-    
+
     UITabBarController *tabController = [[UITabBarController alloc] init];
     tabController.viewControllers = @[newsNavigationVC, topNavigationVC, settingsNavigationVC];
     

@@ -24,7 +24,7 @@
     self.layer.shadowRadius = 4;
     
     self.headerLabel = [[UILabel alloc] init];
-    self.headerLabel.text = @"Choose topics";
+    self.headerLabel.text = @"Search by topics";
     self.headerLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.headerLabel.textAlignment = NSTextAlignmentCenter;
@@ -37,19 +37,17 @@
     self.headerButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     self.headerButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.headerButton.backgroundColor = [UIColor clearColor];
-    [self.headerButton addTarget:self action:@selector(pressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.headerButton];
-    
-    NSArray *topics = @[@"Headlines", @"World", @"Business", @"Nation", @"Technology", @"Elections", @"Politics", @"Entertainment", @"Sports", @"Health"];
     
     [self applyConstraints];
     
     return self;
 }
 
-- (void)pressed
+- (void)setDelegate:(id<DSPTopicHeaderDelegate>)delegate
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    _delegate = delegate;
+    [self.headerButton addTarget:delegate action:@selector(touchedTopicHeader) forControlEvents:UIControlEventTouchUpInside];
 }
 
 

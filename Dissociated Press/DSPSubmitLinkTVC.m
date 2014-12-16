@@ -113,6 +113,12 @@
     [self getNewCaptcha];
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    // Dispose of any resources that can be recreated.
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [self.tableView reloadData];

@@ -99,6 +99,12 @@
     [self updateDoneButtonStatus];
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    // Dispose of any resources that can be recreated.
+}
+
 - (void)done
 {
     if (self.usernameTextField.text.length <= 0 || self.passwordTextField.text.length <= 0) {

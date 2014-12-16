@@ -80,6 +80,12 @@
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
 }
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    // Dispose of any resources that can be recreated.
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

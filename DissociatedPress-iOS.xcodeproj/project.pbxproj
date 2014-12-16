@@ -21,6 +21,7 @@
 		4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4364570E1A12981100C7DF66 /* DSPDissociatedNewsLoader.m */; };
 		439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */; };
 		43A149BE1A3CED1300D5A545 /* DSPTopicHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */; };
+		43AB77471A40AC490085A25F /* DSPTopicsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 43AB77461A40AC490085A25F /* DSPTopicsTVC.m */; };
 		43B5DFC51A36610E00D1877A /* DSPAuthenticationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */; };
 		43CFA1261A37C7B20023A7FD /* DSPSubmitLinkTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 43CFA1251A37C7B20023A7FD /* DSPSubmitLinkTVC.m */; };
 		43CFA1291A38D7B40023A7FD /* DSPSubmitLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43CFA1281A38D7B40023A7FD /* DSPSubmitLinkCell.m */; };
@@ -71,6 +72,8 @@
 		439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPQueryHeaderView.m; sourceTree = "<group>"; };
 		43A149BC1A3CED1300D5A545 /* DSPTopicHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopicHeaderView.h; sourceTree = "<group>"; };
 		43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopicHeaderView.m; sourceTree = "<group>"; };
+		43AB77451A40AC490085A25F /* DSPTopicsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopicsTVC.h; sourceTree = "<group>"; };
+		43AB77461A40AC490085A25F /* DSPTopicsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopicsTVC.m; sourceTree = "<group>"; };
 		43B5DFC31A36610E00D1877A /* DSPAuthenticationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPAuthenticationManager.h; sourceTree = "<group>"; };
 		43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPAuthenticationManager.m; sourceTree = "<group>"; };
 		43B5DFC91A36B35700D1877A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
@@ -199,6 +202,8 @@
 				43CFA1251A37C7B20023A7FD /* DSPSubmitLinkTVC.m */,
 				43CFA12A1A3917F20023A7FD /* DSPAuthenticationTVC.h */,
 				43CFA12B1A3917F20023A7FD /* DSPAuthenticationTVC.m */,
+				43AB77451A40AC490085A25F /* DSPTopicsTVC.h */,
+				43AB77461A40AC490085A25F /* DSPTopicsTVC.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -396,6 +401,7 @@
 				43CFA1291A38D7B40023A7FD /* DSPSubmitLinkCell.m in Sources */,
 				433AA0951A2F97430028477F /* DSPLabel.m in Sources */,
 				43CFA1261A37C7B20023A7FD /* DSPSubmitLinkTVC.m in Sources */,
+				43AB77471A40AC490085A25F /* DSPTopicsTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
