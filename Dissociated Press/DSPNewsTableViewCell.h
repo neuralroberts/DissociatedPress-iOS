@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DSPTableViewCell.h"
 #import "DSPNewsStory.h"
 #import "DSPLabel.h"
 
@@ -14,14 +15,13 @@
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath*)cellIndex;
 @end
 
-@interface DSPNewsTableViewCell : UITableViewCell
+@interface DSPNewsTableViewCell : DSPTableViewCell
 
 @property (strong, nonatomic) DSPNewsStory *newsStory;
 @property (strong, nonatomic) DSPLabel *titleLabel;
 @property (strong, nonatomic) DSPLabel *dateLabel;
 @property (strong, nonatomic) DSPLabel *contentLabel;
 @property (strong, nonatomic) UIImageView *thumbnail;
-@property (strong, nonatomic) UIView *cardView;
 @property (weak, nonatomic) id<DSPNewsCellDelegate>delegate;
 @property (strong, nonatomic) NSIndexPath *indexPath;
 

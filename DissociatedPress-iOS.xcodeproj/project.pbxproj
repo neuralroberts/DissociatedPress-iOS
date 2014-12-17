@@ -30,6 +30,8 @@
 		43F75BA81A17E1450059FF33 /* DSPNewsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */; };
 		43F893AE1A377DFF004062E5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B5DFC91A36B35700D1877A /* Security.framework */; };
 		516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */; };
+		D3AD3B331A420D9B0022E60F /* DSPTopStoriesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3AD3B321A420D9B0022E60F /* DSPTopStoriesTableViewCell.m */; };
+		D3AD3B361A420DFA0022E60F /* DSPTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3AD3B351A420DFA0022E60F /* DSPTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +91,10 @@
 		43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPNewsTableViewCell.m; sourceTree = "<group>"; };
 		9C70F543166701BD2A94167D /* Pods-Dissociated Press.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.release.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.release.xcconfig"; sourceTree = "<group>"; };
 		9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Dissociated Press.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3AD3B311A420D9B0022E60F /* DSPTopStoriesTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopStoriesTableViewCell.h; sourceTree = "<group>"; };
+		D3AD3B321A420D9B0022E60F /* DSPTopStoriesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopStoriesTableViewCell.m; sourceTree = "<group>"; };
+		D3AD3B341A420DFA0022E60F /* DSPTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTableViewCell.h; sourceTree = "<group>"; };
+		D3AD3B351A420DFA0022E60F /* DSPTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,16 +243,20 @@
 		43F75BA21A17E0ED0059FF33 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				43F75BA51A17E1450059FF33 /* DSPNewsTableViewCell.h */,
-				43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */,
 				433AA0931A2F97430028477F /* DSPLabel.h */,
 				433AA0941A2F97430028477F /* DSPLabel.m */,
+				D3AD3B341A420DFA0022E60F /* DSPTableViewCell.h */,
+				D3AD3B351A420DFA0022E60F /* DSPTableViewCell.m */,
+				43F75BA51A17E1450059FF33 /* DSPNewsTableViewCell.h */,
+				43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */,
+				D3AD3B311A420D9B0022E60F /* DSPTopStoriesTableViewCell.h */,
+				D3AD3B321A420D9B0022E60F /* DSPTopStoriesTableViewCell.m */,
+				43CFA1271A38D7B40023A7FD /* DSPSubmitLinkCell.h */,
+				43CFA1281A38D7B40023A7FD /* DSPSubmitLinkCell.m */,
 				439A92591A31070D00A42B5F /* DSPQueryHeaderView.h */,
 				439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */,
 				43A149BC1A3CED1300D5A545 /* DSPTopicHeaderView.h */,
 				43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */,
-				43CFA1271A38D7B40023A7FD /* DSPSubmitLinkCell.h */,
-				43CFA1281A38D7B40023A7FD /* DSPSubmitLinkCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -395,12 +405,14 @@
 				43383D9E1A117CE400D58D0F /* DSPNewsLoader.m in Sources */,
 				43A149BE1A3CED1300D5A545 /* DSPTopicHeaderView.m in Sources */,
 				43383D771A1155F800D58D0F /* DSPAppDelegate.m in Sources */,
+				D3AD3B361A420DFA0022E60F /* DSPTableViewCell.m in Sources */,
 				43383D741A1155F800D58D0F /* main.m in Sources */,
 				43F75BA81A17E1450059FF33 /* DSPNewsTableViewCell.m in Sources */,
 				43DA00581A142B40008F0C53 /* DSPSettingsVC.m in Sources */,
 				43CFA1291A38D7B40023A7FD /* DSPSubmitLinkCell.m in Sources */,
 				433AA0951A2F97430028477F /* DSPLabel.m in Sources */,
 				43CFA1261A37C7B20023A7FD /* DSPSubmitLinkTVC.m in Sources */,
+				D3AD3B331A420D9B0022E60F /* DSPTopStoriesTableViewCell.m in Sources */,
 				43AB77471A40AC490085A25F /* DSPTopicsTVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
