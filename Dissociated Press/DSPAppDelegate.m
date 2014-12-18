@@ -12,7 +12,7 @@
 #import "DSPSettingsVC.h"
 #import "DSPAuthenticationManager.h"
 #import <RedditKit/RedditKit.h>
-
+//#import <SSKeychain/SSKeychain.h>
 @interface DSPAppDelegate ()
 
 @end
@@ -22,6 +22,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
     [self setupUserDefaults];
     [self setupReddit];
     
@@ -67,6 +68,12 @@
 
 - (void)setupReddit
 {
+//    for (NSDictionary *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
+//        NSError *error;
+//        [SSKeychain deletePasswordForService:@"DissociatedPress" account:account[@"acct"] error:&error];
+//        if (error) NSLog(@"%@",error);
+//    }
+    
     [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.333 /r/NewsSalad"];
     [DSPAuthenticationManager loginWithKeychainWithCompletion:nil];
 }

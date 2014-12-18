@@ -18,9 +18,11 @@
 
 + (void)loginWithKeychainWithCompletion:(AuthenticationSuccessBlock)completion
 {
+    NSError *error;
     NSDictionary *account = [[SSKeychain accountsForService:@"DissociatedPress"] firstObject];
     NSString *username = account[@"acct"];
-    NSString *password = [SSKeychain passwordForService:@"DissociatedPress" account:username error:nil];
+    NSString *password = [SSKeychain passwordForService:@"DissociatedPress" account:username error:&error];
+    if (error) NSLog(@"%@",error);
     if ([username length] > 0 && [password length] > 0) {
         [DSPAuthenticationManager signInWithUsername:username password:password completion:completion];
     }
@@ -34,11 +36,13 @@
         if (!error)
         {
             //if login was successful, overwrite any credentials in the keychain with the current one
-            for (NSString *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
-                [SSKeychain deletePasswordForService:@"DissociatedPress" account:account error:nil];
+            for (NSDictionary *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
+                [SSKeychain deletePasswordForService:@"DissociatedPress" account:account[@"acct"] error:&error];
+                if (error) NSLog(@"%@",error);
             }
-            [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:nil];
-              
+            [SSKeychain setPassword:password forService:@"DissociatedPress" account:username error:&error];
+            if (error) NSLog(@"%@",error);
+            
         }
         if (completion) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -52,7 +56,9 @@
 {
     NSDictionary *account = [[SSKeychain accountsForService:@"DissociatedPress"] firstObject];
     NSString *username = account[@"acct"];
-    NSString *password = [SSKeychain passwordForService:@"DissociatedPress" account:username];
+    NSError *error;
+    NSString *password = [SSKeychain passwordForService:@"DissociatedPress" account:username error:&error];
+    if (error) NSLog(@"%@",error);
     return password;
 }
 
