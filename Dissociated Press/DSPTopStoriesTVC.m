@@ -10,6 +10,7 @@
 #import "DSPTopStoriesTableViewCell.h"
 #import <RedditKit/RedditKit.h>
 #import "DSPAuthenticationTVC.h"
+#import "DSPWebViewController.h"
 
 @interface DSPTopStoriesTVC () <UIAlertViewDelegate>
 @property (nonatomic, strong) RKPagination *currentPagination;
@@ -164,12 +165,28 @@
     [self.autoLayoutCell setNeedsLayout];
     [self.autoLayoutCell layoutIfNeeded];
     
-    
     CGFloat calculatedHeight = [self.autoLayoutCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
 
     self.rowHeightCache[link.fullName] = @(calculatedHeight);
     
     return calculatedHeight;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    RKLink *link = self.links[indexPath.row];
+    NSString *permalinkString = [link.permalink absoluteString];
+    NSURL *url;
+//    if ([permalinkString containsString:@"i.reddit.com"]) {
+        url = [NSURL URLWithString:permalinkString];
+//    } else if ([permalinkString containsString:@"reddit.com"]) {
+//        url = [NSURL URLWithString:[permalinkString stringByReplacingOccurrencesOfString:@"reddit.com" withString:@"i.reddit.com"]];
+//    }
+    
+    DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:url];
+    [self.navigationController pushViewController:webVC animated:YES];
+
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)promptSignIn

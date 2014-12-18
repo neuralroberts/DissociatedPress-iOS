@@ -30,6 +30,7 @@
 		43F75BA81A17E1450059FF33 /* DSPNewsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */; };
 		43F893AE1A377DFF004062E5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B5DFC91A36B35700D1877A /* Security.framework */; };
 		516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */; };
+		D34421FA1A43712200B2D06E /* DSPWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D34421F91A43712200B2D06E /* DSPWebViewController.m */; };
 		D3AD3B331A420D9B0022E60F /* DSPTopStoriesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3AD3B321A420D9B0022E60F /* DSPTopStoriesTableViewCell.m */; };
 		D3AD3B361A420DFA0022E60F /* DSPTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D3AD3B351A420DFA0022E60F /* DSPTableViewCell.m */; };
 /* End PBXBuildFile section */
@@ -91,6 +92,8 @@
 		43F75BA61A17E1450059FF33 /* DSPNewsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPNewsTableViewCell.m; sourceTree = "<group>"; };
 		9C70F543166701BD2A94167D /* Pods-Dissociated Press.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.release.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.release.xcconfig"; sourceTree = "<group>"; };
 		9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Dissociated Press.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D34421F81A43712200B2D06E /* DSPWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPWebViewController.h; sourceTree = "<group>"; };
+		D34421F91A43712200B2D06E /* DSPWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPWebViewController.m; sourceTree = "<group>"; };
 		D3AD3B311A420D9B0022E60F /* DSPTopStoriesTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopStoriesTableViewCell.h; sourceTree = "<group>"; };
 		D3AD3B321A420D9B0022E60F /* DSPTopStoriesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopStoriesTableViewCell.m; sourceTree = "<group>"; };
 		D3AD3B341A420DFA0022E60F /* DSPTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTableViewCell.h; sourceTree = "<group>"; };
@@ -210,6 +213,8 @@
 				43CFA12B1A3917F20023A7FD /* DSPAuthenticationTVC.m */,
 				43AB77451A40AC490085A25F /* DSPTopicsTVC.h */,
 				43AB77461A40AC490085A25F /* DSPTopicsTVC.m */,
+				D34421F81A43712200B2D06E /* DSPWebViewController.h */,
+				D34421F91A43712200B2D06E /* DSPWebViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -396,6 +401,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */,
+				D34421FA1A43712200B2D06E /* DSPWebViewController.m in Sources */,
 				43CFA12C1A3917F20023A7FD /* DSPAuthenticationTVC.m in Sources */,
 				4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */,
 				433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */,
