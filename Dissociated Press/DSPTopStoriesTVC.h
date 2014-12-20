@@ -8,6 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DSPTopStoriesTVC : UITableViewController
+
+@protocol DSPTopStoriesDelegate <NSObject>
+
+- (void)didRevokeVoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)didUpvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)didDownvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+
+
+@end
+
+@interface DSPTopStoriesTVC : UITableViewController <DSPTopStoriesDelegate>
+
+- (void)didRevokeVoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)didUpvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)didDownvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

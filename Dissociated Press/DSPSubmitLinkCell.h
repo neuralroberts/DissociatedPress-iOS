@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DSPTableViewCell.h"
 #import "DSPLabel.h"
+
 
 @protocol DSPSubmitLinkCellDelegate <NSObject>
 - (void)getNewCaptcha;
@@ -15,7 +17,7 @@
 - (void)commentSwitchDidChange:(UISwitch *)commentSwitch;
 @end
 
-@interface DSPSubmitLinkCell : UITableViewCell
+@interface DSPSubmitLinkCell : DSPTableViewCell
 
 @property (weak, nonatomic) id<DSPSubmitLinkCellDelegate, UITextFieldDelegate>delegate;
 @property (nonatomic, assign) BOOL isCaptchaCell;
@@ -26,7 +28,6 @@
 @property (strong, nonatomic) UIImageView *captchaImageView;
 @property (strong, nonatomic) UITextField *captchaTextField;
 @property (strong, nonatomic) UIButton *captchaRefreshButton;
-@property (strong, nonatomic) UIView *cardView;
 
 - (instancetype)initWithReuseIdentifier:(NSString*)reuseIdentifier;
 
