@@ -19,6 +19,7 @@
 @property (strong, nonatomic) DSPQueryHeaderView *queryHeaderView;
 @property (strong, nonatomic) DSPTopicHeaderView *topicHeaderView;
 @property (strong, nonatomic) UIPopoverController *topicsPopover;
+@property (strong, nonatomic) UIActivityIndicatorView *footerAcitivityIndicator;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) NSMutableArray *topics; //array of strings;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
@@ -50,6 +51,10 @@
     
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     self.topicHeaderView.delegate = self;
+    
+    self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.footerAcitivityIndicator.hidesWhenStopped = YES;
+    self.tableView.tableFooterView = self.footerAcitivityIndicator;
     
     /*
      *create a cell instance to use for autolayout sizing
@@ -88,6 +93,8 @@
 
 - (void)loadNews
 {
+    [self.footerAcitivityIndicator startAnimating];
+    
     self.navigationItem.title = [self tokenDescriptionString];
     
     for (int i = 0; i < self.queryHeaderView.stepper.maximumValue; i++) {
@@ -157,6 +164,7 @@
     return nil;
 }
 
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
@@ -166,6 +174,7 @@
     }
     return 0;
 }
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -206,6 +215,8 @@
                 });
             });
         }
+    } else {
+        [self.footerAcitivityIndicator stopAnimating];
     }
 }
 

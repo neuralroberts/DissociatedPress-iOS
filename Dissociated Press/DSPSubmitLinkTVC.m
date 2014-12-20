@@ -33,7 +33,7 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     __weak  __typeof(self)weakSelf = self;
-    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
+    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url resubmit:YES captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         NSString *submittedLinkName = [responseObject  valueForKeyPath:@"json.data.name"];
 
         if (!error && submittedLinkName) {

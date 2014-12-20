@@ -132,7 +132,6 @@
     } else {
         NSString *topic = self.topics[indexPath.row];
         [self.selectedTopics addObject:topic];
-        NSLog(@"%@",self.selectedTopics);
     }
 }
 
@@ -140,7 +139,6 @@
 {
     NSString *topic = self.topics[indexPath.row];
     [self.selectedTopics removeObject:topic];
-    NSLog(@"%@",self.selectedTopics);
 }
 
 

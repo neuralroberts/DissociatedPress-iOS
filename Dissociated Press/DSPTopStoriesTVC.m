@@ -18,6 +18,7 @@
 @property (strong, nonatomic) dispatch_queue_t linkLoaderQueue;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic, getter = isLoadingNewLinks) BOOL loadingNewLinks;
+@property (strong, nonatomic) UIActivityIndicatorView *footerAcitivityIndicator;
 
 @property (strong, nonatomic) DSPTopStoriesTableViewCell *autoLayoutCell;
 @property (strong, nonatomic) NSMutableDictionary *rowHeightCache;
@@ -48,6 +49,10 @@
     [self.refreshControl addTarget:self action:@selector(resetLinks) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
+    self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.footerAcitivityIndicator.hidesWhenStopped = YES;
+    self.tableView.tableFooterView = self.footerAcitivityIndicator;
+    
     [self resetLinks];
 }
 
@@ -62,7 +67,7 @@
     [self.refreshControl beginRefreshing];
     
     NSArray *indexPathsToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.links.count inSection:0];
-
+    
     self.links = @[];
     self.currentPagination = nil;
     
@@ -74,8 +79,10 @@
 - (void)loadNewLinks
 {
     self.loadingNewLinks = YES;
+    [self.footerAcitivityIndicator startAnimating];
     
     __weak __typeof(self)weakSelf = self;
+    
     
     [[RKClient sharedClient] linksInSubredditWithName:@"NewsSalad" pagination:weakSelf.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
         if (!error)
@@ -92,6 +99,7 @@
             [weakSelf.refreshControl endRefreshing];
             
             weakSelf.loadingNewLinks = NO;
+            [self.footerAcitivityIndicator stopAnimating];
         }
         else
         {
@@ -131,7 +139,7 @@
     cell.delegate = self;
     
     RKLink *link = self.links[indexPath.row];
-
+    
     cell.link = link;
     cell.indexPath = indexPath;
     [cell configureCell];
@@ -142,7 +150,9 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (!self.loadingNewLinks && indexPath.row >= self.links.count - 1) {
-        [self loadNewLinks];
+        if (self.currentPagination && [self.currentPagination.after length] > 0) {
+            [self loadNewLinks];
+        }
     }
 }
 
@@ -166,7 +176,7 @@
     [self.autoLayoutCell layoutIfNeeded];
     
     CGFloat calculatedHeight = [self.autoLayoutCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-
+    
     self.rowHeightCache[link.fullName] = @(calculatedHeight);
     
     return calculatedHeight;
@@ -177,15 +187,15 @@
     RKLink *link = self.links[indexPath.row];
     NSString *permalinkString = [link.permalink absoluteString];
     NSURL *url;
-//    if ([permalinkString containsString:@"i.reddit.com"]) {
-        url = [NSURL URLWithString:permalinkString];
-//    } else if ([permalinkString containsString:@"reddit.com"]) {
-//        url = [NSURL URLWithString:[permalinkString stringByReplacingOccurrencesOfString:@"reddit.com" withString:@"i.reddit.com"]];
-//    }
+    //    if ([permalinkString containsString:@"i.reddit.com"]) {
+    url = [NSURL URLWithString:permalinkString];
+    //    } else if ([permalinkString containsString:@"reddit.com"]) {
+    //        url = [NSURL URLWithString:[permalinkString stringByReplacingOccurrencesOfString:@"reddit.com" withString:@"i.reddit.com"]];
+    //    }
     
     DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:url];
     [self.navigationController pushViewController:webVC animated:YES];
-
+    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
