@@ -11,6 +11,7 @@
 #import "RKClient+DSP.h"
 #import "DSPAuthenticationTVC.h"
 #import <MBProgressHUD/MBProgressHUD.h>
+#import "DSPWebViewController.h"
 
 
 @interface DSPSubmitLinkTVC () <UIAlertViewDelegate>
@@ -285,7 +286,10 @@
 {
     NSString *cellType = self.cellsIndex[indexPath.row];
     
-    if ([cellType isEqualToString:@"userCell"]) {
+    if ([cellType isEqualToString:@"linkCell"]) {
+        DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:self.story.url];
+        [self.navigationController pushViewController:webVC animated:YES];
+    } else if ([cellType isEqualToString:@"userCell"]) {
         DSPAuthenticationTVC *authenticationTVC = [[DSPAuthenticationTVC alloc] init];
         [self.navigationController pushViewController:authenticationTVC animated:YES];
     }

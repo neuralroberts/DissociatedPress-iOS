@@ -82,6 +82,13 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"topicsCell" forIndexPath:indexPath];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"topicsCell"];
     
+    //    cell.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    //    cell.contentView.layer.cornerRadius = 5;
+    //    cell.contentView.layer.masksToBounds = YES;
+    //    cell.contentView.layer.borderWidth = 0.3;
+    //    cell.contentView.layer.borderColor = [UIColor grayColor].CGColor;
+    //    cell.contentView.backgroundColor = [UIColor whiteColor];
+    
     cell.layer.cornerRadius = 8;
     cell.layer.masksToBounds = YES;
     cell.layer.borderWidth = 3;
