@@ -67,6 +67,8 @@
     self.navigationItem.rightBarButtonItem = refreshButton;
     
     self.queryTypeControl = [[UISegmentedControl alloc] initWithItems:@[@"S",@"T"]];
+    [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarSearch"] forSegmentAtIndex:0];
+    [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarMostViewed"] forSegmentAtIndex:1];
     self.queryTypeControl.tintColor = [UIColor darkGrayColor];
     self.queryTypeControl.selectedSegmentIndex = 0;
     [self.queryTypeControl addTarget:self action:@selector(changedQueryType:) forControlEvents:UIControlEventValueChanged];

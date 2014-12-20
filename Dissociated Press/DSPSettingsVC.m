@@ -77,6 +77,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.tableView.separatorColor = [UIColor groupTableViewBackgroundColor];
+    self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
 }
 
@@ -129,6 +132,13 @@
     NSString *reuseIdentifer = @"cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifer forIndexPath:indexPath];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifer];
+    
+    cell.layer.cornerRadius = 4;
+    cell.layer.masksToBounds = YES;
+    cell.layer.borderWidth = 0;
+    cell.layer.borderColor = [UIColor groupTableViewBackgroundColor].CGColor;
+    cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     if (indexPath.section == SECTION_SETTINGS) {
         if (indexPath.row == 0) {

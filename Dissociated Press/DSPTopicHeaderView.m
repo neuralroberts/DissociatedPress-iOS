@@ -24,7 +24,7 @@
     self.layer.shadowRadius = 4;
     
     self.headerLabel = [[UILabel alloc] init];
-    self.headerLabel.text = @"Search by topics";
+    self.headerLabel.text = @"Search by topic";
     self.headerLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.headerLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.headerLabel.textAlignment = NSTextAlignmentCenter;
