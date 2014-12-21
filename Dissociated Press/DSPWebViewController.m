@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) UIActivityIndicatorView *activityIndicator;
 @property (strong, nonatomic) UIBarButtonItem *backButton;
+@property (strong, nonatomic) UIBarButtonItem *refreshButton;
 @property (strong, nonatomic) UIBarButtonItem *forwardButton;
 
 @end
@@ -37,9 +38,10 @@
     
     self.backButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(goBack:)];
     self.backButton.enabled = self.webView.canGoBack;
+    self.refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refresh:)];
     self.forwardButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward target:self action:@selector(goForward:)];
     self.forwardButton.enabled = self.webView.canGoForward;
-    self.navigationItem.rightBarButtonItems = @[self.forwardButton, self.backButton];
+    self.navigationItem.rightBarButtonItems = @[self.forwardButton, self.refreshButton, self.backButton];
     
     return self;
 }
@@ -60,6 +62,11 @@
     if (self.webView.canGoBack) {
         [self.webView goBack];
     }
+}
+
+- (void)refresh:(UIBarButtonItem *)sender
+{
+    [self.webView reload];
 }
 
 - (void)goForward:(UIButton *)sender

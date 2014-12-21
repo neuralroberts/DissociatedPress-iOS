@@ -41,20 +41,20 @@
     [super viewDidLoad];
     
     self.queries = [NSMutableArray array];
-    self.topics = [NSMutableArray arrayWithObjects:@"Headlines", nil];
+    self.topics = [NSMutableArray arrayWithObjects:@"Headlines", @"World", @"Technology", @"Entertainment", @"Health", nil];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    self.queryHeaderView = [[DSPQueryHeaderView alloc] init];
-    self.queryHeaderView.delegate = self;
+    self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.footerAcitivityIndicator.hidesWhenStopped = YES;
+    self.tableView.tableFooterView = self.footerAcitivityIndicator;
     
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     self.topicHeaderView.delegate = self;
     
-    self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.footerAcitivityIndicator.hidesWhenStopped = YES;
-    self.tableView.tableFooterView = self.footerAcitivityIndicator;
+    self.queryHeaderView = [[DSPQueryHeaderView alloc] init];
+    self.queryHeaderView.delegate = self;
     
     /*
      *create a cell instance to use for autolayout sizing
@@ -71,9 +71,9 @@
     refreshButton.tintColor = [UIColor darkGrayColor];
     self.navigationItem.rightBarButtonItem = refreshButton;
     
-    self.queryTypeControl = [[UISegmentedControl alloc] initWithItems:@[@"S",@"T"]];
-    [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarSearch"] forSegmentAtIndex:0];
-    [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarMostViewed"] forSegmentAtIndex:1];
+    self.queryTypeControl = [[UISegmentedControl alloc] initWithItems:@[@"T",@"S"]];
+    [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarMostViewed"] forSegmentAtIndex:0];
+    [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarSearch"] forSegmentAtIndex:1];
     self.queryTypeControl.tintColor = [UIColor darkGrayColor];
     self.queryTypeControl.selectedSegmentIndex = 0;
     [self.queryTypeControl addTarget:self action:@selector(changedQueryType:) forControlEvents:UIControlEventValueChanged];
@@ -120,9 +120,9 @@
         DSPDissociatedNewsLoader *newsLoader = [[DSPDissociatedNewsLoader alloc] init];
         NSArray *newNews = @[];
         if (self.queryTypeControl.selectedSegmentIndex == 0) {
-            newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)] pageNumber:self.pageNumber];
-        } else {
             newNews = [newsLoader loadDissociatedNewsForTopics:self.topics pageNumber:self.pageNumber];
+        } else {
+            newNews = [newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)] pageNumber:self.pageNumber];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -159,9 +159,9 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
-        if (section == 0) return self.queryHeaderView;
-    } else {
         if (section == 0) return self.topicHeaderView;
+    } else {
+        if (section == 0) return self.queryHeaderView;
     }
     return nil;
 }
@@ -170,9 +170,10 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
-        if (section == 0) return [self.queryHeaderView headerHeight];
-    } else {
         if (section == 0) return [self.topicHeaderView headerHeight];
+        
+    } else {
+        if (section == 0) return [self.queryHeaderView headerHeight];
     }
     return 0;
 }
@@ -205,9 +206,9 @@
                 self.pageNumber++;
                 NSArray *newNews = @[];
                 if (self.queryTypeControl.selectedSegmentIndex == 0) {
-                    newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)] pageNumber:self.pageNumber];
-                } else {
                     newNews = [self.newsLoader loadDissociatedNewsForTopics:self.topics pageNumber:self.pageNumber];
+                } else {
+                    newNews = [self.newsLoader loadDissociatedNewsForQueries:[self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)] pageNumber:self.pageNumber];
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -287,9 +288,9 @@
     submissionVC.story = story;
     submissionVC.tokenDescriptionString = [self tokenDescriptionString];
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
-        submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)];
-    } else {
         submissionVC.topics = self.topics;
+    } else {
+        submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)];
     }
     [self.navigationController pushViewController:submissionVC animated:YES];
 }

@@ -53,11 +53,13 @@
 
 - (CGFloat)headerHeight
 {
-    return 44.0;
+    return (32.0 + self.headerLabel.intrinsicContentSize.height);
 }
 
 - (void)applyConstraints
 {
+    NSLayoutConstraint *constraint;
+    
     [self.headerButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.headerButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
@@ -67,7 +69,7 @@
                                                         toItem:self
                                                      attribute:NSLayoutAttributeLeading
                                                     multiplier:1
-                                                      constant:8]];
+                                                      constant:0]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.headerLabel
                                                      attribute:NSLayoutAttributeTop
@@ -75,7 +77,7 @@
                                                         toItem:self
                                                      attribute:NSLayoutAttributeTop
                                                     multiplier:1
-                                                      constant:8]];
+                                                      constant:0]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self
                                                      attribute:NSLayoutAttributeTrailing
@@ -83,7 +85,7 @@
                                                         toItem:self.headerLabel
                                                      attribute:NSLayoutAttributeTrailing
                                                     multiplier:1
-                                                      constant:8]];
+                                                      constant:0]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self
                                                      attribute:NSLayoutAttributeBottom
@@ -91,15 +93,18 @@
                                                         toItem:self.headerLabel
                                                      attribute:NSLayoutAttributeBottom
                                                     multiplier:1
-                                                      constant:8]];
+                                                      constant:0]];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self
-                                                     attribute:NSLayoutAttributeTrailing
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self.headerButton
-                                                     attribute:NSLayoutAttributeTrailing
-                                                    multiplier:1
-                                                      constant:16]];
+    //this constraint cant be required, or it will conflict with the 'UIView-Encapsulated-Layout-Width' of 0, before the table view's frame has been set. Or something like that.
+    constraint = [NSLayoutConstraint constraintWithItem:self
+                                              attribute:NSLayoutAttributeTrailing
+                                              relatedBy:NSLayoutRelationEqual
+                                                 toItem:self.headerButton
+                                              attribute:NSLayoutAttributeTrailing
+                                             multiplier:1
+                                               constant:16];
+    [constraint setPriority:999.0];
+    [self addConstraint:constraint];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.headerButton
                                                      attribute:NSLayoutAttributeLeading
@@ -107,13 +112,21 @@
                                                         toItem:self
                                                      attribute:NSLayoutAttributeLeading
                                                     multiplier:1
-                                                      constant:16]];
+                                                      constant:0]];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.headerLabel
-                                                     attribute:NSLayoutAttributeCenterY
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.headerButton
+                                                     attribute:NSLayoutAttributeTop
                                                      relatedBy:NSLayoutRelationEqual
-                                                        toItem:self.headerButton
-                                                     attribute:NSLayoutAttributeCenterY
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeTop
+                                                    multiplier:1
+                                                      constant:0]];
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.headerButton
+                                                     attribute:NSLayoutAttributeBottom
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeBottom
                                                     multiplier:1
                                                       constant:0]];
 }
