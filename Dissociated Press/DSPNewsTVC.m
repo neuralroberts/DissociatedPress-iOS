@@ -48,7 +48,6 @@
     
     self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.footerAcitivityIndicator.hidesWhenStopped = YES;
-    self.tableView.tableFooterView = self.footerAcitivityIndicator;
     
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     self.topicHeaderView.delegate = self;
@@ -164,6 +163,11 @@
         if (section == 0) return self.queryHeaderView;
     }
     return nil;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    return self.footerAcitivityIndicator;
 }
 
 

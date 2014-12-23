@@ -123,6 +123,32 @@
     }];
 }
 
+- (void)setNavigationTitle
+{
+    switch (self.currentCategory) {
+        case 1:
+            self.navigationItem.title = @"Hot stories";
+            break;
+        case 2:
+            self.navigationItem.title = @"New stories";
+            break;
+        case 3:
+            self.navigationItem.title = @"Rising stories";
+            break;
+        case 4:
+            self.navigationItem.title = @"Controversial stories";
+            break;
+        case 5:
+            self.navigationItem.title = @"Top stories";
+            break;
+            
+            
+        default:
+            self.navigationItem.title = @"Shared stories";
+            break;
+    }
+}
+
 - (NSArray *)indexPathArrayForRangeFromStart:(NSInteger)start toEnd:(NSInteger)end inSection:(NSInteger)section
 {
     //returns an array of index paths in the given range
@@ -234,6 +260,7 @@
     }
 }
 
+
 #pragma mark - DSPTopStoriesDelegate
 
 - (void)didRevokeVoteInCellAtIndexPath:(NSIndexPath *)indexPath
@@ -297,32 +324,6 @@
     
     self.currentCategory = (RKSubredditCategory)buttonIndex + 1;
     [self resetLinks];
-}
-
-- (void)setNavigationTitle
-{
-    switch (self.currentCategory) {
-        case 1:
-            self.navigationItem.title = @"Hot stories";
-            break;
-        case 2:
-            self.navigationItem.title = @"New stories";
-            break;
-        case 3:
-            self.navigationItem.title = @"Rising stories";
-            break;
-        case 4:
-            self.navigationItem.title = @"Controversial stories";
-            break;
-        case 5:
-            self.navigationItem.title = @"Top stories";
-            break;
-            
-            
-        default:
-            self.navigationItem.title = @"Shared stories";
-            break;
-    }
 }
 
 @end

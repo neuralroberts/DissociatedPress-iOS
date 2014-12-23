@@ -45,6 +45,7 @@
     UINavigationController *settingsNavigationVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
 
     UITabBarController *tabController = [[UITabBarController alloc] init];
+    tabController.tabBar.translucent = NO;
     tabController.viewControllers = @[newsNavigationVC, topNavigationVC, settingsNavigationVC];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
