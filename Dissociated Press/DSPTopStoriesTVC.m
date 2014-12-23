@@ -12,8 +12,9 @@
 #import "DSPAuthenticationTVC.h"
 #import "DSPWebViewController.h"
 
-@interface DSPTopStoriesTVC () <UIAlertViewDelegate>
+@interface DSPTopStoriesTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) RKPagination *currentPagination;
+@property (nonatomic) RKSubredditCategory currentCategory;
 @property (strong, nonatomic) NSArray *links;
 @property (strong, nonatomic) dispatch_queue_t linkLoaderQueue;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
@@ -30,8 +31,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"Top Stories";
-    
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -45,6 +44,9 @@
     
     self.linkLoaderQueue = dispatch_queue_create("com.DissociatedPress.newsLoaderQueue", DISPATCH_QUEUE_CONCURRENT);
     
+    UIBarButtonItem *sortButton = [[UIBarButtonItem alloc] initWithTitle:@"Sort  \u25be" style:UIBarButtonItemStylePlain target:self action:@selector(showSortActionSheet)];
+    self.navigationItem.rightBarButtonItem = sortButton;
+    
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(resetLinks) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
@@ -54,6 +56,8 @@
     self.tableView.tableFooterView = self.footerAcitivityIndicator;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
+    
+    self.currentCategory = (RKSubredditCategory)1;
     
     [self resetLinks];
     
@@ -74,10 +78,14 @@
 {
     [self.refreshControl beginRefreshing];
     
+    [self setNavigationTitle];
+    
     NSArray *indexPathsToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.links.count inSection:0];
     
     self.links = @[];
-    self.currentPagination = nil;
+    self.currentPagination = [RKPagination new];
+    self.currentPagination.timeMethod = RKTimeSortingMethodAllTime;
+
     
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
     
@@ -91,8 +99,7 @@
     
     __weak __typeof(self)weakSelf = self;
     
-    
-    [[RKClient sharedClient] linksInSubredditWithName:@"NewsSalad" pagination:weakSelf.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
+    [[RKClient sharedClient] linksInSubredditWithName:@"NewsSalad" category:self.currentCategory pagination:weakSelf.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
         if (!error)
         {
             [[weakSelf tableView] beginUpdates];
@@ -265,6 +272,56 @@
         }];
     } else {
         [self promptSignIn];
+    }
+}
+
+#pragma mark - action sheet
+
+- (void)showSortActionSheet
+{
+    UIActionSheet *sortActionSheet = [[UIActionSheet alloc] initWithTitle:@"Sort by..."
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"Cancel"
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:@"Hot", @"New", @"Rising", @"Controversial", @"Top", nil];
+    [sortActionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+//    RKSubredditCategoryHot = 1,
+//    RKSubredditCategoryNew,
+//    RKSubredditCategoryRising,
+//    RKSubredditCategoryControversial,
+//    RKSubredditCategoryTop
+    
+    self.currentCategory = (RKSubredditCategory)buttonIndex + 1;
+    [self resetLinks];
+}
+
+- (void)setNavigationTitle
+{
+    switch (self.currentCategory) {
+        case 1:
+            self.navigationItem.title = @"Hot stories";
+            break;
+        case 2:
+            self.navigationItem.title = @"New stories";
+            break;
+        case 3:
+            self.navigationItem.title = @"Rising stories";
+            break;
+        case 4:
+            self.navigationItem.title = @"Controversial stories";
+            break;
+        case 5:
+            self.navigationItem.title = @"Top stories";
+            break;
+            
+            
+        default:
+            self.navigationItem.title = @"Shared stories";
+            break;
     }
 }
 
