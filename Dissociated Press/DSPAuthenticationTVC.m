@@ -37,11 +37,6 @@
         usernameTextField.borderStyle = UITextBorderStyleBezel;
         [usernameTextField addTarget:self action:@selector(updateDoneButtonStatus) forControlEvents:UIControlEventEditingChanged];
         
-        NSString *username = [DSPAuthenticationManager usernameForDissociatedPress];
-        if ([username length] > 0) {
-            usernameTextField.text = username;
-        }
-        
         _usernameTextField = usernameTextField;
     }
     return _usernameTextField;
@@ -61,11 +56,6 @@
         passwordTextField.secureTextEntry = YES;
         passwordTextField.borderStyle = UITextBorderStyleBezel;
         [passwordTextField addTarget:self action:@selector(updateDoneButtonStatus) forControlEvents:UIControlEventEditingChanged];
-        
-        NSString *password = [DSPAuthenticationManager passwordForDissociatedPress];
-        if ([password length] > 0) {
-            passwordTextField.text = password;
-        }
         
         _passwordTextField = passwordTextField;
     }
@@ -112,6 +102,16 @@
 
 - (void)authenticationStateDidChange
 {
+    NSString *username = [DSPAuthenticationManager usernameForDissociatedPress];
+    if ([username length] > 0) {
+        self.usernameTextField.text = username;
+    } else self.usernameTextField.text = nil;
+    
+    NSString *password = [DSPAuthenticationManager passwordForDissociatedPress];
+    if ([password length] > 0) {
+        self.passwordTextField.text = password;
+    } else self.passwordTextField.text = nil;
+    
     if ([[RKClient sharedClient] isSignedIn]) {
         self.navigationItem.rightBarButtonItem = self.signOutButton;
         self.usernameTextField.enabled = NO;
@@ -130,7 +130,12 @@
 
 - (void)signOut
 {
-    [DSPAuthenticationManager signOut];
+    UIAlertView *signOutAlert = [[UIAlertView alloc] initWithTitle:@"Really sign out?"
+                                                           message:@"Just making sure"
+                                                          delegate:self
+                                                 cancelButtonTitle:@"No"
+                                                 otherButtonTitles:@"Sign out", nil];
+    [signOutAlert show];
 }
 
 - (void)done
@@ -280,6 +285,12 @@
     
     if ([alertView.title isEqualToString:@"Logged in"]) {
         [self.navigationController popViewControllerAnimated:YES];
+    }
+    
+    if ([alertView.title isEqualToString:@"Really sign out?"]) {
+        if (buttonIndex == 1) {
+            [DSPAuthenticationManager signOut];
+        }
     }
 }
 

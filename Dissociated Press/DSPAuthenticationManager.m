@@ -58,6 +58,11 @@
 + (void)signOut
 {
     [[RKClient sharedClient] signOut];
+    for (NSDictionary *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
+        NSError *error;
+        [SSKeychain deletePasswordForService:@"DissociatedPress" account:account[@"acct"] error:&error];
+        if (error) NSLog(@"%@",error);
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"authenticationStateDidChange" object:nil];
 }
 
