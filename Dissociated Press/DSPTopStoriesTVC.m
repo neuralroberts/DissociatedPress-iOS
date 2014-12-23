@@ -53,13 +53,21 @@
     self.footerAcitivityIndicator.hidesWhenStopped = YES;
     self.tableView.tableFooterView = self.footerAcitivityIndicator;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
+    
     [self resetLinks];
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     NSLog(@"%@",NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
+}
+
+- (void)authenticationStateDidChange
+{
+    [self resetLinks];
 }
 
 - (void)resetLinks

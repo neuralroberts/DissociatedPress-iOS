@@ -111,6 +111,8 @@
     
     self.includeComment = [[NSUserDefaults standardUserDefaults] boolForKey:@"includeComment"];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
+
     [self getNewCaptcha];
 }
 
@@ -120,9 +122,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)authenticationStateDidChange
 {
-    [self.tableView reloadData];
+    NSIndexPath *userCellIndexPath = [NSIndexPath indexPathForItem:[self.cellsIndex indexOfObject:@"userCell"] inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[userCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self updateSubmitButtonStatus];
 }
 

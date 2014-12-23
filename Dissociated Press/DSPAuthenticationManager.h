@@ -13,7 +13,7 @@ typedef void(^AuthenticationSuccessBlock)(NSError *error);
 
 + (void)loginWithKeychainWithCompletion:(AuthenticationSuccessBlock)completion;
 + (void)signInWithUsername:(NSString *)username password:(NSString *)password completion:(AuthenticationSuccessBlock)completion;
-
++ (void)signOut;
 + (NSString *)passwordForDissociatedPress;
 + (NSString *)usernameForDissociatedPress;
 

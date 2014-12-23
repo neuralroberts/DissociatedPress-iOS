@@ -95,7 +95,7 @@
                                                     multiplier:1
                                                       constant:0]];
     
-    //this constraint cant be required, or it will conflict with the 'UIView-Encapsulated-Layout-Width' of 0, before the table view's frame has been set. Or something like that.
+    //this constraint cant be required, or it will conflict with the 'UIView-Encapsulated-Layout-Width' of 0, before the table view's frame has been set. Or something like that. 
     constraint = [NSLayoutConstraint constraintWithItem:self
                                               attribute:NSLayoutAttributeTrailing
                                               relatedBy:NSLayoutRelationEqual

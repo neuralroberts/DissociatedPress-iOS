@@ -40,7 +40,7 @@
     topTVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemTopRated tag:1];
     UINavigationController *topNavigationVC = [[UINavigationController alloc] initWithRootViewController:topTVC];
     
-    DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] init];
+    DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] initWithStyle:UITableViewStyleGrouped];
     settingsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"UIButtonBarGear"] tag:2];
     UINavigationController *settingsNavigationVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
 

@@ -7,12 +7,17 @@
 //
 
 #import "DSPSettingsVC.h"
+#import "DSPAuthenticationTVC.h"
+#import <RedditKit/RedditKit.h>
 
-#define NUM_SECTIONS 1
 
-#define SECTION_SETTINGS 0
+#define NUM_SECTIONS 2
 
-#define NUM_ROWS_SETTINGS 2
+#define SECTION_DISSOCIATOR 0
+#define SECTION_ACCOUNTS 1
+
+#define NUM_ROWS_DISSOCIATOR 2
+#define NUM_ROWS_ACCOUNTS 1
 
 @interface DSPSettingsVC ()
 
@@ -81,6 +86,14 @@
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
+}
+
+- (void)authenticationStateDidChange
+{
+    NSIndexPath *redditAccountCell = [NSIndexPath indexPathForItem:0 inSection:SECTION_ACCOUNTS];
+    [self.tableView reloadRowsAtIndexPaths:@[redditAccountCell] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -108,6 +121,23 @@
     [defaults synchronize];
 }
 
+#pragma mark - UITableViewDataSource
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    switch (section) {
+        case 0:
+            return @"Dissociator settings";
+            break;
+            case 1:
+            return @"Accounts";
+            break;
+            
+        default:
+            return nil;
+            break;
+    }
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -117,8 +147,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     switch (section) {
-        case SECTION_SETTINGS:
-            return NUM_ROWS_SETTINGS;
+        case SECTION_DISSOCIATOR:
+            return NUM_ROWS_DISSOCIATOR;
+            break;
+        case SECTION_ACCOUNTS:
+            return NUM_ROWS_ACCOUNTS;
             break;
             
         default:
@@ -133,14 +166,15 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifer forIndexPath:indexPath];
     if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifer];
     
-    cell.layer.cornerRadius = 4;
+    cell.layer.cornerRadius = 12.0;
     cell.layer.masksToBounds = YES;
-    cell.layer.borderWidth = 0;
+    cell.layer.borderWidth = 8.0;
     cell.layer.borderColor = [UIColor groupTableViewBackgroundColor].CGColor;
     cell.textLabel.backgroundColor = [UIColor clearColor];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if (indexPath.section == SECTION_SETTINGS) {
+    if (indexPath.section == SECTION_DISSOCIATOR) {
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
         if (indexPath.row == 0) {
             self.tokenSizeSlider.frame = CGRectMake(cell.contentView.frame.origin.x + 112.0,
                                                     cell.contentView.frame.origin.y,
@@ -158,17 +192,52 @@
             [cell.contentView addSubview:self.tokenSizeSlider];
             [cell.contentView addSubview:self.tokenSizeLabel];
         } else if (indexPath.row == 1) {
-            self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 128.0,
-                                                            cell.contentView.frame.origin.y,
+            self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 144.0,
+                                                            cell.contentView.frame.origin.y + 16.0,
                                                             120.0,
-                                                            cell.contentView.frame.size.height);
+                                                            cell.contentView.frame.size.height - 32.0);
             self.dissociateByWordControl.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth;
             
             cell.textLabel.text = @"Dissociate by:";
             [cell.contentView addSubview:self.dissociateByWordControl];
         }
+    } else if (indexPath.section == SECTION_ACCOUNTS) {
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        cell.textLabel.text = @"Reddit account";
+        
+        UILabel *accountNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 144.0,
+                                                                              cell.contentView.frame.origin.y + 16.0,
+                                                                              200.0,
+                                                                              cell.contentView.frame.size.height - 32.0)];
+        accountNameLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+        [cell.contentView addSubview:accountNameLabel];
+        if ([[RKClient sharedClient] isSignedIn]) {
+            accountNameLabel.text = [[[RKClient sharedClient] currentUser] username];
+            accountNameLabel.textColor = [UIColor darkGrayColor];
+        } else {
+            accountNameLabel.text = @"Not signed in";
+            accountNameLabel.textColor = [UIColor redColor];
+        }
     }
     return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 72.0;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == SECTION_DISSOCIATOR) {
+    } else if (indexPath.section == SECTION_ACCOUNTS) {
+        DSPAuthenticationTVC *authenticationTVC = [[DSPAuthenticationTVC alloc] init];
+        [self.navigationController pushViewController:authenticationTVC animated:YES];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

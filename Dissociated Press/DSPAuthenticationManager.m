@@ -33,6 +33,9 @@
     [[RKClient sharedClient] signOut];
     
     [[RKClient sharedClient] signInWithUsername:username password:password completion:^(NSError *error) {
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"authenticationStateDidChange" object:nil];
+        
         if (!error)
         {
             //if login was successful, overwrite any credentials in the keychain with the current one
@@ -50,6 +53,12 @@
             });
         }
     }];
+}
+
++ (void)signOut
+{
+    [[RKClient sharedClient] signOut];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"authenticationStateDidChange" object:nil];
 }
 
 + (NSString *)passwordForDissociatedPress

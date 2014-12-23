@@ -13,6 +13,7 @@
 
 @interface DSPAuthenticationTVC () <UITextFieldDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) UIBarButtonItem *doneButton;
+@property (strong, nonatomic) UIBarButtonItem *signOutButton;
 @property (strong, nonatomic) UITextField *usernameTextField;
 @property (strong, nonatomic) UITextField *passwordTextField;
 @property (strong, nonatomic) UIButton *createAccountButton;
@@ -96,13 +97,40 @@
     self.doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
     self.navigationItem.rightBarButtonItem = self.doneButton;
     
-    [self updateDoneButtonStatus];
+    self.signOutButton = [[UIBarButtonItem alloc] initWithTitle:@"Sign out" style:UIBarButtonItemStylePlain target:self action:@selector(signOut)];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
+    
+    [self authenticationStateDidChange];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     NSLog(@"%@",NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
+}
+
+- (void)authenticationStateDidChange
+{
+    if ([[RKClient sharedClient] isSignedIn]) {
+        self.navigationItem.rightBarButtonItem = self.signOutButton;
+        self.usernameTextField.enabled = NO;
+        self.passwordTextField.enabled = NO;
+        self.usernameTextField.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        self.passwordTextField.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    } else {
+        self.navigationItem.rightBarButtonItem = self.doneButton;
+        self.usernameTextField.enabled = YES;
+        self.passwordTextField.enabled = YES;
+        self.usernameTextField.backgroundColor = [UIColor whiteColor];
+        self.passwordTextField.backgroundColor = [UIColor whiteColor];
+        [self updateDoneButtonStatus];
+    }
+}
+
+- (void)signOut
+{
+    [DSPAuthenticationManager signOut];
 }
 
 - (void)done
