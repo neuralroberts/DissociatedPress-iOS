@@ -205,12 +205,18 @@
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         cell.textLabel.text = @"Reddit account";
         
+        for (UIView *view in cell.contentView.subviews) {
+            if ([view isKindOfClass:[UILabel class]]) {
+                [view removeFromSuperview];
+            }
+        }
         UILabel *accountNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 144.0,
                                                                               cell.contentView.frame.origin.y + 16.0,
                                                                               200.0,
                                                                               cell.contentView.frame.size.height - 32.0)];
         accountNameLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         [cell.contentView addSubview:accountNameLabel];
+        
         if ([[RKClient sharedClient] isSignedIn]) {
             accountNameLabel.text = [[[RKClient sharedClient] currentUser] username];
             accountNameLabel.textColor = [UIColor darkGrayColor];
