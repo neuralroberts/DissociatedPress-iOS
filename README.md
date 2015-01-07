@@ -1,7 +1,7 @@
 DissociatedPress-iOS
 ====================
 
-Dissociated Press news reader for iOS (universal)
+Probabilistic humor generator for iOS.
 
 [reddit.com/r/NewsSalad][1]
 
@@ -9,8 +9,8 @@ An iOS app which fetches news using the Google Feed API and generates new, bette
 
 Supports changing of parameters (token size, word/letter based tokenization) and merging of multiple queries to build the source text.
 
-![screenshot1](http://i.imgur.com/fcmDTr0.png)
-![screenshot2](http://i.imgur.com/qKSeMYj.png)
+![screenshot1](http://i.imgur.com/n86gNLq.png)
+![screenshot2](http://i.imgur.com/fcmDTr0.png)
 
 Installation
 ====================
