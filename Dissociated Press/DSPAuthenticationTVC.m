@@ -10,6 +10,7 @@
 #import <RedditKit/RedditKit.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "DSPAuthenticationManager.h"
+#import "DSPWebViewController.h"
 
 @interface DSPAuthenticationTVC () <UITextFieldDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) UIBarButtonItem *doneButton;
@@ -17,6 +18,7 @@
 @property (strong, nonatomic) UITextField *usernameTextField;
 @property (strong, nonatomic) UITextField *passwordTextField;
 @property (strong, nonatomic) UIButton *createAccountButton;
+@property (strong, nonatomic) UIButton *redditInfoButton;
 @end
 
 @implementation DSPAuthenticationTVC
@@ -68,12 +70,28 @@
         UIButton *createAccountButton = [[UIButton alloc] init];
         [createAccountButton setTitle:@"Create a reddit account" forState:UIControlStateNormal];
         [createAccountButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [createAccountButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
         createAccountButton.backgroundColor = [UIColor groupTableViewBackgroundColor];
         createAccountButton.translatesAutoresizingMaskIntoConstraints = NO;
         [createAccountButton addTarget:self action:@selector(didPressCreateAccountButton) forControlEvents:UIControlEventTouchUpInside];
         _createAccountButton = createAccountButton;
     }
     return _createAccountButton;
+}
+
+- (UIButton *)redditInfoButton
+{
+    if (!_redditInfoButton) {
+        UIButton *redditInfoButton = [[UIButton alloc] init];
+        [redditInfoButton setTitle:@"What is reddit?" forState:UIControlStateNormal];
+        [redditInfoButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [redditInfoButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
+        redditInfoButton.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        redditInfoButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [redditInfoButton addTarget:self action:@selector(didPressRedditInfoButton) forControlEvents:UIControlEventTouchUpInside];
+        _redditInfoButton = redditInfoButton;
+    }
+    return _redditInfoButton;
 }
 
 - (void)viewDidLoad {
@@ -184,13 +202,14 @@
 
 - (void)didPressCreateAccountButton
 {
-    UIAlertView *createAccountAlert = [[UIAlertView alloc] initWithTitle:@"Create reddit account"
-                                                                 message:@"Open reddit.com in Safari?"
-                                                                delegate:self
-                                                       cancelButtonTitle:@"Cancel"
-                                                       otherButtonTitles:@"Open Safari", nil];
-    
-    [createAccountAlert show];
+    DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:[NSURL URLWithString:@"https://www.reddit.com/login"]];
+    [self.navigationController pushViewController:webVC animated:YES];
+}
+
+- (void)didPressRedditInfoButton
+{
+    DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:[NSURL URLWithString:@"https://www.reddit.com/wiki/reddit_101"]];
+    [self.navigationController pushViewController:webVC animated:YES];
 }
 
 #pragma mark - Table view data source
@@ -200,7 +219,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 
@@ -219,6 +238,9 @@
     } else if (indexPath.row == 2) {
         [cell.contentView addSubview:self.createAccountButton];
         [self pinView:self.createAccountButton toSuperview:cell.contentView];
+    } else if (indexPath.row == 3) {
+        [cell.contentView addSubview:self.redditInfoButton];
+        [self pinView:self.redditInfoButton toSuperview:cell.contentView];
     }
     [cell setNeedsLayout];
     [cell layoutIfNeeded];
@@ -277,12 +299,6 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if ([alertView.title isEqualToString:@"Create reddit account"]) {
-        if (buttonIndex == 1) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.reddit.com/login"]];
-        }
-    }
-    
     if ([alertView.title isEqualToString:@"Logged in"]) {
         [self.navigationController popViewControllerAnimated:YES];
     }
