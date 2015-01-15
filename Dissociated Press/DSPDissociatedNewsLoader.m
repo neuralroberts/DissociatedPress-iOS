@@ -7,14 +7,15 @@
 //
 
 #import "DSPDissociatedNewsLoader.h"
-#import "DSPNewsStory.h"
 
 @interface DSPDissociatedNewsLoader ()
 
 @property (strong, nonatomic) NSMutableArray *titleTokens;
 @property (strong, nonatomic) NSMutableDictionary *titleTokenContext;
+@property (strong, nonatomic) NSMutableDictionary *titleSourceText;
 @property (strong, nonatomic) NSMutableArray *contentTokens;
 @property (strong, nonatomic) NSMutableDictionary *contentTokenContext;
+@property (strong, nonatomic) NSMutableDictionary *contentSourceText;
 
 @property (nonatomic) NSInteger tokenSize;
 @property (strong, nonatomic) NSNumber *dissociateByWord;
@@ -28,8 +29,10 @@
     if (self) {
         self.titleTokens = [NSMutableArray array];
         self.titleTokenContext = [NSMutableDictionary dictionary];
+        self.titleSourceText = [NSMutableDictionary dictionary];
         self.contentTokens = [NSMutableArray array];
         self.contentTokenContext = [NSMutableDictionary dictionary];
+        self.contentSourceText = [NSMutableDictionary dictionary];
         self.tokenSize = [[NSUserDefaults standardUserDefaults] integerForKey:@"tokenSizeParameter"];
         self.dissociateByWord = [NSNumber numberWithBool:[[NSUserDefaults standardUserDefaults] boolForKey:@"dissociateByWordParameter"]];
     }
@@ -44,13 +47,19 @@
         [results addObjectsFromArray:[super loadNewsForTopic:topic pageNumber:pageNumber]];
     }
     
-    //shuffle stories
-    for (int i = 0; i < results.count; i++)
-    {
-        [results exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform(i+1)];
+    for (DSPNewsStory *story in results) {
+        story.titleSeed = [self addString:story.title toSourceText:self.titleSourceText];
+        story.contentSeed = [self addString:story.content toSourceText:self.contentSourceText];
     }
     
-    return [self dissociateResults:results];
+    for (DSPNewsStory *story in results) {
+        story.dissociatedTitle = [self dissociatedTitleForStory:story];
+        story.dissociatedContent = [self dissociatedContentForStory:story];
+    }
+    
+    return results;
+    
+    //    return [self dissociateResults:results];
 }
 
 - (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)pageNumber
@@ -60,15 +69,105 @@
     for (NSString *query in queries) {
         [results addObjectsFromArray:[super loadNewsForQuery:query pageNumber:pageNumber]];
     }
-
-    //shuffle stories
-    for (int i = 0; i < results.count; i++)
-    {
-        [results exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform(i+1)];
+    
+    for (DSPNewsStory *story in results) {
+        story.titleSeed = [self addString:story.title toSourceText:self.titleSourceText];
+        story.contentSeed = [self addString:story.content toSourceText:self.contentSourceText];
     }
     
-    return [self dissociateResults:results];
+    for (DSPNewsStory *story in results) {
+        story.dissociatedTitle = [self dissociatedTitleForStory:story];
+        story.dissociatedContent = [self dissociatedContentForStory:story];
+    }
+    
+    return results;
+
+    //    return [self dissociateResults:results];
 }
+
+- (NSString *)addString:(NSString *)sourceString toSourceText:(NSMutableDictionary *)sourceText
+{
+    /*tokenizes the given string and builds a markov chain representation of it,
+     where each token is a key in a dictionary, whose value is an array of tokens which followed it in the source string.
+     This representation is added to the passed sourceText dictionary
+     
+     //returns the first token from the string, which can be used as a seed
+     */
+    NSString *escapedSourceString = [sourceString stringByAppendingString:@"\n"];
+    __block NSString *seedToken;
+    
+    NSUInteger stringEnumerationOptions = NSStringEnumerationByComposedCharacterSequences;
+    if ([self.dissociateByWord boolValue]) {
+        stringEnumerationOptions = NSStringEnumerationByWords;
+    }
+    NSMutableArray *token = [NSMutableArray array];
+    [escapedSourceString enumerateSubstringsInRange:NSMakeRange(0, escapedSourceString.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+        
+        substring = [escapedSourceString substringWithRange:enclosingRange];
+        if ([token count] == 0) {
+            seedToken = substring;
+        } else {
+            NSString *tokenString = [token componentsJoinedByString:@""];
+            if (!sourceText[tokenString]) sourceText[tokenString] = [NSMutableArray array];
+            [sourceText[tokenString] addObject:substring];
+        }
+        
+        [token addObject:substring];
+        if ([token count] > self.tokenSize) [token removeObjectAtIndex:0];
+    }];
+    
+    return seedToken;
+}
+
+
+- (NSString *)dissociatedTitleForStory:(DSPNewsStory *)story
+{
+    return [self dissociatedStringWithSeed:story.titleSeed sourceText:self.titleSourceText];
+}
+
+- (NSString *)dissociatedContentForStory:(DSPNewsStory *)story
+{
+    return [self dissociatedStringWithSeed:story.contentSeed sourceText:self.contentSourceText];
+}
+
+- (NSString *)dissociatedStringWithSeed:(NSString *)seed sourceText:(NSDictionary *)sourceText
+{
+    if ([seed length] <= 0) {
+        return nil;
+    }
+    
+    BOOL success = NO;
+    NSString *outString = [seed copy];
+    NSMutableArray *token = [[NSMutableArray alloc] initWithObjects:seed, nil];
+    
+    while (!success) {
+        NSString *tokenString = [token componentsJoinedByString:@""];
+        
+        NSArray *tokenPool = sourceText[tokenString];
+        NSUInteger index = arc4random() % [tokenPool count];
+        NSString *nextToken = tokenPool[index];
+        
+        outString = [outString stringByAppendingString:nextToken];
+        
+        if ([nextToken rangeOfString:@"\n"].location == NSNotFound) {
+            [token addObject:nextToken];
+            if ([token count] > self.tokenSize) [token removeObjectAtIndex:0];
+        } else {
+            success = YES;
+        }
+
+        if ([outString length] >= 300) {
+            success = YES;
+            outString = [outString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            outString = [outString substringWithRange:NSMakeRange(0, 297)];
+            outString = [outString stringByAppendingString:@"..."];
+        }
+    }
+
+    return outString;
+}
+
+#pragma mark - old method
 
 - (NSArray *)dissociateResults:(NSArray *)results
 {

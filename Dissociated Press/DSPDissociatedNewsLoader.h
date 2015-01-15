@@ -8,10 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "DSPNewsLoader.h"
+#import "DSPNewsStory.h"
 
 @interface DSPDissociatedNewsLoader : DSPNewsLoader
 
 - (NSArray *)loadDissociatedNewsForQueries:(NSArray *)queries pageNumber:(int)pageNumber;
 - (NSArray *)loadDissociatedNewsForTopics:(NSArray *)topics pageNumber:(int)pageNumber;
+
+- (NSString *)dissociatedTitleForStory:(DSPNewsStory *)story;
+- (NSString *)dissociatedContentForStory:(DSPNewsStory *)story;
 
 @end
