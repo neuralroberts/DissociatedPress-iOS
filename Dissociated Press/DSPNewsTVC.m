@@ -19,7 +19,7 @@
 @property (strong, nonatomic) DSPQueryHeaderView *queryHeaderView;
 @property (strong, nonatomic) DSPTopicHeaderView *topicHeaderView;
 @property (strong, nonatomic) UIPopoverController *topicsPopover;
-@property (strong, nonatomic) UIActivityIndicatorView *footerAcitivityIndicator;
+@property (strong, nonatomic) UIActivityIndicatorView *footerActivityIndicator;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) NSMutableArray *topics; //array of strings;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
@@ -46,8 +46,9 @@
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.footerAcitivityIndicator.hidesWhenStopped = YES;
+    self.footerActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.footerActivityIndicator.hidesWhenStopped = YES;
+    self.tableView.tableFooterView = self.footerActivityIndicator;
     
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     self.topicHeaderView.delegate = self;
@@ -94,7 +95,7 @@
 
 - (void)loadNews
 {
-    [self.footerAcitivityIndicator startAnimating];
+    [self.footerActivityIndicator startAnimating];
     
     self.navigationItem.title = [self tokenDescriptionString];
     
@@ -165,12 +166,6 @@
     return nil;
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
-    return self.footerAcitivityIndicator;
-}
-
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (self.queryTypeControl.selectedSegmentIndex == 0) {
@@ -223,7 +218,7 @@
             });
         }
     } else {
-        [self.footerAcitivityIndicator stopAnimating];
+        [self.footerActivityIndicator stopAnimating];
     }
 }
 
@@ -237,6 +232,40 @@
         [rangeArray addObject:path];
     }
     return rangeArray;
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if ([cell isSelected]) {
+        [tableView.delegate tableView:tableView willDeselectRowAtIndexPath:indexPath];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        [tableView.delegate tableView:tableView didDeselectRowAtIndexPath:indexPath];
+        return nil;
+    }
+    return indexPath;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DSPNewsStory *story = self.newsArray[indexPath.row];
+    story.dissociatedTitle = nil;
+    story.dissociatedContent = nil;
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+}
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return indexPath;
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    DSPNewsStory *story = self.newsArray[indexPath.row];
+    story.dissociatedTitle = [self.newsLoader dissociatedTitleForStory:story];
+    story.dissociatedContent = [self.newsLoader dissociatedContentForStory:story];
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 #pragma mark - Delegate methods

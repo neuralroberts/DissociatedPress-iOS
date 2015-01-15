@@ -21,6 +21,8 @@
 {
     self = [super initWithReuseIdentifier:reuseIdentifier];
     
+    self.selectionStyle = UITableViewCellSelectionStyleDefault;
+    
     self.thumbnail = [[UIImageView alloc] init];
     self.thumbnail.contentMode = UIViewContentModeScaleAspectFit;
     self.thumbnail.translatesAutoresizingMaskIntoConstraints = NO;
@@ -75,8 +77,8 @@
 {
     _newsStory = newsStory;
     
-    self.titleLabel.text = [newsStory.dissociatedTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    self.contentLabel.text = [newsStory.dissociatedTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.titleLabel.text = [newsStory.displayTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.contentLabel.text = [newsStory.displayContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];

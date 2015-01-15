@@ -19,7 +19,7 @@
 @property (strong, nonatomic) dispatch_queue_t linkLoaderQueue;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (nonatomic, getter = isLoadingNewLinks) BOOL loadingNewLinks;
-@property (strong, nonatomic) UIActivityIndicatorView *footerAcitivityIndicator;
+@property (strong, nonatomic) UIActivityIndicatorView *footerActivityIndicator;
 
 @property (strong, nonatomic) DSPTopStoriesTableViewCell *autoLayoutCell;
 @property (strong, nonatomic) NSMutableDictionary *rowHeightCache;
@@ -51,9 +51,9 @@
     [self.refreshControl addTarget:self action:@selector(resetLinks) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
-    self.footerAcitivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.footerAcitivityIndicator.hidesWhenStopped = YES;
-    self.tableView.tableFooterView = self.footerAcitivityIndicator;
+    self.footerActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.footerActivityIndicator.hidesWhenStopped = YES;
+    self.tableView.tableFooterView = self.footerActivityIndicator;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
     
@@ -95,7 +95,7 @@
 - (void)loadNewLinks
 {
     self.loadingNewLinks = YES;
-    [self.footerAcitivityIndicator startAnimating];
+    [self.footerActivityIndicator startAnimating];
     
     __weak __typeof(self)weakSelf = self;
     
@@ -114,7 +114,7 @@
             [weakSelf.refreshControl endRefreshing];
             
             weakSelf.loadingNewLinks = NO;
-            [self.footerAcitivityIndicator stopAnimating];
+            [self.footerActivityIndicator stopAnimating];
         }
         else
         {

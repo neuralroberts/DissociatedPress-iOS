@@ -34,7 +34,7 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     __weak  __typeof(self)weakSelf = self;
-    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.title subredditName:@"NewsSalad" URL:story.url resubmit:YES captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
+    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.displayTitle subredditName:@"NewsSalad" URL:story.url resubmit:YES captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         NSString *submittedLinkName = [responseObject  valueForKeyPath:@"json.data.name"];
 
         if (!error && submittedLinkName) {
@@ -180,9 +180,9 @@
 {
     NSMutableString *commentString = [[NSMutableString alloc] initWithString:@""];
     
-    NSString *title = [self.story.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *title = [self.story.displayTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [commentString appendString:[NSString stringWithFormat:@"**%@**  \n\n",title]];
-    [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.content]];
+    [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.displayContent]];
     [commentString appendString:@"&nbsp;\n\n"];
     [commentString appendString:[NSString stringWithFormat:@"*[seed story](%@)*  \n",[self.story.url absoluteString]]];
     [commentString appendString:[NSString stringWithFormat:@"*%@*  \n",self.tokenDescriptionString]];
@@ -238,7 +238,7 @@
     cell.subtitleLabel.numberOfLines = 2;
     if ([cellType isEqualToString:@"titleCell"]) {
         cell.titleLabel.text = @"Title";
-        cell.subtitleLabel.text = self.story.title;
+        cell.subtitleLabel.text = self.story.displayTitle;
     } else if ([cellType isEqualToString:@"linkCell"]) {
         cell.titleLabel.text = @"Link";
         cell.subtitleLabel.text = [self.story.url absoluteString];

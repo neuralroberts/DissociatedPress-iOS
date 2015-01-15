@@ -80,7 +80,9 @@
         DSPNewsStory *story = [[DSPNewsStory alloc] init];
         story.uniqueIdentifier = [[NSUUID alloc] init];
         story.title = [resultDictionary[@"titleNoFormatting"] stringByConvertingHTMLToPlainText];
+        story.dissociatedTitle = nil;
         story.content = [resultDictionary[@"content"] stringByConvertingHTMLToPlainText];
+        story.dissociatedContent = nil;
         story.url = [NSURL URLWithString:resultDictionary[@"unescapedUrl"]];
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

@@ -160,6 +160,7 @@
             success = YES;
             outString = [outString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             outString = [outString substringWithRange:NSMakeRange(0, 297)];
+            outString = [outString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             outString = [outString stringByAppendingString:@"..."];
         }
     }

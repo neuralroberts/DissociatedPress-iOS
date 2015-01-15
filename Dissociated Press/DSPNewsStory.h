@@ -14,9 +14,11 @@
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic) NSString *titleSeed;
 @property (strong, nonatomic) NSString *dissociatedTitle;
+@property (strong, nonatomic) NSString *displayTitle;
 @property (strong, nonatomic) NSString *content;
 @property (strong, nonatomic) NSString *contentSeed;
 @property (strong, nonatomic) NSString *dissociatedContent;
+@property (strong, nonatomic) NSString *displayContent;
 
 @property (strong, nonatomic) NSDate *date;
 @property (strong, nonatomic) NSURL *url;
