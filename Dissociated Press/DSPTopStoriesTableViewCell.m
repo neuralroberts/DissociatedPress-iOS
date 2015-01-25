@@ -55,6 +55,13 @@
     [self.downvoteButton addTarget:self action:@selector(downvote) forControlEvents:UIControlEventTouchUpInside];
     [self.cardView addSubview:self.downvoteButton];
     
+    //this button responds to any touch inside the cell's cardview, excluding the area around the voting buttons
+    self.touchCellButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.touchCellButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.touchCellButton addTarget:self action:@selector(didTouchCell) forControlEvents:UIControlEventTouchUpInside];
+    [self.touchCellButton setBackgroundColor:[UIColor clearColor]];
+    [self.cardView addSubview:self.touchCellButton];
+    
     self.voteLabel = [[DSPLabel alloc] init];
     self.voteLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.voteLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -147,7 +154,13 @@
             [self.delegate didDownvoteInCellAtIndexPath:self.indexPath];
         }
     }
-    
+}
+
+- (void)didTouchCell
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didTouchCellAtIndexPath:)]) {
+        [self.delegate didTouchCellAtIndexPath:self.indexPath];
+    }
 }
 
 
@@ -362,6 +375,40 @@
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
                                                                constant:8]];
+    
+    //touchCellButton trailing to cardview trailing
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                              attribute:NSLayoutAttributeTrailing
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.cardView
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:0]];
+    //touchCellButton top to cardview top
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                              attribute:NSLayoutAttributeTop
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.cardView
+                                                              attribute:NSLayoutAttributeTop
+                                                             multiplier:1
+                                                               constant:0]];
+    //touchCellButton bottom to cardview bottom
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                              attribute:NSLayoutAttributeBottom
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.cardView
+                                                              attribute:NSLayoutAttributeBottom
+                                                             multiplier:1
+                                                               constant:0]];
+    //touchCellButton leading to votelabel trailing
+    //add some extra space to votes aren't mistaken for cell touches
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                              attribute:NSLayoutAttributeLeading
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.voteLabel
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:32]];
     
     //hasthumbnailconstraints
     //thumbnail leading to upvote trailing

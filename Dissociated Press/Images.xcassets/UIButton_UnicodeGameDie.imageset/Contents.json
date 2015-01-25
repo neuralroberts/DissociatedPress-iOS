@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "UIButtonBar_UnicodeGameDie@1x.png"
+      "filename" : "UIButton_UnicodeGameDie.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "UIButtonBar_UnicodeGameDie@2x.png"
+      "filename" : "UIButton_UnicodeGameDie@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "UIButtonBar_UnicodeGameDie@3x.png"
+      "filename" : "UIButton_UnicodeGameDie@3x.png"
     }
   ],
   "info" : {

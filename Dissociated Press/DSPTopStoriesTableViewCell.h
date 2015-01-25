@@ -19,6 +19,7 @@
 @property (nonatomic, assign) BOOL hasThumbnail;
 @property (strong, nonatomic) UIButton *upvoteButton;
 @property (strong, nonatomic) UIButton *downvoteButton;
+@property (strong, nonatomic) UIButton *touchCellButton;
 @property (strong, nonatomic) DSPLabel *voteLabel;
 @property (strong, nonatomic) DSPLabel *authorLabel;
 @property (strong, nonatomic) RKLink *link;

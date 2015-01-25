@@ -35,6 +35,14 @@
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
+    self.contentLabel = [[DSPLabel alloc] init];
+    self.contentLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.contentLabel.textColor = [UIColor blackColor];
+    self.contentLabel.backgroundColor = [UIColor whiteColor];
+    self.contentLabel.numberOfLines = 4;
+    self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.cardView addSubview:self.contentLabel];
+    
     self.dateLabel = [[DSPLabel alloc] init];
     self.dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.dateLabel.textColor = [UIColor colorWithRed:0.0 green:0.4 blue:0.13 alpha:1.0];
@@ -50,8 +58,8 @@
     [self.cardView addSubview:self.actionButton];
     
     self.dissociateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.dissociateButton setImage:[UIImage imageNamed:@"UIButtonBar_UnicodeGameDie"] forState:UIControlStateNormal];
-    [self.dissociateButton setImage:[UIImage imageNamed:@"UIButtonBar_UnicodeGameDie_Selected"] forState:UIControlStateHighlighted];
+    [self.dissociateButton setImage:[UIImage imageNamed:@"UIButton_UnicodeGameDie"] forState:UIControlStateNormal];
+    [self.dissociateButton setImage:[UIImage imageNamed:@"UIButton_UnicodeGameDie_Selected"] forState:UIControlStateHighlighted];
     self.dissociateButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.dissociateButton addTarget:self action:@selector(didTouchDownDissociateButton) forControlEvents:UIControlEventTouchDown];
     [self.dissociateButton addTarget:self action:@selector(didTouchUpInsideDissociateButton) forControlEvents:UIControlEventTouchUpInside];
@@ -74,7 +82,6 @@
 
 - (void)didTouchUpInsideDissociateButton
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     if (self.delegate && [self.delegate respondsToSelector:@selector(dissociateCellAtIndexPath:)]) {
         [self.delegate dissociateCellAtIndexPath:self.indexPath];
     }
@@ -82,17 +89,18 @@
 
 - (void)didTouchDownDissociateButton
 {
-    NSLog(@"%@",NSStringFromSelector(_cmd));
     if (self.delegate && [self.delegate respondsToSelector:@selector(reassociateCellAtIndexPath:)]) {
         [self.delegate reassociateCellAtIndexPath:self.indexPath];
     }
 }
 
+
 - (void)setNewsStory:(DSPNewsStory *)newsStory
 {
     _newsStory = newsStory;
     
-    self.titleLabel.text = [newsStory.displayTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.titleLabel.attributedText = [self attributedTitleForStory:newsStory];
+    self.contentLabel.attributedText = [self attributedContentForStory:newsStory];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
@@ -117,6 +125,36 @@
     [self setNeedsLayout];
 }
 
+- (NSAttributedString *)attributedTitleForStory:(DSPNewsStory *)story
+{
+    NSString *dissociatedTitle = story.dissociatedTitle;
+    if ([dissociatedTitle length] > 0) {
+        NSString *displayString = [dissociatedTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+        return [[NSAttributedString alloc] initWithString:displayString attributes:attributes];
+    } else {
+        NSString *originalTitle = story.title;
+        NSString *displayString = [originalTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor redColor]};
+        return [[NSAttributedString alloc] initWithString:displayString attributes:attributes];
+    }
+}
+
+- (NSAttributedString *)attributedContentForStory:(DSPNewsStory *)story
+{
+    NSString *dissociatedContent = story.dissociatedContent;
+    if ([dissociatedContent length] > 0) {
+        NSString *displayString = [dissociatedContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor blackColor]};
+        return [[NSAttributedString alloc] initWithString:displayString attributes:attributes];
+    } else {
+        NSString *originalContent = story.content;
+        NSString *displayString = [originalContent stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        NSDictionary *attributes = @{NSForegroundColorAttributeName:[UIColor redColor]};
+        return [[NSAttributedString alloc] initWithString:displayString attributes:attributes];
+    }
+}
+
 - (void)updateConstraints
 {
     [super updateConstraints];
@@ -138,23 +176,7 @@
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing
                                                               relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
                                                                  toItem:self.dissociateButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.actionButton
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
                                                                constant:16]];
@@ -162,26 +184,75 @@
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
                                                               attribute:NSLayoutAttributeLeading
                                                               relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.dissociateButton
+                                                                 toItem:self.cardView
+                                                              attribute:NSLayoutAttributeLeading
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                              attribute:NSLayoutAttributeLeading
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.titleLabel
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                              attribute:NSLayoutAttributeLeading
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.dateLabel
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
                                                                constant:16]];
     
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
+                                                              attribute:NSLayoutAttributeTrailing
                                                               relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.contentLabel
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                              attribute:NSLayoutAttributeTop
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.titleLabel
+                                                              attribute:NSLayoutAttributeTop
+                                                             multiplier:1
+                                                               constant:0]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                              attribute:NSLayoutAttributeBottom
+                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                 toItem:self.dissociateButton
+                                                              attribute:NSLayoutAttributeBottom
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
+                                                              attribute:NSLayoutAttributeTop
+                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                 toItem:self.cardView
+                                                              attribute:NSLayoutAttributeTop
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                              attribute:NSLayoutAttributeBottom
+                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
                                                                  toItem:self.actionButton
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:16]];
     
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
                                                               attribute:NSLayoutAttributeCenterY
                                                               relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.actionButton
+                                                                 toItem:self.cardView
                                                               attribute:NSLayoutAttributeCenterY
                                                              multiplier:1
                                                                constant:0]];
+    
     
     for (UIButton *button in @[self.actionButton, self.dissociateButton]) {
         [button setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
@@ -206,6 +277,15 @@
                                                              multiplier:1
                                                                constant:0]];
     
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
+                                                              attribute:NSLayoutAttributeLeading
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.contentLabel
+                                                              attribute:NSLayoutAttributeLeading
+                                                             multiplier:1
+                                                               constant:0]];
+    
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel
                                                               attribute:NSLayoutAttributeTop
                                                               relatedBy:NSLayoutRelationEqual
@@ -214,10 +294,18 @@
                                                              multiplier:1
                                                                constant:8]];
     
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentLabel
+                                                              attribute:NSLayoutAttributeTop
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.dateLabel
+                                                              attribute:NSLayoutAttributeBottom
+                                                             multiplier:1
+                                                               constant:8]];
+    
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeBottom
                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.dateLabel
+                                                                 toItem:self.contentLabel
                                                               attribute:NSLayoutAttributeBottom
                                                              multiplier:1
                                                                constant:16]];
@@ -240,7 +328,7 @@
                                                                   toItem:nil
                                                                attribute:NSLayoutAttributeNotAnAttribute
                                                               multiplier:1
-                                                                constant:120]];
+                                                                constant:72]];
     
     //hasthumbnail
     
@@ -263,8 +351,8 @@
     [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                          attribute:NSLayoutAttributeLeading
                                                                          relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.cardView
-                                                                         attribute:NSLayoutAttributeLeading
+                                                                            toItem:self.actionButton
+                                                                         attribute:NSLayoutAttributeTrailing
                                                                         multiplier:1
                                                                           constant:16]];
     
@@ -288,8 +376,8 @@
     [self.noThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                                         attribute:NSLayoutAttributeLeading
                                                                         relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.cardView
-                                                                        attribute:NSLayoutAttributeLeading
+                                                                           toItem:self.actionButton
+                                                                        attribute:NSLayoutAttributeTrailing
                                                                        multiplier:1
                                                                          constant:16]];
 }

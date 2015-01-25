@@ -85,7 +85,7 @@
     self.links = @[];
     self.currentPagination = [RKPagination new];
     self.currentPagination.timeMethod = RKTimeSortingMethodAllTime;
-
+    
     
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
     
@@ -223,23 +223,6 @@
     return calculatedHeight;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    RKLink *link = self.links[indexPath.row];
-    NSString *permalinkString = [link.permalink absoluteString];
-    NSURL *url;
-    //    if ([permalinkString containsString:@"i.reddit.com"]) {
-    url = [NSURL URLWithString:permalinkString];
-    //    } else if ([permalinkString containsString:@"reddit.com"]) {
-    //        url = [NSURL URLWithString:[permalinkString stringByReplacingOccurrencesOfString:@"reddit.com" withString:@"i.reddit.com"]];
-    //    }
-    
-    DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:url];
-    [self.navigationController pushViewController:webVC animated:YES];
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
 - (void)promptSignIn
 {
     UIAlertView *signInAlert = [[UIAlertView alloc] initWithTitle:@"Sign in to reddit?"
@@ -302,6 +285,21 @@
     }
 }
 
+- (void)didTouchCellAtIndexPath:(NSIndexPath *)indexPath
+{
+    RKLink *link = self.links[indexPath.row];
+    NSString *permalinkString = [link.permalink absoluteString];
+    NSURL *url;
+    //    if ([permalinkString containsString:@"i.reddit.com"]) {
+    url = [NSURL URLWithString:permalinkString];
+    //    } else if ([permalinkString containsString:@"reddit.com"]) {
+    //        url = [NSURL URLWithString:[permalinkString stringByReplacingOccurrencesOfString:@"reddit.com" withString:@"i.reddit.com"]];
+    //    }
+    
+    DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:url];
+    [self.navigationController pushViewController:webVC animated:YES];
+}
+
 #pragma mark - action sheet
 
 - (void)showSortActionSheet
@@ -316,11 +314,11 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-//    RKSubredditCategoryHot = 1,
-//    RKSubredditCategoryNew,
-//    RKSubredditCategoryRising,
-//    RKSubredditCategoryControversial,
-//    RKSubredditCategoryTop
+    //    RKSubredditCategoryHot = 1,
+    //    RKSubredditCategoryNew,
+    //    RKSubredditCategoryRising,
+    //    RKSubredditCategoryControversial,
+    //    RKSubredditCategoryTop
     
     self.currentCategory = (RKSubredditCategory)buttonIndex + 1;
     [self resetLinks];

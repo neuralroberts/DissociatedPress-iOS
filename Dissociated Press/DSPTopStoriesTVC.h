@@ -14,6 +14,7 @@
 - (void)didRevokeVoteInCellAtIndexPath:(NSIndexPath *)indexPath;
 - (void)didUpvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
 - (void)didDownvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)didTouchCellAtIndexPath:(NSIndexPath *)indexPath;
 
 
 @end
@@ -23,5 +24,6 @@
 - (void)didRevokeVoteInCellAtIndexPath:(NSIndexPath *)indexPath;
 - (void)didUpvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
 - (void)didDownvoteInCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)didTouchCellAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

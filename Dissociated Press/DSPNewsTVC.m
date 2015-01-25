@@ -301,7 +301,7 @@
     story.dissociatedTitle = [self.newsLoader dissociatedTitleForStory:story];
     story.dissociatedContent = [self.newsLoader dissociatedContentForStory:story];
     [self.rowHeightCache removeObjectForKey:story.uniqueIdentifier];
-    [self.tableView reloadRowsAtIndexPaths:@[cellIndex] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadRowsAtIndexPaths:@[cellIndex] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)reassociateCellAtIndexPath:(NSIndexPath *)cellIndex
@@ -310,7 +310,7 @@
     story.dissociatedTitle = nil;
     story.dissociatedContent = nil;
     [self.rowHeightCache removeObjectForKey:story.uniqueIdentifier];
-    [self.tableView reloadRowsAtIndexPaths:@[cellIndex] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadRowsAtIndexPaths:@[cellIndex] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (NSString *)tokenDescriptionString
