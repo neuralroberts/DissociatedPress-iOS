@@ -234,39 +234,6 @@
     return rangeArray;
 }
 
-- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if ([cell isSelected]) {
-        [tableView.delegate tableView:tableView willDeselectRowAtIndexPath:indexPath];
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        [tableView.delegate tableView:tableView didDeselectRowAtIndexPath:indexPath];
-        return nil;
-    }
-    return indexPath;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    DSPNewsStory *story = self.newsArray[indexPath.row];
-    story.dissociatedTitle = nil;
-    story.dissociatedContent = nil;
-    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-}
-
-- (NSIndexPath *)tableView:(UITableView *)tableView willDeselectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return indexPath;
-}
-
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    DSPNewsStory *story = self.newsArray[indexPath.row];
-    story.dissociatedTitle = [self.newsLoader dissociatedTitleForStory:story];
-    story.dissociatedContent = [self.newsLoader dissociatedContentForStory:story];
-    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
 
 #pragma mark - Delegate methods
 
@@ -326,6 +293,24 @@
         submissionVC.queries = [self.queries subarrayWithRange:NSMakeRange(0, self.queryHeaderView.stepper.value)];
     }
     [self.navigationController pushViewController:submissionVC animated:YES];
+}
+
+- (void)dissociateCellAtIndexPath:(NSIndexPath *)cellIndex
+{
+    DSPNewsStory *story = self.newsArray[cellIndex.row];
+    story.dissociatedTitle = [self.newsLoader dissociatedTitleForStory:story];
+    story.dissociatedContent = [self.newsLoader dissociatedContentForStory:story];
+    [self.rowHeightCache removeObjectForKey:story.uniqueIdentifier];
+    [self.tableView reloadRowsAtIndexPaths:@[cellIndex] withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)reassociateCellAtIndexPath:(NSIndexPath *)cellIndex
+{
+    DSPNewsStory *story = self.newsArray[cellIndex.row];
+    story.dissociatedTitle = nil;
+    story.dissociatedContent = nil;
+    [self.rowHeightCache removeObjectForKey:story.uniqueIdentifier];
+    [self.tableView reloadRowsAtIndexPaths:@[cellIndex] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (NSString *)tokenDescriptionString

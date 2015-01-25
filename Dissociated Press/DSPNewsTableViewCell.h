@@ -13,6 +13,8 @@
 
 @protocol DSPNewsCellDelegate <NSObject>
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath*)cellIndex;
+- (void)dissociateCellAtIndexPath:(NSIndexPath*)cellIndex;
+- (void)reassociateCellAtIndexPath:(NSIndexPath*)cellIndex;
 @end
 
 @interface DSPNewsTableViewCell : DSPTableViewCell
@@ -20,7 +22,6 @@
 @property (strong, nonatomic) DSPNewsStory *newsStory;
 @property (strong, nonatomic) DSPLabel *titleLabel;
 @property (strong, nonatomic) DSPLabel *dateLabel;
-@property (strong, nonatomic) DSPLabel *contentLabel;
 @property (strong, nonatomic) UIImageView *thumbnail;
 @property (weak, nonatomic) id<DSPNewsCellDelegate>delegate;
 @property (strong, nonatomic) NSIndexPath *indexPath;

@@ -19,6 +19,8 @@
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController;
 - (void)didClickActionButtonInCellAtIndexPath:(NSIndexPath *)cellIndex;
+- (void)dissociateCellAtIndexPath:(NSIndexPath *)cellIndex;
+- (void)reassociateCellAtIndexPath:(NSIndexPath *)cellIndex;
 - (void)touchedStepper:(UIStepper *)sender;
 - (void)touchedTopicHeader;
 - (void)didDismissTopicsTVC;
