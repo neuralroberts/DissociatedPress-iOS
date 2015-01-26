@@ -12,10 +12,10 @@
 @interface DSPNewsStory : NSObject
 
 @property (strong, nonatomic) NSString *title;
-@property (strong, nonatomic) NSString *titleSeed;
+@property (strong, nonatomic) NSMutableArray *titleSeed;
 @property (strong, nonatomic) NSString *dissociatedTitle;
 @property (strong, nonatomic) NSString *content;
-@property (strong, nonatomic) NSString *contentSeed;
+@property (strong, nonatomic) NSMutableArray *contentSeed;
 @property (strong, nonatomic) NSString *dissociatedContent;
 
 @property (strong, nonatomic) NSDate *date;

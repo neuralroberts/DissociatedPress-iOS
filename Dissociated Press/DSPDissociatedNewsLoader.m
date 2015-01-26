@@ -81,20 +81,20 @@
     }
     
     return results;
-
+    
     //    return [self dissociateResults:results];
 }
 
-- (NSString *)addString:(NSString *)sourceString toSourceText:(NSMutableDictionary *)sourceText
+- (NSMutableArray *)addString:(NSString *)sourceString toSourceText:(NSMutableDictionary *)sourceText
 {
     /*tokenizes the given string and builds a markov chain representation of it,
      where each token is a key in a dictionary, whose value is an array of tokens which followed it in the source string.
      This representation is added to the passed sourceText dictionary
      
-     //returns the first token from the string, which can be used as a seed
+     //returns the first token from the string, which can be used later as a seed
      */
     NSString *escapedSourceString = [sourceString stringByAppendingString:@"\n"];
-    __block NSString *seedToken;
+    __block NSMutableArray *seedToken = nil;
     
     NSUInteger stringEnumerationOptions = NSStringEnumerationByComposedCharacterSequences;
     if ([self.dissociateByWord boolValue]) {
@@ -104,13 +104,14 @@
     [escapedSourceString enumerateSubstringsInRange:NSMakeRange(0, escapedSourceString.length) options:stringEnumerationOptions usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
         
         substring = [escapedSourceString substringWithRange:enclosingRange];
-        if ([token count] == 0) {
-            seedToken = substring;
-        } else {
-            NSString *tokenString = [token componentsJoinedByString:@""];
-            if (!sourceText[tokenString]) sourceText[tokenString] = [NSMutableArray array];
-            [sourceText[tokenString] addObject:substring];
+        if (seedToken == nil && [token count] == self.tokenSize) {
+            seedToken = [token copy];
         }
+        
+        NSString *tokenString = [token componentsJoinedByString:@""];
+        if (!sourceText[tokenString]) sourceText[tokenString] = [NSMutableArray array];
+        [sourceText[tokenString] addObject:substring];
+        
         
         [token addObject:substring];
         if ([token count] > self.tokenSize) [token removeObjectAtIndex:0];
@@ -130,15 +131,15 @@
     return [self dissociatedStringWithSeed:story.contentSeed sourceText:self.contentSourceText];
 }
 
-- (NSString *)dissociatedStringWithSeed:(NSString *)seed sourceText:(NSDictionary *)sourceText
+- (NSString *)dissociatedStringWithSeed:(NSMutableArray *)seed sourceText:(NSDictionary *)sourceText
 {
-    if ([seed length] <= 0) {
+    if ([seed count] <= 0) {
         return nil;
     }
     
     BOOL success = NO;
-    NSString *outString = [seed copy];
-    NSMutableArray *token = [[NSMutableArray alloc] initWithObjects:seed, nil];
+    NSString *outString = [seed componentsJoinedByString:@""];
+    NSMutableArray *token = [seed mutableCopy];
     
     while (!success) {
         NSString *tokenString = [token componentsJoinedByString:@""];
@@ -155,7 +156,7 @@
         } else {
             success = YES;
         }
-
+        
         if ([outString length] >= 300) {
             success = YES;
             outString = [outString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -164,7 +165,7 @@
             outString = [outString stringByAppendingString:@"..."];
         }
     }
-
+    
     return outString;
 }
 
