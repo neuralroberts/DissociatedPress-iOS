@@ -87,9 +87,14 @@
     [self loadNews];
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    self.rowHeightCache = [NSMutableDictionary dictionary];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
 }
 
@@ -118,7 +123,7 @@
         self.rowHeightCache = [NSMutableDictionary dictionary];
         self.pageNumber = 1;
         DSPDissociatedNewsLoader *newsLoader = [[DSPDissociatedNewsLoader alloc] init];
-        NSArray *newNews = @[];
+        NSArray *newNews;
         if (self.queryTypeControl.selectedSegmentIndex == 0) {
             newNews = [newsLoader loadDissociatedNewsForTopics:self.topics pageNumber:self.pageNumber];
         } else {
@@ -197,13 +202,18 @@
     return calculatedHeight;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 160.0;
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.pageNumber < 16) {
         if (indexPath.row >= self.newsArray.count - 1) {
             dispatch_barrier_async(self.newsLoaderQueue, ^{
                 self.pageNumber++;
-                NSArray *newNews = @[];
+                NSArray *newNews;
                 if (self.queryTypeControl.selectedSegmentIndex == 0) {
                     newNews = [self.newsLoader loadDissociatedNewsForTopics:self.topics pageNumber:self.pageNumber];
                 } else {

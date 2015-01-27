@@ -53,8 +53,8 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+    NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
-    NSLog(@"%@",NSStringFromSelector(_cmd));
 }
 
 - (void)goBack:(UIButton *)sender
