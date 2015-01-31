@@ -22,7 +22,7 @@
 @property (strong, nonatomic) UIActivityIndicatorView *footerActivityIndicator;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) NSMutableArray *topics; //array of strings;
-@property (strong, nonatomic) UIRefreshControl *refreshControl;
+//@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UISegmentedControl *queryTypeControl;
 @property (strong, nonatomic) NSMutableArray *newsArray;
 @property (strong, nonatomic) DSPDissociatedNewsLoader *newsLoader;
@@ -46,15 +46,15 @@
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
-    self.footerActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.footerActivityIndicator.hidesWhenStopped = YES;
-    self.tableView.tableFooterView = self.footerActivityIndicator;
-    
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     self.topicHeaderView.delegate = self;
     
     self.queryHeaderView = [[DSPQueryHeaderView alloc] init];
     self.queryHeaderView.delegate = self;
+    
+    self.footerActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.footerActivityIndicator.hidesWhenStopped = YES;
+    self.tableView.tableFooterView = self.footerActivityIndicator;
     
     /*
      *create a cell instance to use for autolayout sizing
@@ -80,9 +80,9 @@
     UIBarButtonItem *controlButton = [[UIBarButtonItem alloc] initWithCustomView:self.queryTypeControl];
     self.navigationItem.leftBarButtonItem = controlButton;
     
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.tableView addSubview:self.refreshControl];
-    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
+//    self.refreshControl = [[UIRefreshControl alloc] init];
+//    [self.tableView addSubview:self.refreshControl];
+//    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
     
     [self loadNews];
 }
@@ -113,7 +113,7 @@
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.refreshControl beginRefreshing];
+//            [self.refreshControl beginRefreshing];
             NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.newsArray removeAllObjects];
             [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -131,7 +131,7 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.refreshControl endRefreshing];
+//            [self.refreshControl endRefreshing];
             self.newsLoader = newsLoader;
             self.newsArray = [newNews mutableCopy];
             NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
@@ -204,6 +204,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    DSPNewsStory *story = [self.newsArray objectAtIndex:indexPath.row];
+    NSNumber *cachedHeight = self.rowHeightCache[story.uniqueIdentifier];
+    if (cachedHeight != nil) return [cachedHeight floatValue];
     return 160.0;
 }
 
