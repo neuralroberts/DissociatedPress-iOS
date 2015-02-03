@@ -75,7 +75,7 @@
     [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarMostViewed"] forSegmentAtIndex:0];
     [self.queryTypeControl setImage:[UIImage imageNamed:@"UITabBarSearch"] forSegmentAtIndex:1];
     self.queryTypeControl.tintColor = [UIColor darkGrayColor];
-    self.queryTypeControl.selectedSegmentIndex = 0;
+    self.queryTypeControl.selectedSegmentIndex = 1;
     [self.queryTypeControl addTarget:self action:@selector(changedQueryType:) forControlEvents:UIControlEventValueChanged];
     UIBarButtonItem *controlButton = [[UIBarButtonItem alloc] initWithCustomView:self.queryTypeControl];
     self.navigationItem.leftBarButtonItem = controlButton;
@@ -96,6 +96,7 @@
     [super didReceiveMemoryWarning];
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
+    self.rowHeightCache = [NSMutableDictionary dictionary];
 }
 
 - (void)loadNews

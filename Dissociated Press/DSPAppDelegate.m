@@ -60,7 +60,7 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"hasLaunched"]) {
-        [defaults setInteger:3 forKey:@"tokenSizeParameter"];
+        [defaults setInteger:4 forKey:@"tokenSizeParameter"];
         [defaults setBool:NO forKey:@"dissociateByWordParameter"];
         [defaults setBool:YES forKey:@"includeComment"];
     }
@@ -75,7 +75,7 @@
 //        if (error) NSLog(@"%@",error);
 //    }
     
-    [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.333 /r/NewsSalad"];
+    [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.6 /r/Dissociated_Press"];
     [DSPAuthenticationManager loginWithKeychainWithCompletion:nil];
 }
 

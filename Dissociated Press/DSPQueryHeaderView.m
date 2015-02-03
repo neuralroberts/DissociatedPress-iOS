@@ -23,7 +23,7 @@
     self.layer.shadowOffset = CGSizeMake(0,0);
     self.layer.shadowRadius = 4;
 
-    NSArray *queries = @[@"florida man",@"fluoridation",@"pro-state agitators",@"ebola",@"granola"];
+    NSArray *queries = @[@"ebola",@"granola",@"florida man",@"bieber fever",@"pro-state agitators"];
     self.searchBars = [NSMutableArray array];
     for (int i = 0; i < NUM_MAX_SEARCHBARS; i++) {
         UISearchBar *searchBar = [[UISearchBar alloc] init];
@@ -42,7 +42,7 @@
     self.stepper = [[UIStepper alloc] init];
     self.stepper.minimumValue = 1;
     self.stepper.maximumValue = NUM_MAX_SEARCHBARS;
-    self.stepper.value = 1;
+    self.stepper.value = 2;
     [self addSubview:self.stepper];
     self.stepper.translatesAutoresizingMaskIntoConstraints = NO;
     self.stepper.backgroundColor = [UIColor whiteColor];

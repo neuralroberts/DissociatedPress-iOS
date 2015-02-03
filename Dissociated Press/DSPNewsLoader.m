@@ -64,6 +64,10 @@
     NSError *error;
     NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     
+    if (error) {
+        NSLog(@"%@",error.localizedDescription);
+        return nil;
+    }
     NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:data
                                                                options:NSJSONReadingAllowFragments
                                                                  error:&error];

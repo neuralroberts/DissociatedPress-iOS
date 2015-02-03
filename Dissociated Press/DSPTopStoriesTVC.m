@@ -99,7 +99,7 @@
     
     __weak __typeof(self)weakSelf = self;
     
-    [[RKClient sharedClient] linksInSubredditWithName:@"NewsSalad" category:self.currentCategory pagination:weakSelf.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
+    [[RKClient sharedClient] linksInSubredditWithName:@"Dissociated_Press" category:self.currentCategory pagination:weakSelf.currentPagination completion:^(NSArray *collection, RKPagination *pagination, NSError *error) {
         if (!error)
         {
             [[weakSelf tableView] beginUpdates];

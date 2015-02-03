@@ -64,7 +64,7 @@
 - (UISegmentedControl *)dissociateByWordControl
 {
     if (!_dissociateByWordControl) {
-        NSArray *items = @[@"Char", @"Word"];
+        NSArray *items = @[@"Character", @"Word"];
         UISegmentedControl *dissociateByWordControl = [[UISegmentedControl alloc] initWithItems:items];
         dissociateByWordControl.selectedSegmentIndex = [self.dissociateByWord intValue];
         [dissociateByWordControl addTarget:self action:@selector(dissociateByWordControlChanged) forControlEvents:UIControlEventValueChanged];
@@ -192,9 +192,9 @@
             [cell.contentView addSubview:self.tokenSizeSlider];
             [cell.contentView addSubview:self.tokenSizeLabel];
         } else if (indexPath.row == 1) {
-            self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 144.0,
+            self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 184.0,
                                                             cell.contentView.frame.origin.y + 16.0,
-                                                            120.0,
+                                                            160.0,
                                                             cell.contentView.frame.size.height - 32.0);
             self.dissociateByWordControl.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth;
             

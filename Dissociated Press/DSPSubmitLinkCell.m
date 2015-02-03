@@ -129,6 +129,7 @@
         self.commentSwitch.hidden = YES;
         self.captchaImageView.hidden = NO;
         self.captchaTextField.hidden = NO;
+        self.captchaTextField.text = @"";
         self.captchaRefreshButton.hidden = NO;
         [self.cardView removeConstraints:self.defaultConstraints];
         [self.cardView addConstraints:self.captchaConstraints];

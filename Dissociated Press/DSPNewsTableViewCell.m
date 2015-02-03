@@ -52,7 +52,9 @@
     [self.cardView addSubview:self.dateLabel];
     
     self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.actionButton setImage:[UIImage imageNamed:@"UIButtonBarAction"] forState:UIControlStateNormal];
+    [self.actionButton setImage:[UIImage imageNamed:@"UIButtonAction"] forState:UIControlStateNormal];
+    [self.actionButton setImage:[UIImage imageNamed:@"UIButtonAction_Selected"] forState:UIControlStateHighlighted];
+
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.actionButton addTarget:self action:@selector(didClickActionButton) forControlEvents:UIControlEventTouchUpInside];
     [self.cardView addSubview:self.actionButton];

@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "UIButtonBarAction@1x.png"
+      "filename" : "UIButtonAction.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "UIButtonBarAction@2x.png"
+      "filename" : "UIButtonAction@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "UIButtonBarAction@3x.png"
+      "filename" : "UIButtonAction@3x.png"
     }
   ],
   "info" : {
