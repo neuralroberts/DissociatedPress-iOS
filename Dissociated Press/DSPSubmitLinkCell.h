@@ -14,6 +14,7 @@
 @protocol DSPSubmitLinkCellDelegate <NSObject>
 - (void)getNewCaptcha;
 - (void)textFieldTextDidChange:(UITextField *)textfield;
+@optional
 - (void)commentSwitchDidChange:(UISwitch *)commentSwitch;
 @end
 

@@ -12,6 +12,7 @@
 #import "DSPAuthenticationTVC.h"
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "DSPWebViewController.h"
+#import "DSPSendMessageTVC.h"
 
 
 @interface DSPSubmitLinkTVC () <UIAlertViewDelegate>
@@ -34,9 +35,9 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     __weak  __typeof(self)weakSelf = self;
-    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.displayTitle subredditName:@"NewsSalad" URL:story.url resubmit:YES captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
+    [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.dissociatedTitle subredditName:@"Dissociated_Press" URL:story.url resubmit:YES captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
         NSString *submittedLinkName = [responseObject  valueForKeyPath:@"json.data.name"];
-
+        
         if (!error && submittedLinkName) {
             UIAlertView *submissionAlertVew = [[UIAlertView alloc] initWithTitle:@"Post successful"
                                                                          message:nil
@@ -53,17 +54,31 @@
                 }];
             }
         } else {
-            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                     message:error.localizedFailureReason
-                                                                    delegate:nil
+            NSString *errorTitle = nil;
+            NSString *errorMessage = error.localizedFailureReason;
+            NSString *otherButtonTitles = nil;
+            NSString *errorKey = [responseObject valueForKeyPath:@"json.errors"][0][0];
+            
+            if ([errorKey isEqualToString:@"QUOTA_FILLED"] || error.code == RKClientErrorRateLimited) {
+                errorTitle = @"Sorry!";
+                if (responseObject) errorMessage = [responseObject valueForKeyPath:@"json.errors"][0][1];
+                else errorMessage = @"You've submitted too many links recently.";
+                otherButtonTitles = @"More info";
+            }
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:errorTitle
+                                                                     message:errorMessage //error.localizedFailureReason
+                                                                    delegate:self
                                                            cancelButtonTitle:@"OK"
-                                                           otherButtonTitles:nil];
+                                                           otherButtonTitles:otherButtonTitles, nil];
             [errorAlertView show];
+            
+            [self getNewCaptcha];
         }
         
         [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
     }];
 }
+
 
 - (void)updateSubmitButtonStatus
 {
@@ -112,13 +127,13 @@
     self.includeComment = [[NSUserDefaults standardUserDefaults] boolForKey:@"includeComment"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
-
+    
     [self getNewCaptcha];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
 }
 
@@ -126,6 +141,7 @@
 {
     NSIndexPath *userCellIndexPath = [NSIndexPath indexPathForItem:[self.cellsIndex indexOfObject:@"userCell"] inSection:0];
     [self.tableView reloadRowsAtIndexPaths:@[userCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [self getNewCaptcha];
     [self updateSubmitButtonStatus];
 }
 
@@ -180,11 +196,11 @@
 {
     NSMutableString *commentString = [[NSMutableString alloc] initWithString:@""];
     
-    NSString *title = [self.story.displayTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *title = [self.story.dissociatedTitle stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [commentString appendString:[NSString stringWithFormat:@"**%@**  \n\n",title]];
-    [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.displayContent]];
+    [commentString appendString:[NSString stringWithFormat:@"%@  \n",self.story.dissociatedContent]];
     [commentString appendString:@"&nbsp;\n\n"];
-    [commentString appendString:[NSString stringWithFormat:@"*[seed story](%@)*  \n",[self.story.url absoluteString]]];
+    [commentString appendString:[NSString stringWithFormat:@"*seed story: [%@](%@)*  \n",self.story.title, [self.story.url absoluteString]]];
     [commentString appendString:[NSString stringWithFormat:@"*%@*  \n",self.tokenDescriptionString]];
     if (self.queries) {
         [commentString appendString:[NSString stringWithFormat:@"*original queries: %@*",[self.queries componentsJoinedByString:@", "]]];
@@ -238,7 +254,7 @@
     cell.subtitleLabel.numberOfLines = 2;
     if ([cellType isEqualToString:@"titleCell"]) {
         cell.titleLabel.text = @"Title";
-        cell.subtitleLabel.text = self.story.displayTitle;
+        cell.subtitleLabel.text = self.story.dissociatedTitle;
     } else if ([cellType isEqualToString:@"linkCell"]) {
         cell.titleLabel.text = @"Link";
         cell.subtitleLabel.text = [self.story.url absoluteString];
@@ -321,7 +337,51 @@
     if ([alertView.title isEqualToString:@"Post successful"]) {
         [self.navigationController popViewControllerAnimated:YES];
     }
+    
+    if ([alertView.title isEqualToString:@"Sorry!"]) {
+        if (buttonIndex == 1) {
+            UIAlertView *moreInfoAlert = [[UIAlertView alloc] initWithTitle:@"Posting throttled"
+                                                                    message:@"Reddit prevents new users from posting too often. This problem will go away once your posts receive enough votes. If you don't want to wait, message the Dissociated Press mods to have your account verified."
+                                                                   delegate:self
+                                                          cancelButtonTitle:@"OK"
+                                                          otherButtonTitles:@"Mail the mods", nil];
+            [moreInfoAlert show];
+        }
+    }
+    
+    if ([alertView.title isEqualToString:@"Posting throttled"]) {
+        if (buttonIndex == 1) {
+            [self sendVerificationMessage];
+        }
+    }
 }
+
+- (void)sendVerificationMessage
+{
+    if ([[RKClient sharedClient] isSignedIn]) {
+        DSPSendMessageTVC *messageTVC = [[DSPSendMessageTVC alloc] init];
+        messageTVC.recipient = @"/r/Dissociated_Press";
+        messageTVC.subject = @"Verify account";
+        NSString *username = [[[RKClient sharedClient] currentUser] username];
+        messageTVC.message = [NSString stringWithFormat:@"Please add account %@ to list of approved submitters for /r/Dissociated_Press",username];
+        
+        //    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        //        UIPopoverController *popoverVC = [[UIPopoverController alloc] initWithContentViewController:messageTVC];
+        ////        topicsTVC.preferredContentSize = CGSizeMake(320, topicsTVC.tableViewHeight+44.0);
+        //        [popoverVC presentPopoverFromRect:self.view.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        //    } else {
+        [self.navigationController pushViewController:messageTVC animated:YES];
+        //    }
+    } else {
+        UIAlertView *notSignedInAlert = [[UIAlertView alloc] initWithTitle:@"Not signed in"
+                                                                   message:@"You must be signed in to reddit to send a message"
+                                                                  delegate:nil
+                                                         cancelButtonTitle:@"OK"
+                                                         otherButtonTitles:nil];
+        [notSignedInAlert show];
+    }
+}
+
 
 - (void)commentSwitchDidChange:(UISwitch *)commentSwitch
 {

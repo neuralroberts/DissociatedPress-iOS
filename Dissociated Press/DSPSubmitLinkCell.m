@@ -72,8 +72,12 @@
 {
     _delegate = delegate;
     self.captchaTextField.delegate = _delegate;
-    [self.captchaTextField addTarget:self action:@selector(textFieldTextDidChange:) forControlEvents:UIControlEventEditingChanged];
-    [self.commentSwitch addTarget:_delegate action:@selector(commentSwitchDidChange:) forControlEvents:UIControlEventValueChanged];
+    if (_delegate && [_delegate respondsToSelector:@selector(textFieldTextDidChange:)]) {
+        [self.captchaTextField addTarget:self action:@selector(textFieldTextDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
+    if (_delegate && [_delegate respondsToSelector:@selector(commentSwitchDidChange:)]) {
+        [self.commentSwitch addTarget:_delegate action:@selector(commentSwitchDidChange:) forControlEvents:UIControlEventValueChanged];
+    }
 }
 
 
