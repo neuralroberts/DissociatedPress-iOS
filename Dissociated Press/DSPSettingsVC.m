@@ -16,68 +16,23 @@
 #define SECTION_DISSOCIATOR 0
 #define SECTION_ACCOUNTS 1
 
-#define NUM_ROWS_DISSOCIATOR 2
+#define NUM_ROWS_DISSOCIATOR 3
 #define NUM_ROWS_ACCOUNTS 1
+
+#define ROW_DISSOCIATOR_HELPCELL 2
+
 
 @interface DSPSettingsVC ()
 
 @property (nonatomic) NSInteger tokenSize;
-@property (nonatomic, strong) UISlider *tokenSizeSlider;
-@property (nonatomic, strong) UILabel *tokenSizeLabel;
-
 @property (nonatomic) NSNumber *dissociateByWord;
-@property (nonatomic, strong) UISegmentedControl *dissociateByWordControl;
+
+@property (strong, nonatomic) DSPSettingsTableViewCell *sizingCell;
+@property (strong, nonatomic) DSPHelpTableViewCell *helpCell;
 
 @end
 
 @implementation DSPSettingsVC
-
-- (UISlider *)tokenSizeSlider
-{
-    if (!_tokenSizeSlider) {
-        UISlider *tokenSlider = [[UISlider alloc] init];
-        tokenSlider.minimumValue = 1;
-        tokenSlider.maximumValue = 9;
-        tokenSlider.value = self.tokenSize;
-        [tokenSlider addTarget:self action:@selector(tokenSliderChanged) forControlEvents:UIControlEventValueChanged];
-        _tokenSizeSlider = tokenSlider;
-    }
-    return _tokenSizeSlider;
-}
-
-- (UILabel *)tokenSizeLabel
-{
-    if (!_tokenSizeLabel) {
-        UILabel *tokenSizeLabel = [[UILabel alloc] init];
-        tokenSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tokenSize];
-        _tokenSizeLabel = tokenSizeLabel;
-    }
-    return _tokenSizeLabel;
-}
-
-- (void)tokenSliderChanged
-{
-    self.tokenSize = self.tokenSizeSlider.value;
-    self.tokenSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tokenSize];
-}
-
-- (UISegmentedControl *)dissociateByWordControl
-{
-    if (!_dissociateByWordControl) {
-        NSArray *items = @[@"Character", @"Word"];
-        UISegmentedControl *dissociateByWordControl = [[UISegmentedControl alloc] initWithItems:items];
-        dissociateByWordControl.selectedSegmentIndex = [self.dissociateByWord intValue];
-        [dissociateByWordControl addTarget:self action:@selector(dissociateByWordControlChanged) forControlEvents:UIControlEventValueChanged];
-        _dissociateByWordControl = dissociateByWordControl;
-    }
-    return _dissociateByWordControl;
-}
-
-- (void)dissociateByWordControlChanged
-{
-    self.dissociateByWord = [NSNumber numberWithInteger:self.dissociateByWordControl.selectedSegmentIndex];
-}
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -85,9 +40,13 @@
     self.tableView.separatorColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
+    
+    self.sizingCell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:nil];
+    self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.sizingCell.hidden = YES;
+    [self.tableView addSubview:self.sizingCell];
+    self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 300);
 }
 
 - (void)authenticationStateDidChange
@@ -121,6 +80,13 @@
     [defaults synchronize];
 }
 
+- (void)toggleHelpCell
+{
+    [self.helpCell toggleHelp];
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -129,7 +95,7 @@
         case 0:
             return @"Dissociator settings";
             break;
-            case 1:
+        case 1:
             return @"Accounts";
             break;
             
@@ -162,69 +128,58 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *reuseIdentifer = @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifer forIndexPath:indexPath];
-    if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifer];
-    
-    cell.layer.cornerRadius = 12.0;
-    cell.layer.masksToBounds = YES;
-    cell.layer.borderWidth = 8.0;
-    cell.layer.borderColor = [UIColor groupTableViewBackgroundColor].CGColor;
-    cell.textLabel.backgroundColor = [UIColor clearColor];
+    if (indexPath.section == SECTION_DISSOCIATOR && indexPath.row == ROW_DISSOCIATOR_HELPCELL) {
+        if (!self.helpCell) {
+            self.helpCell = [[DSPHelpTableViewCell alloc] initWithReuseIdentifier:nil];
+            self.helpCell.delegate = self;
+            self.helpCell.frame = CGRectMake(0, 0, self.tableView.bounds.size.width, 200);
+        }
+        
+        [self.helpCell setNeedsUpdateConstraints];
+        [self.helpCell setNeedsLayout];
+        [self.helpCell layoutIfNeeded];
+        return self.helpCell;
+    } else {
+        NSString *reuseIdentifier = @"settingsCell";
+        DSPSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+        if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:reuseIdentifier];
+        
+        cell = [self configureCell:cell AtIndexPath:indexPath];
+        
+        return cell;
+    }
+}
+
+- (DSPSettingsTableViewCell *)configureCell:(DSPSettingsTableViewCell *)cell AtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.frame = CGRectMake(0, 0, self.tableView.bounds.size.width, 200);
+    cell.delegate = self;
     
     if (indexPath.section == SECTION_DISSOCIATOR) {
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
         if (indexPath.row == 0) {
-            self.tokenSizeSlider.frame = CGRectMake(cell.contentView.frame.origin.x + 112.0,
-                                                    cell.contentView.frame.origin.y,
-                                                    cell.contentView.frame.size.width - 164.0,
-                                                    cell.contentView.frame.size.height);
-            self.tokenSizeSlider.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-            
-            self.tokenSizeLabel.frame = CGRectMake(cell.contentView.frame.size.width - 32.0,
-                                                   cell.contentView.frame.origin.y,
-                                                   32.0,
-                                                   cell.contentView.frame.size.height);
-            self.tokenSizeLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-            
-            cell.textLabel.text = @"Token size";
-            [cell.contentView addSubview:self.tokenSizeSlider];
-            [cell.contentView addSubview:self.tokenSizeLabel];
+            cell.titleLabel.text = @"Token type:";
+            cell.tokenTypeControl.selectedSegmentIndex = [self.dissociateByWord intValue];
+            cell.cellType = DSPSettingsCellTypeTokenType;
         } else if (indexPath.row == 1) {
-            self.dissociateByWordControl.frame = CGRectMake(cell.contentView.frame.size.width - 184.0,
-                                                            cell.contentView.frame.origin.y + 16.0,
-                                                            160.0,
-                                                            cell.contentView.frame.size.height - 32.0);
-            self.dissociateByWordControl.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth;
-            
-            cell.textLabel.text = @"Dissociate by:";
-            [cell.contentView addSubview:self.dissociateByWordControl];
+            cell.titleLabel.text = @"Token size:";
+            cell.tokenSizeSlider.value = self.tokenSize;
+            cell.tokenSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tokenSize];
+            cell.cellType = DSPSettingsCellTypeTokenSize;
         }
     } else if (indexPath.section == SECTION_ACCOUNTS) {
-        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        cell.textLabel.text = @"Reddit account";
-        
-        for (UIView *view in cell.contentView.subviews) {
-            if ([view isKindOfClass:[UILabel class]]) {
-                [view removeFromSuperview];
+        if (indexPath.row == 0) {
+            cell.titleLabel.text = @"Reddit account";
+            if ([[RKClient sharedClient] isSignedIn]) {
+                cell.detailLabel.text = [[[RKClient sharedClient] currentUser] username];
+                cell.detailLabel.textColor = [UIColor darkGrayColor];
+            } else {
+                cell.detailLabel.text = @"Not signed in";
+                cell.detailLabel.textColor = [UIColor redColor];
             }
-        }
-        UILabel *accountNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 144.0,
-                                                                              cell.contentView.frame.origin.y + 16.0,
-                                                                              200.0,
-                                                                              cell.contentView.frame.size.height - 32.0)];
-        accountNameLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        [cell.contentView addSubview:accountNameLabel];
-        
-        if ([[RKClient sharedClient] isSignedIn]) {
-            accountNameLabel.text = [[[RKClient sharedClient] currentUser] username];
-            accountNameLabel.textColor = [UIColor darkGrayColor];
-        } else {
-            accountNameLabel.text = @"Not signed in";
-            accountNameLabel.textColor = [UIColor redColor];
+            cell.cellType = DSPSettingsCellTypeAccount;
         }
     }
+    
     return cell;
 }
 
@@ -232,18 +187,51 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 72.0;
+    CGFloat calculatedHeight = 88.0;
+    
+    if (indexPath.section == SECTION_DISSOCIATOR && indexPath.row == ROW_DISSOCIATOR_HELPCELL) {
+        [self.helpCell setNeedsLayout];
+        [self.helpCell layoutIfNeeded];
+        calculatedHeight = [self.helpCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    } else {
+        [self configureCell:self.sizingCell AtIndexPath:indexPath];
+        calculatedHeight = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    }
+    
+    return calculatedHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == SECTION_DISSOCIATOR) {
+        if (indexPath.row == ROW_DISSOCIATOR_HELPCELL) {
+            [self toggleHelpCell];
+        }
     } else if (indexPath.section == SECTION_ACCOUNTS) {
         DSPAuthenticationTVC *authenticationTVC = [[DSPAuthenticationTVC alloc] init];
         [self.navigationController pushViewController:authenticationTVC animated:YES];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - DSPSettingsCellDelegate
+
+- (void)tokenSizeSliderDidChange:(UISlider *)sender
+{
+    self.tokenSize = sender.value;
+}
+
+- (void)tokenTypeDidChange:(UISegmentedControl *)sender
+{
+    self.dissociateByWord = [NSNumber numberWithInteger:sender.selectedSegmentIndex];
+}
+
+#pragma mark - DSPHelpCellDelegate
+
+- (void)didPressDisclosureButton
+{
+    [self toggleHelpCell];
 }
 
 @end

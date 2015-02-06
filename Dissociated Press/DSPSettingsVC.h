@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DSPSettingsTableViewCell.h"
+#import "DSPHelpTableViewCell.h"
 
-@interface DSPSettingsVC : UITableViewController
+@interface DSPSettingsVC : UITableViewController <DSPSettingsCellDelegate, DSPHelpCellDelegate>
+
+- (void)tokenSizeSliderDidChange:(UISlider *)sender;
+- (void)tokenTypeDidChange:(UISegmentedControl *)sender;
+- (void)didPressDisclosureButton;
 
 @end
