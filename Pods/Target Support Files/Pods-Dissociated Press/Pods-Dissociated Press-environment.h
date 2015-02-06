@@ -48,6 +48,12 @@
 #define COCOAPODS_VERSION_MINOR_AFNetworking_UIKit 5
 #define COCOAPODS_VERSION_PATCH_AFNetworking_UIKit 0
 
+// Appirater
+#define COCOAPODS_POD_AVAILABLE_Appirater
+#define COCOAPODS_VERSION_MAJOR_Appirater 2
+#define COCOAPODS_VERSION_MINOR_Appirater 0
+#define COCOAPODS_VERSION_PATCH_Appirater 4
+
 // MBProgressHUD
 #define COCOAPODS_POD_AVAILABLE_MBProgressHUD
 #define COCOAPODS_VERSION_MAJOR_MBProgressHUD 0
@@ -64,13 +70,13 @@
 #define COCOAPODS_POD_AVAILABLE_Mantle
 #define COCOAPODS_VERSION_MAJOR_Mantle 1
 #define COCOAPODS_VERSION_MINOR_Mantle 5
-#define COCOAPODS_VERSION_PATCH_Mantle 1
+#define COCOAPODS_VERSION_PATCH_Mantle 4
 
 // Mantle/extobjc
 #define COCOAPODS_POD_AVAILABLE_Mantle_extobjc
 #define COCOAPODS_VERSION_MAJOR_Mantle_extobjc 1
 #define COCOAPODS_VERSION_MINOR_Mantle_extobjc 5
-#define COCOAPODS_VERSION_PATCH_Mantle_extobjc 1
+#define COCOAPODS_VERSION_PATCH_Mantle_extobjc 4
 
 // RedditKit
 #define COCOAPODS_POD_AVAILABLE_RedditKit

@@ -9,11 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "DSPSettingsTableViewCell.h"
 #import "DSPHelpTableViewCell.h"
+#import <MessageUI/MessageUI.h>
 
-@interface DSPSettingsVC : UITableViewController <DSPSettingsCellDelegate, DSPHelpCellDelegate>
+
+@interface DSPSettingsVC : UITableViewController <DSPSettingsCellDelegate, DSPHelpCellDelegate, MFMailComposeViewControllerDelegate>
 
 - (void)tokenSizeSliderDidChange:(UISlider *)sender;
 - (void)tokenTypeDidChange:(UISegmentedControl *)sender;
 - (void)didPressDisclosureButton;
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error;
 
 @end

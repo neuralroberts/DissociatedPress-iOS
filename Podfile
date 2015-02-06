@@ -8,6 +8,7 @@ pod 'MWFeedParser/NSString+HTML'
 pod 'RedditKit', '~> 1.3.0'
 pod 'SSKeychain', '~> 1.2.2'
 pod 'MBProgressHUD', '~> 0.9'
+pod 'Appirater', '~> 2.0.4'
 end
 
 target 'Dissociated PressTests' do

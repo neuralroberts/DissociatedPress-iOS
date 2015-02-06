@@ -1,5 +1,5 @@
 #include "Pods-Dissociated Press-SSKeychain.xcconfig"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Build" "${PODS_ROOT}/Headers/Build/SSKeychain" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/MWFeedParser" "${PODS_ROOT}/Headers/Public/Mantle" "${PODS_ROOT}/Headers/Public/RedditKit" "${PODS_ROOT}/Headers/Public/RedditKit/Categories" "${PODS_ROOT}/Headers/Public/RedditKit/Model" "${PODS_ROOT}/Headers/Public/RedditKit/Networking" "${PODS_ROOT}/Headers/Public/SSKeychain"
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Build" "${PODS_ROOT}/Headers/Build/SSKeychain" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AFNetworking" "${PODS_ROOT}/Headers/Public/Appirater" "${PODS_ROOT}/Headers/Public/MBProgressHUD" "${PODS_ROOT}/Headers/Public/MWFeedParser" "${PODS_ROOT}/Headers/Public/Mantle" "${PODS_ROOT}/Headers/Public/RedditKit" "${PODS_ROOT}/Headers/Public/RedditKit/Categories" "${PODS_ROOT}/Headers/Public/RedditKit/Model" "${PODS_ROOT}/Headers/Public/RedditKit/Networking" "${PODS_ROOT}/Headers/Public/SSKeychain"
 OTHER_LDFLAGS = ${PODS_DISSOCIATED_PRESS_SSKEYCHAIN_OTHER_LDFLAGS} -ObjC
 PODS_ROOT = ${SRCROOT}

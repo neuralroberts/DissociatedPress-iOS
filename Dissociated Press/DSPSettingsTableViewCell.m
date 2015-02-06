@@ -50,6 +50,11 @@
     [self.tokenTypeControl addTarget:self action:@selector(tokenTypeDidChange:) forControlEvents:UIControlEventValueChanged];
     [self.cardView addSubview:self.tokenTypeControl];
     
+    self.disclosureButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    self.disclosureButton.enabled = NO;
+    self.disclosureButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.cardView addSubview:self.disclosureButton];
+    
     [self applyConstraints];
     
     return self;
@@ -75,23 +80,37 @@
     _cellType = cellType;
     
     if (cellType == DSPSettingsCellTypeTokenSize) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.titleLabel.hidden = NO;
         self.detailLabel.hidden = YES;
         self.tokenSizeSlider.hidden = NO;
         self.tokenSizeLabel.hidden = NO;
         self.tokenTypeControl.hidden = YES;
+        self.disclosureButton.hidden = YES;
     } else if (cellType == DSPSettingsCellTypeTokenType) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.titleLabel.hidden = NO;
         self.detailLabel.hidden = YES;
         self.tokenSizeSlider.hidden = YES;
         self.tokenSizeLabel.hidden = YES;
         self.tokenTypeControl.hidden = NO;
-    } else if (cellType == DSPSettingsCellTypeAccount) {
+        self.disclosureButton.hidden = YES;
+    } else if (cellType == DSPSettingsCellTypeDetail) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         self.titleLabel.hidden = NO;
         self.detailLabel.hidden = NO;
         self.tokenSizeSlider.hidden = YES;
         self.tokenSizeLabel.hidden = YES;
         self.tokenTypeControl.hidden = YES;
+        self.disclosureButton.hidden = YES;
+    } else if (cellType == DSPSettingsCellTypeDisclosure) {
+        self.selectionStyle = UITableViewCellSelectionStyleDefault;
+        self.titleLabel.hidden = NO;
+        self.detailLabel.hidden = YES;
+        self.tokenSizeSlider.hidden = YES;
+        self.tokenSizeLabel.hidden = YES;
+        self.tokenTypeControl.hidden = YES;
+        self.disclosureButton.hidden = NO;
     }
     
     [self setNeedsUpdateConstraints];
@@ -117,6 +136,8 @@
     [self.tokenSizeLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.tokenTypeControl setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.tokenTypeControl setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.disclosureButton setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.disclosureButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
                                                               attribute:NSLayoutAttributeLeading
@@ -210,6 +231,30 @@
                                                               attribute:NSLayoutAttributeTrailing
                                                               relatedBy:NSLayoutRelationEqual
                                                                  toItem:self.tokenTypeControl
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.disclosureButton
+                                                              attribute:NSLayoutAttributeLeading
+                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                 toItem:self.titleLabel
+                                                              attribute:NSLayoutAttributeTrailing
+                                                             multiplier:1
+                                                               constant:16]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.disclosureButton
+                                                              attribute:NSLayoutAttributeCenterY
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.titleLabel
+                                                              attribute:NSLayoutAttributeCenterY
+                                                             multiplier:1
+                                                               constant:0]];
+    
+    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
+                                                              attribute:NSLayoutAttributeTrailing
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.disclosureButton
                                                               attribute:NSLayoutAttributeTrailing
                                                              multiplier:1
                                                                constant:16]];

@@ -24,6 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
+## Appirater
+
+Copyright 2014. Arash Payan. This library is distributed under the terms of the MIT/X11.
+
 ## MBProgressHUD
 
 Copyright (c) 2013 Matej Bukovinski

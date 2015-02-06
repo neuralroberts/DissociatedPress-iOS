@@ -21,6 +21,7 @@
 		433AA0951A2F97430028477F /* DSPLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 433AA0941A2F97430028477F /* DSPLabel.m */; };
 		4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4364570E1A12981100C7DF66 /* DSPDissociatedNewsLoader.m */; };
 		43944C941A8429D800A53FFA /* DSPSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43944C931A8429D800A53FFA /* DSPSettingsTableViewCell.m */; };
+		43944C961A854BCC00A53FFA /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43944C951A854BCC00A53FFA /* MessageUI.framework */; };
 		439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */; };
 		43A149BE1A3CED1300D5A545 /* DSPTopicHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */; };
 		43A2E36C1A82CE53001E1127 /* DSPHelpTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A2E36B1A82CE53001E1127 /* DSPHelpTableViewCell.m */; };
@@ -78,6 +79,7 @@
 		4364570E1A12981100C7DF66 /* DSPDissociatedNewsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPDissociatedNewsLoader.m; sourceTree = "<group>"; };
 		43944C921A8429D800A53FFA /* DSPSettingsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPSettingsTableViewCell.h; sourceTree = "<group>"; };
 		43944C931A8429D800A53FFA /* DSPSettingsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPSettingsTableViewCell.m; sourceTree = "<group>"; };
+		43944C951A854BCC00A53FFA /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
 		439A92591A31070D00A42B5F /* DSPQueryHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPQueryHeaderView.h; sourceTree = "<group>"; };
 		439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPQueryHeaderView.m; sourceTree = "<group>"; };
 		43A149BC1A3CED1300D5A545 /* DSPTopicHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopicHeaderView.h; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43944C961A854BCC00A53FFA /* MessageUI.framework in Frameworks */,
 				43F893AE1A377DFF004062E5 /* Security.framework in Frameworks */,
 				516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */,
 			);
@@ -141,6 +144,7 @@
 		3C07A17F32927335D382174A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43944C951A854BCC00A53FFA /* MessageUI.framework */,
 				43B5DFC91A36B35700D1877A /* Security.framework */,
 				9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */,
 			);

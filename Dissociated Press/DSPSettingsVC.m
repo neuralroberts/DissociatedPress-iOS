@@ -9,15 +9,18 @@
 #import "DSPSettingsVC.h"
 #import "DSPAuthenticationTVC.h"
 #import <RedditKit/RedditKit.h>
+#import <Appirater/Appirater.h>
 
 
-#define NUM_SECTIONS 2
+#define NUM_SECTIONS 3
 
 #define SECTION_DISSOCIATOR 0
 #define SECTION_ACCOUNTS 1
+#define SECTION_ABOUT 2
 
 #define NUM_ROWS_DISSOCIATOR 3
 #define NUM_ROWS_ACCOUNTS 1
+#define NUM_ROWS_ABOUT 5
 
 #define ROW_DISSOCIATOR_HELPCELL 2
 
@@ -98,6 +101,9 @@
         case 1:
             return @"Accounts";
             break;
+        case 2:
+            return @"About Dissociated Press";
+            break;
             
         default:
             return nil;
@@ -118,6 +124,9 @@
             break;
         case SECTION_ACCOUNTS:
             return NUM_ROWS_ACCOUNTS;
+            break;
+        case SECTION_ABOUT:
+            return NUM_ROWS_ABOUT;
             break;
             
         default:
@@ -176,7 +185,26 @@
                 cell.detailLabel.text = @"Not signed in";
                 cell.detailLabel.textColor = [UIColor redColor];
             }
-            cell.cellType = DSPSettingsCellTypeAccount;
+            cell.cellType = DSPSettingsCellTypeDetail;
+        }
+    } else if (indexPath.section == SECTION_ABOUT) {
+        if (indexPath.row == 0) {
+            cell.titleLabel.text = @"Report a bug";
+            cell.cellType = DSPSettingsCellTypeDisclosure;
+        } else if (indexPath.row == 1) {
+            cell.titleLabel.text = @"Feedback";
+            cell.cellType = DSPSettingsCellTypeDisclosure;
+        } else if (indexPath.row == 2) {
+            cell.titleLabel.text = @"Rate Dissociated Press";
+            cell.cellType = DSPSettingsCellTypeDisclosure;
+        } else if (indexPath.row == 3) {
+            cell.titleLabel.text = @"Acknowledgements";
+            cell.cellType = DSPSettingsCellTypeDisclosure;
+        } else if (indexPath.row == 4) {
+            NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+            cell.titleLabel.text = [NSString stringWithFormat:@"Dissociated Press version %@",version];
+            cell.detailLabel.text = @"";
+            cell.cellType = DSPSettingsCellTypeDetail;
         }
     }
     
@@ -210,9 +238,71 @@
     } else if (indexPath.section == SECTION_ACCOUNTS) {
         DSPAuthenticationTVC *authenticationTVC = [[DSPAuthenticationTVC alloc] init];
         [self.navigationController pushViewController:authenticationTVC animated:YES];
+    } else if (indexPath.section == SECTION_ABOUT) {
+        if (indexPath.row == 0) {
+            NSString *recipient = @"dissociatedpress@decentfolks.com";
+            NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+            NSString *subject = [NSString stringWithFormat:@"Bug report for Dissociated Press %@",version];
+            [self composeMailWithRecipient:recipient Subject:subject];
+        } else if (indexPath.row == 1) {
+            NSString *recipient = @"dissociatedpress@decentfolks.com";
+            NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+            NSString *subject = [NSString stringWithFormat:@"Feedback for Dissociated Press %@",version];
+            [self composeMailWithRecipient:recipient Subject:subject];
+        } else if (indexPath.row == 2) {
+            [Appirater forceShowPrompt:YES];
+        } else if (indexPath.row == 3) {
+            NSString *acknowledgementsMessage = [NSString stringWithFormat:@"AFNetworking (github.com/AFNetworking)\n"
+                                                 @"Appirater (github.com/arashpayan)\n"
+                                                 @"MBProgressHUD (github.com/jdg)\n"
+                                                 @"MWFeedParser (github.com/mwaterfall)\n"
+                                                 @"Mantle (github.com/Mantle)\n"
+                                                 @"RedditKit (github.com/samsymons)\n"
+                                                 @"SSKeyChain (github.com/soffes)\n"];
+            UIAlertView *acknowledgementsView = [[UIAlertView alloc] initWithTitle:@"Acknowledgements"
+                                                                           message:acknowledgementsMessage
+                                                                          delegate:nil
+                                                                 cancelButtonTitle:@"OK"
+                                                                 otherButtonTitles:nil];
+            [acknowledgementsView show];
+        }
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)composeMailWithRecipient:(NSString *)recipient Subject:(NSString *)subject
+{
+    MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
+    mailVC.mailComposeDelegate = self;
+    [mailVC setSubject:subject];
+    [mailVC setToRecipients:@[recipient]];
+    [self presentViewController:mailVC animated:YES completion:nil];
+}
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (result == MFMailComposeResultFailed || result == MFMailComposeResultSent) {
+            if (error) {
+                UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                         message:error.localizedDescription
+                                                                        delegate:nil
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil];
+                [errorAlertView show];
+            } else {
+                UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:@"Message sent"
+                                                                           message:@"Thanks for your feedback!"
+                                                                          delegate:nil
+                                                                 cancelButtonTitle:@"OK" //@"Thank you for thanking me!"
+                                                                 otherButtonTitles:nil];
+                [successAlertView show];
+            }
+        }
+    }];
 }
 
 #pragma mark - DSPSettingsCellDelegate

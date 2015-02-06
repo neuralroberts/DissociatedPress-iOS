@@ -17,7 +17,8 @@
 typedef enum {
     DSPSettingsCellTypeTokenSize = 0,
     DSPSettingsCellTypeTokenType,
-    DSPSettingsCellTypeAccount,
+    DSPSettingsCellTypeDetail,
+    DSPSettingsCellTypeDisclosure,
 } DSPSettingsCellType;
 
 @interface DSPSettingsTableViewCell : DSPTableViewCell
@@ -29,5 +30,6 @@ typedef enum {
 @property (strong, nonatomic) UISlider *tokenSizeSlider;
 @property (strong, nonatomic) UILabel *tokenSizeLabel;
 @property (strong, nonatomic) UISegmentedControl *tokenTypeControl;
+@property (strong, nonatomic) UIButton *disclosureButton;
 
 @end
