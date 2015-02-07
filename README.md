@@ -17,11 +17,11 @@ An iOS app which uses the [Dissociated Press Algorithm](http://www.catb.org/~esr
 
 &nbsp;
 
-![screenshot1](http://i.imgur.com/ccS2M6J.png)  
+![screenshot1](http://i.imgur.com/6WaVst6.png)  
 
 &nbsp;
 
-![screenshot2](http://i.imgur.com/lkC8pTd.png)
+![screenshot2](http://i.imgur.com/vLGrUC1.png)
 
 Installation
 ====================
