@@ -15,7 +15,12 @@ An iOS app which uses the [Dissociated Press Algorithm](http://www.catb.org/~esr
 [Dissociated Press](http://www.catb.org/~esr/jargon/html/D/Dissociated-Press.html) entry in the Jargon File.  
 [Wikipedia entry](http://en.wikipedia.org/wiki/Dissociated_press)
 
-![screenshot1](http://i.imgur.com/ccS2M6J.png)
+&nbsp;
+
+![screenshot1](http://i.imgur.com/ccS2M6J.png)  
+
+&nbsp;
+
 ![screenshot2](http://i.imgur.com/lkC8pTd.png)
 
 Installation
