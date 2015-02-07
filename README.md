@@ -1,16 +1,22 @@
 DissociatedPress-iOS
 ====================
 
-Probabilistic humor generator for iOS.
+An iOS app which uses the [Dissociated Press Algorithm](http://www.catb.org/~esr/jargon/html/D/Dissociated-Press.html) to probabilistically generate headlines using Google News as the source text.  
 
-[reddit.com/r/NewsSalad][1]
 
-An iOS app which fetches news using the Google Feed API and generates new, better news using the [Dissociated Press algorithm][2].
+>Dissociated Press uses sophisticated statistical techniques to find hidden patterns in the headlines, then rearranges these patterns to create new, better news:
+* Celiac patients meet, Threaten War
+* Maryland woman named hero for work on Instagram
+* Mark Zuckerberg Invites 30 Million to enter 'deep freeze' as mercury rises
+* Review: Depressing new anti-aging medicine
+* Satan's Best Productivity Tricks
 
-Supports changing of parameters (token size, word/letter based tokenization) and merging of multiple queries to build the source text.
+>[/r/Dissociated_Press](http://reddit.com/r/Dissociated_Press)  
+[Dissociated Press](http://www.catb.org/~esr/jargon/html/D/Dissociated-Press.html) entry in the Jargon File.  
+[Wikipedia entry](http://en.wikipedia.org/wiki/Dissociated_press)
 
-![screenshot1](http://i.imgur.com/n86gNLq.png)
-![screenshot2](http://i.imgur.com/fcmDTr0.png)
+![screenshot1](http://i.imgur.com/ccS2M6J.png)
+![screenshot2](http://i.imgur.com/lkC8pTd.png)
 
 Installation
 ====================
@@ -25,12 +31,18 @@ Requirements
 
 Credits
 ====================
-* [MWFeedParser][3]  
-* [This blog post for autolayout help][4]
+* [AFNetworking](https://github.com/AFNetworking/AFNetworking)
+* [Appirater](https://github.com/arashpayan/appirater)
+* [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
+* [MWFeedParser](https://github.com/mwaterfall/MWFeedParser)
+* [Mantle](https://github.com/Mantle/Mantle)
+* [RedditKit](https://github.com/samsymons/RedditKit)
+* [SSKeyChain](https://github.com/soffes/sskeychain)
+
 
 License
 ====================
-Copyright (c) 2014, Joseph Wilkerson
+Copyright (c) 2014, Decent Folks Software, LLC
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -59,10 +71,3 @@ Disclaimer
 
 Contact
 ====================
-
-
-
-  [1]: http://reddit.com/r/NewsSalad
-  [2]: http://en.wikipedia.org/wiki/Dissociated_press
-  [3]: https://github.com/mwaterfall/MWFeedParser
-  [4]: http://johnszumski.com/blog/auto-layout-for-table-view-cells-with-dynamic-heights
