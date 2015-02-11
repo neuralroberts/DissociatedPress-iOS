@@ -12,6 +12,8 @@
 #import "DSPNewsLoader.h"
 #import "DSPDissociatedNewsLoader.h"
 #import "DSPSubmitLinkTVC.h"
+#import <iAd/iAd.h>
+#import "IAPHelper.h"
 
 
 @interface DSPNewsTVC ()
@@ -39,6 +41,9 @@
 #pragma mark - view lifecycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     self.queries = [NSMutableArray array];
     self.topics = [NSMutableArray arrayWithObjects:@"Headlines", @"World", @"Technology", @"Entertainment", @"Health", nil];
@@ -80,9 +85,9 @@
     UIBarButtonItem *controlButton = [[UIBarButtonItem alloc] initWithCustomView:self.queryTypeControl];
     self.navigationItem.leftBarButtonItem = controlButton;
     
-//    self.refreshControl = [[UIRefreshControl alloc] init];
-//    [self.tableView addSubview:self.refreshControl];
-//    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
+    //    self.refreshControl = [[UIRefreshControl alloc] init];
+    //    [self.tableView addSubview:self.refreshControl];
+    //    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
     
     [self loadNews];
 }
@@ -114,7 +119,7 @@
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.refreshControl beginRefreshing];
+            //            [self.refreshControl beginRefreshing];
             NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.newsArray removeAllObjects];
             [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -132,13 +137,23 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.refreshControl endRefreshing];
+            //            [self.refreshControl endRefreshing];
             self.newsLoader = newsLoader;
             self.newsArray = [newNews mutableCopy];
             NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.tableView insertRowsAtIndexPaths:rangeToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
         });
     });
+}
+
+- (void)updateIAPStatus:(NSNotification *)notification
+{
+    if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+        self.canDisplayBannerAds = NO;
+    }
+    else {
+        self.canDisplayBannerAds = YES;
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -249,7 +264,7 @@
 }
 
 
-#pragma mark - Delegate methods
+#pragma mark - Misc Delegate methods
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
@@ -272,7 +287,7 @@
         self.topicsPopover = [[UIPopoverController alloc] initWithContentViewController:topicsTVC];
         self.topicsPopover.delegate = self;
         topicsTVC.preferredContentSize = CGSizeMake(320, topicsTVC.tableViewHeight+44.0);
-        [self.topicsPopover presentPopoverFromRect:self.topicHeaderView.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+        [self.topicsPopover presentPopoverFromRect:self.topicHeaderView.frame inView:self.originalContentView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     } else {
         UINavigationController *navigationVC = [[UINavigationController alloc] initWithRootViewController:topicsTVC];
         [self presentViewController:navigationVC animated:YES completion:nil];

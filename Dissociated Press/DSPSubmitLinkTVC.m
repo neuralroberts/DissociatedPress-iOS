@@ -13,6 +13,8 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "DSPWebViewController.h"
 #import "DSPSendMessageTVC.h"
+#import "IAPHelper.h"
+#import <iAd/iAd.h>
 
 
 @interface DSPSubmitLinkTVC () <UIAlertViewDelegate>
@@ -32,7 +34,7 @@
 {
     DSPNewsStory *story = self.story;
     
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [MBProgressHUD showHUDAddedTo:self.originalContentView animated:YES];
     
     __weak  __typeof(self)weakSelf = self;
     [[RKClient sharedClient] DSPSubmitLinkPostWithTitle:story.dissociatedTitle subredditName:@"Dissociated_Press" URL:story.url resubmit:YES captchaIdentifier:weakSelf.captchaIdentifier captchaValue:weakSelf.captchaText completion:^(NSHTTPURLResponse *response, id responseObject, NSError *error) {
@@ -75,7 +77,7 @@
             [self getNewCaptcha];
         }
         
-        [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+        [MBProgressHUD hideHUDForView:weakSelf.originalContentView animated:YES];
     }];
 }
 
@@ -101,6 +103,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -224,6 +229,16 @@
     return rangeArray;
 }
 
+- (void)updateIAPStatus:(NSNotification *)notification
+{
+    if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+        self.canDisplayBannerAds = NO;
+    }
+    else {
+        self.canDisplayBannerAds = YES;
+    }
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -252,12 +267,14 @@
     cell.isCaptchaCell = NO;
     cell.isCommentCell = NO;
     cell.subtitleLabel.numberOfLines = 2;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     if ([cellType isEqualToString:@"titleCell"]) {
         cell.titleLabel.text = @"Title";
         cell.subtitleLabel.text = self.story.dissociatedTitle;
     } else if ([cellType isEqualToString:@"linkCell"]) {
         cell.titleLabel.text = @"Link";
         cell.subtitleLabel.text = [self.story.url absoluteString];
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     } else if ([cellType isEqualToString:@"userCell"]) {
         cell.titleLabel.text = @"Username";
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;

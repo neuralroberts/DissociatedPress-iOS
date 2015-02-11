@@ -11,6 +11,8 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "DSPAuthenticationManager.h"
 #import "DSPWebViewController.h"
+#import <iAd/iAd.h>
+#import "IAPHelper.h"
 
 @interface DSPAuthenticationTVC () <UITextFieldDelegate, UIAlertViewDelegate>
 @property (strong, nonatomic) UIBarButtonItem *doneButton;
@@ -96,6 +98,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -210,6 +215,16 @@
 {
     DSPWebViewController *webVC = [[DSPWebViewController alloc] initWithURL:[NSURL URLWithString:@"https://www.reddit.com/wiki/reddit_101"]];
     [self.navigationController pushViewController:webVC animated:YES];
+}
+
+- (void)updateIAPStatus:(NSNotification *)notification
+{
+    if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+        self.canDisplayBannerAds = NO;
+    }
+    else {
+        self.canDisplayBannerAds = YES;
+    }
 }
 
 #pragma mark - Table view data source

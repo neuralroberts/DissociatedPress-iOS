@@ -10,6 +10,8 @@
 #import "DSPAuthenticationTVC.h"
 #import <RedditKit/RedditKit.h>
 #import <Appirater/Appirater.h>
+#import <iAd/iAd.h>
+#import "IAPHelper.h"
 
 
 #define NUM_SECTIONS 3
@@ -20,7 +22,7 @@
 
 #define NUM_ROWS_DISSOCIATOR 3
 #define NUM_ROWS_ACCOUNTS 1
-#define NUM_ROWS_ABOUT 5
+#define NUM_ROWS_ABOUT 7
 
 #define ROW_DISSOCIATOR_HELPCELL 2
 
@@ -39,6 +41,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     self.tableView.separatorColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
@@ -88,6 +93,18 @@
     [self.helpCell toggleHelp];
     [self.tableView beginUpdates];
     [self.tableView endUpdates];
+}
+
+- (void)updateIAPStatus:(NSNotification *)notification
+{
+    if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+        self.canDisplayBannerAds = NO;
+    }
+    else {
+        self.canDisplayBannerAds = YES;
+    }
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:SECTION_ABOUT];
+    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 #pragma mark - UITableViewDataSource
@@ -186,6 +203,7 @@
                 cell.detailLabel.textColor = [UIColor redColor];
             }
             cell.cellType = DSPSettingsCellTypeDetail;
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         }
     } else if (indexPath.section == SECTION_ABOUT) {
         if (indexPath.row == 0) {
@@ -195,12 +213,29 @@
             cell.titleLabel.text = @"Feedback";
             cell.cellType = DSPSettingsCellTypeDisclosure;
         } else if (indexPath.row == 2) {
+            cell.titleLabel.text = @"Remove all ads";
+            if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+                cell.detailLabel.text = @"\u2713";
+            }
+            else {
+                cell.detailLabel.text = @"$0.99";
+            }
+            cell.detailLabel.textColor = [UIColor darkGrayColor];
+            cell.cellType = DSPSettingsCellTypeDetail;
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        } else if (indexPath.row == 3) {
+            cell.titleLabel.text = @"Restore In-App Purchases";
+            cell.detailLabel.text = @"";
+            cell.cellType = DSPSettingsCellTypeDetail;
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        }
+        else if (indexPath.row == 4) {
             cell.titleLabel.text = @"Rate Dissociated Press";
             cell.cellType = DSPSettingsCellTypeDisclosure;
-        } else if (indexPath.row == 3) {
+        } else if (indexPath.row == 5) {
             cell.titleLabel.text = @"Acknowledgements";
             cell.cellType = DSPSettingsCellTypeDisclosure;
-        } else if (indexPath.row == 4) {
+        } else if (indexPath.row == 6) {
             NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
             cell.titleLabel.text = [NSString stringWithFormat:@"Dissociated Press version %@",version];
             cell.detailLabel.text = @"";
@@ -250,8 +285,28 @@
             NSString *subject = [NSString stringWithFormat:@"Feedback for Dissociated Press %@",version];
             [self composeMailWithRecipient:recipient Subject:subject];
         } else if (indexPath.row == 2) {
-            [Appirater forceShowPrompt:YES];
+           [[IAPHelper sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
+               if (success) {
+                   for (SKProduct *product in products) {
+                       if ([product.productIdentifier isEqualToString:IAPHelperProductRemoveAds]) {
+                           [[IAPHelper sharedInstance] buyProduct:product];
+                       }
+                   }
+               } else {
+                   UIAlertView *IAPAlert = [[UIAlertView alloc] initWithTitle:@"Could not reach the app store."
+                                                         message:@"Make sure you have internet connectivity."
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+                   [IAPAlert show];
+               }
+           }];
         } else if (indexPath.row == 3) {
+            [[IAPHelper sharedInstance] restoreCompletedTransactions];
+        }
+        else if (indexPath.row == 4) {
+            [Appirater forceShowPrompt:YES];
+        } else if (indexPath.row == 5) {
             NSString *acknowledgementsMessage = [NSString stringWithFormat:@"AFNetworking (github.com/AFNetworking)\n"
                                                  @"Appirater (github.com/arashpayan)\n"
                                                  @"MBProgressHUD (github.com/jdg)\n"

@@ -13,6 +13,7 @@
 #import "DSPAuthenticationManager.h"
 #import <RedditKit/RedditKit.h>
 #import <Appirater/Appirater.h>
+#import "IAPHelper.h"
 //#import <SSKeychain/SSKeychain.h>
 @interface DSPAppDelegate ()
 
@@ -25,6 +26,7 @@
     // Override point for customization after application launch.
     
     [self setupUserDefaults];
+    [IAPHelper sharedInstance];
     [self setupReddit];
     
     DSPNewsTVC *newsTVC;

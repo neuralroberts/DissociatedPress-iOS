@@ -7,6 +7,8 @@
 //
 
 #import "DSPWebViewController.h"
+#import <iAd/iAd.h>
+#import "IAPHelper.h"
 
 @interface DSPWebViewController () <UIWebViewDelegate>
 
@@ -22,6 +24,9 @@
 - (instancetype)initWithURL:(NSURL *)url
 {
     self = [super init];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     self.webView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.webView.scalesPageToFit = YES;
@@ -73,6 +78,16 @@
 {
     if (self.webView.canGoForward) {
         [self.webView goForward];
+    }
+}
+
+- (void)updateIAPStatus:(NSNotification *)notification
+{
+    if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+        self.canDisplayBannerAds = NO;
+    }
+    else {
+        self.canDisplayBannerAds = YES;
     }
 }
 

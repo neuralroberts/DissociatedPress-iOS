@@ -23,8 +23,11 @@
 		43944C941A8429D800A53FFA /* DSPSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43944C931A8429D800A53FFA /* DSPSettingsTableViewCell.m */; };
 		43944C961A854BCC00A53FFA /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43944C951A854BCC00A53FFA /* MessageUI.framework */; };
 		439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */; };
+		439BC5A11A86ECE60046A2EE /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 439BC5A01A86ECE60046A2EE /* iAd.framework */; };
 		43A149BE1A3CED1300D5A545 /* DSPTopicHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */; };
 		43A2E36C1A82CE53001E1127 /* DSPHelpTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A2E36B1A82CE53001E1127 /* DSPHelpTableViewCell.m */; };
+		43A3D8421A8A6EF400192015 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43A3D8411A8A6EF400192015 /* StoreKit.framework */; };
+		43A3D8451A8A717100192015 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A3D8441A8A717100192015 /* IAPHelper.m */; };
 		43AB77471A40AC490085A25F /* DSPTopicsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 43AB77461A40AC490085A25F /* DSPTopicsTVC.m */; };
 		43B5DFC51A36610E00D1877A /* DSPAuthenticationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */; };
 		43CFA1261A37C7B20023A7FD /* DSPSubmitLinkTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 43CFA1251A37C7B20023A7FD /* DSPSubmitLinkTVC.m */; };
@@ -82,10 +85,14 @@
 		43944C951A854BCC00A53FFA /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
 		439A92591A31070D00A42B5F /* DSPQueryHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPQueryHeaderView.h; sourceTree = "<group>"; };
 		439A925A1A31070D00A42B5F /* DSPQueryHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPQueryHeaderView.m; sourceTree = "<group>"; };
+		439BC5A01A86ECE60046A2EE /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/iAd.framework; sourceTree = DEVELOPER_DIR; };
 		43A149BC1A3CED1300D5A545 /* DSPTopicHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopicHeaderView.h; sourceTree = "<group>"; };
 		43A149BD1A3CED1300D5A545 /* DSPTopicHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopicHeaderView.m; sourceTree = "<group>"; };
 		43A2E36A1A82CE53001E1127 /* DSPHelpTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPHelpTableViewCell.h; sourceTree = "<group>"; };
 		43A2E36B1A82CE53001E1127 /* DSPHelpTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPHelpTableViewCell.m; sourceTree = "<group>"; };
+		43A3D8411A8A6EF400192015 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		43A3D8431A8A717100192015 /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
+		43A3D8441A8A717100192015 /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
 		43AB77451A40AC490085A25F /* DSPTopicsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopicsTVC.h; sourceTree = "<group>"; };
 		43AB77461A40AC490085A25F /* DSPTopicsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPTopicsTVC.m; sourceTree = "<group>"; };
 		43B5DFC31A36610E00D1877A /* DSPAuthenticationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPAuthenticationManager.h; sourceTree = "<group>"; };
@@ -116,6 +123,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43A3D8421A8A6EF400192015 /* StoreKit.framework in Frameworks */,
+				439BC5A11A86ECE60046A2EE /* iAd.framework in Frameworks */,
 				43944C961A854BCC00A53FFA /* MessageUI.framework in Frameworks */,
 				43F893AE1A377DFF004062E5 /* Security.framework in Frameworks */,
 				516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */,
@@ -144,6 +153,8 @@
 		3C07A17F32927335D382174A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				43A3D8411A8A6EF400192015 /* StoreKit.framework */,
+				439BC5A01A86ECE60046A2EE /* iAd.framework */,
 				43944C951A854BCC00A53FFA /* MessageUI.framework */,
 				43B5DFC91A36B35700D1877A /* Security.framework */,
 				9E01CCEAE11B4C084634F9B0 /* libPods-Dissociated Press.a */,
@@ -245,6 +256,8 @@
 				4364570E1A12981100C7DF66 /* DSPDissociatedNewsLoader.m */,
 				43B5DFC31A36610E00D1877A /* DSPAuthenticationManager.h */,
 				43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */,
+				43A3D8431A8A717100192015 /* IAPHelper.h */,
+				43A3D8441A8A717100192015 /* IAPHelper.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -422,6 +435,7 @@
 				439A925B1A31070D00A42B5F /* DSPQueryHeaderView.m in Sources */,
 				D34421FA1A43712200B2D06E /* DSPWebViewController.m in Sources */,
 				43CFA12C1A3917F20023A7FD /* DSPAuthenticationTVC.m in Sources */,
+				43A3D8451A8A717100192015 /* IAPHelper.m in Sources */,
 				4364570F1A12981100C7DF66 /* DSPDissociatedNewsLoader.m in Sources */,
 				433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */,
 				43383D9B1A117C7E00D58D0F /* DSPNewsStory.m in Sources */,

@@ -11,6 +11,8 @@
 #import <RedditKit/RedditKit.h>
 #import "DSPAuthenticationTVC.h"
 #import "DSPWebViewController.h"
+#import <iAd/iAd.h>
+#import "IAPHelper.h"
 
 @interface DSPTopStoriesTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) RKPagination *currentPagination;
@@ -30,6 +32,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -159,6 +164,16 @@
         [rangeArray addObject:path];
     }
     return rangeArray;
+}
+
+- (void)updateIAPStatus:(NSNotification *)notification
+{
+    if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
+        self.canDisplayBannerAds = NO;
+    }
+    else {
+        self.canDisplayBannerAds = YES;
+    }
 }
 
 #pragma mark - Table view data source
