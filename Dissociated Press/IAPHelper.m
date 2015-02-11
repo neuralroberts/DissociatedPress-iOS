@@ -99,7 +99,7 @@ NSString *const IAPHelperProductRemoveAds = @"com.DecentFolks.DissociatedPress.R
     
     SKPayment * payment = [SKPayment paymentWithProduct:product];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
-    
+    NSLog(@"%@",[SKPaymentQueue defaultQueue]);
 }
 
 - (void)restoreCompletedTransactions {
@@ -143,7 +143,12 @@ NSString *const IAPHelperProductRemoveAds = @"com.DecentFolks.DissociatedPress.R
     
     if (transaction.error.code != SKErrorPaymentCancelled)
     {
-        NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Store error"
+                                                             message:transaction.error.localizedDescription
+                                                            delegate:nil
+                                                   cancelButtonTitle:@"OK"
+                                                   otherButtonTitles:nil];
+        [errorAlert show];
     }
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
@@ -155,7 +160,6 @@ NSString *const IAPHelperProductRemoveAds = @"com.DecentFolks.DissociatedPress.R
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:productIdentifier];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSNotificationCenter defaultCenter] postNotificationName:IAPHelperProductPurchasedNotification object:productIdentifier userInfo:nil];
-    
 }
 
 

@@ -33,9 +33,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self updateIAPStatus:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
-    
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -63,6 +60,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
     
     self.currentCategory = (RKSubredditCategory)1;
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     [self resetLinks];
     

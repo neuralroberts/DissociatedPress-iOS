@@ -25,9 +25,6 @@
 {
     self = [super init];
     
-    [self updateIAPStatus:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
-    
     self.webView = [[UIWebView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.webView.scalesPageToFit = YES;
     self.webView.delegate = self;
@@ -47,6 +44,9 @@
     self.forwardButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward target:self action:@selector(goForward:)];
     self.forwardButton.enabled = self.webView.canGoForward;
     self.navigationItem.rightBarButtonItems = @[self.forwardButton, self.refreshButton, self.backButton];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     return self;
 }

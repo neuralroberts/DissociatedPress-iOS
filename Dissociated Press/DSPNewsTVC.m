@@ -42,9 +42,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self updateIAPStatus:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
-    
     self.queries = [NSMutableArray array];
     self.topics = [NSMutableArray arrayWithObjects:@"Headlines", @"World", @"Technology", @"Entertainment", @"Health", nil];
     
@@ -88,6 +85,9 @@
     //    self.refreshControl = [[UIRefreshControl alloc] init];
     //    [self.tableView addSubview:self.refreshControl];
     //    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     [self loadNews];
 }

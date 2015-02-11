@@ -30,9 +30,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self updateIAPStatus:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
-    
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
@@ -48,6 +45,9 @@
     self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 300);
     
     self.cellsIndex = [NSMutableArray arrayWithObjects:@"recipientCell", @"subjectCell", @"messageCell", nil];
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     [self getNewCaptcha];
 }

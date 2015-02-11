@@ -14,17 +14,14 @@
 - (void)tokenTypeDidChange:(UISegmentedControl *)sender;
 @end
 
-typedef enum {
-    DSPSettingsCellTypeTokenSize = 0,
-    DSPSettingsCellTypeTokenType,
-    DSPSettingsCellTypeDetail,
-    DSPSettingsCellTypeDisclosure,
-} DSPSettingsCellType;
+extern NSString* const DSPSettingsCellTypeTokenSize;
+extern NSString* const DSPSettingsCellTypeTokenType;
+extern NSString* const DSPSettingsCellTypeDetail;
+extern NSString* const DSPSettingsCellTypeDisclosure;
 
 @interface DSPSettingsTableViewCell : DSPTableViewCell
 
 @property (weak, nonatomic) id<DSPSettingsCellDelegate>delegate;
-@property (nonatomic) DSPSettingsCellType cellType;
 @property (strong, nonatomic) UILabel *titleLabel;
 @property (strong, nonatomic) UILabel *detailLabel;
 @property (strong, nonatomic) UISlider *tokenSizeSlider;

@@ -36,7 +36,7 @@
     self.titleLabel.backgroundColor = [UIColor whiteColor];
     self.titleLabel.numberOfLines = 1;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.titleLabel.text = @"What do these settings mean?";
+    self.titleLabel.text = @"Dissociator Help";
     [self.cardView addSubview:self.titleLabel];
     
     self.detailLabel = [[DSPLabel alloc] init];
@@ -102,8 +102,8 @@
 {
     [super applyConstraints];
     
-    [self.detailLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-    [self.detailLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+//    [self.detailLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+//    [self.detailLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
     [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
                                                               attribute:NSLayoutAttributeTrailing

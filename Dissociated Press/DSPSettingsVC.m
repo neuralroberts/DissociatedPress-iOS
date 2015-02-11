@@ -14,15 +14,17 @@
 #import "IAPHelper.h"
 
 
-#define NUM_SECTIONS 3
+#define NUM_SECTIONS 4
 
 #define SECTION_DISSOCIATOR 0
 #define SECTION_ACCOUNTS 1
-#define SECTION_ABOUT 2
+#define SECTION_PURCHASES 2
+#define SECTION_ABOUT 3
 
 #define NUM_ROWS_DISSOCIATOR 3
 #define NUM_ROWS_ACCOUNTS 1
-#define NUM_ROWS_ABOUT 7
+#define NUM_ROWS_PURCHASES 2
+#define NUM_ROWS_ABOUT 5
 
 #define ROW_DISSOCIATOR_HELPCELL 2
 
@@ -42,19 +44,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self updateIAPStatus:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
-    
     self.tableView.separatorColor = [UIColor groupTableViewBackgroundColor];
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(authenticationStateDidChange) name:@"authenticationStateDidChange" object:nil];
     
-    self.sizingCell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:nil];
-    self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.sizingCell.hidden = YES;
-    [self.tableView addSubview:self.sizingCell];
-    self.sizingCell.frame = CGRectMake(0, 0, CGRectGetWidth(self.tableView.bounds), 300);
+    self.helpCell = [[DSPHelpTableViewCell alloc] initWithReuseIdentifier:nil];
+    self.helpCell.delegate = self;
+    self.helpCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.helpCell.frame = CGRectMake(0, 0, self.tableView.bounds.size.width, 70);
+    
+    [self updateIAPStatus:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
+
 }
 
 - (void)authenticationStateDidChange
@@ -103,7 +105,7 @@
     else {
         self.canDisplayBannerAds = YES;
     }
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:SECTION_ABOUT];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:SECTION_PURCHASES];
     [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
@@ -119,6 +121,9 @@
             return @"Accounts";
             break;
         case 2:
+            return @"In-App purchases";
+            break;
+        case 3:
             return @"About Dissociated Press";
             break;
             
@@ -142,6 +147,9 @@
         case SECTION_ACCOUNTS:
             return NUM_ROWS_ACCOUNTS;
             break;
+            case SECTION_PURCHASES:
+            return NUM_ROWS_PURCHASES;
+            break;
         case SECTION_ABOUT:
             return NUM_ROWS_ABOUT;
             break;
@@ -155,45 +163,39 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == SECTION_DISSOCIATOR && indexPath.row == ROW_DISSOCIATOR_HELPCELL) {
-        if (!self.helpCell) {
-            self.helpCell = [[DSPHelpTableViewCell alloc] initWithReuseIdentifier:nil];
-            self.helpCell.delegate = self;
-            self.helpCell.frame = CGRectMake(0, 0, self.tableView.bounds.size.width, 200);
-        }
-        
         [self.helpCell setNeedsUpdateConstraints];
         [self.helpCell setNeedsLayout];
         [self.helpCell layoutIfNeeded];
         return self.helpCell;
     } else {
-        NSString *reuseIdentifier = @"settingsCell";
-        DSPSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
-        if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:reuseIdentifier];
-        
-        cell = [self configureCell:cell AtIndexPath:indexPath];
-        
-        return cell;
+        return [self tableView:tableView settingsCellForIndexPath:indexPath];
     }
 }
 
-- (DSPSettingsTableViewCell *)configureCell:(DSPSettingsTableViewCell *)cell AtIndexPath:(NSIndexPath *)indexPath
+- (DSPSettingsTableViewCell *)tableView:(UITableView *)tableView settingsCellForIndexPath:(NSIndexPath *)indexPath
 {
-    cell.frame = CGRectMake(0, 0, self.tableView.bounds.size.width, 200);
-    cell.delegate = self;
+    DSPSettingsTableViewCell *cell;
     
     if (indexPath.section == SECTION_DISSOCIATOR) {
         if (indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeTokenType];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeTokenType];
             cell.titleLabel.text = @"Token type:";
             cell.tokenTypeControl.selectedSegmentIndex = [self.dissociateByWord intValue];
-            cell.cellType = DSPSettingsCellTypeTokenType;
+            cell.delegate = self;
         } else if (indexPath.row == 1) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeTokenSize];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeTokenSize];
             cell.titleLabel.text = @"Token size:";
             cell.tokenSizeSlider.value = self.tokenSize;
             cell.tokenSizeLabel.text = [NSString stringWithFormat:@"%ld",(long)self.tokenSize];
-            cell.cellType = DSPSettingsCellTypeTokenSize;
+            cell.delegate = self;
         }
+        
     } else if (indexPath.section == SECTION_ACCOUNTS) {
         if (indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDetail];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDetail];
             cell.titleLabel.text = @"Reddit account";
             if ([[RKClient sharedClient] isSignedIn]) {
                 cell.detailLabel.text = [[[RKClient sharedClient] currentUser] username];
@@ -202,17 +204,12 @@
                 cell.detailLabel.text = @"Not signed in";
                 cell.detailLabel.textColor = [UIColor redColor];
             }
-            cell.cellType = DSPSettingsCellTypeDetail;
-            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         }
-    } else if (indexPath.section == SECTION_ABOUT) {
+        
+    } else if (indexPath.section == SECTION_PURCHASES) {
         if (indexPath.row == 0) {
-            cell.titleLabel.text = @"Report a bug";
-            cell.cellType = DSPSettingsCellTypeDisclosure;
-        } else if (indexPath.row == 1) {
-            cell.titleLabel.text = @"Feedback";
-            cell.cellType = DSPSettingsCellTypeDisclosure;
-        } else if (indexPath.row == 2) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDetail];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDetail];
             cell.titleLabel.text = @"Remove all ads";
             if ([[IAPHelper sharedInstance] productPurchased:IAPHelperProductRemoveAds]) {
                 cell.detailLabel.text = @"\u2713";
@@ -221,27 +218,44 @@
                 cell.detailLabel.text = @"$0.99";
             }
             cell.detailLabel.textColor = [UIColor darkGrayColor];
-            cell.cellType = DSPSettingsCellTypeDetail;
-            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-        } else if (indexPath.row == 3) {
+        } else if (indexPath.row == 1) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDetail];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDetail];
             cell.titleLabel.text = @"Restore In-App Purchases";
             cell.detailLabel.text = @"";
-            cell.cellType = DSPSettingsCellTypeDetail;
-            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         }
-        else if (indexPath.row == 4) {
+        
+    } else if (indexPath.section == SECTION_ABOUT) {
+        if (indexPath.row == 0) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDisclosure];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDisclosure];
+            cell.titleLabel.text = @"Report a bug";
+        } else if (indexPath.row == 1) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDisclosure];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDisclosure];
+            cell.titleLabel.text = @"Feedback";
+        } else if (indexPath.row == 2) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDisclosure];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDisclosure];
             cell.titleLabel.text = @"Rate Dissociated Press";
-            cell.cellType = DSPSettingsCellTypeDisclosure;
-        } else if (indexPath.row == 5) {
+        } else if (indexPath.row == 3) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDisclosure];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDisclosure];
             cell.titleLabel.text = @"Acknowledgements";
-            cell.cellType = DSPSettingsCellTypeDisclosure;
-        } else if (indexPath.row == 6) {
+        } else if (indexPath.row == 4) {
+            cell = [tableView dequeueReusableCellWithIdentifier:DSPSettingsCellTypeDetail];
+            if (cell == nil) cell = [[DSPSettingsTableViewCell alloc] initWithReuseIdentifier:DSPSettingsCellTypeDetail];
             NSString * version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
-            cell.titleLabel.text = [NSString stringWithFormat:@"Dissociated Press version %@",version];
-            cell.detailLabel.text = @"";
-            cell.cellType = DSPSettingsCellTypeDetail;
+            cell.titleLabel.text = @"Version";
+            cell.detailLabel.text = version;
+            cell.detailLabel.textColor = [UIColor darkGrayColor];
         }
     }
+    
+    cell.frame = CGRectMake(0, 0, self.tableView.bounds.size.width, 200);
+    [cell setNeedsUpdateConstraints];
+    [cell setNeedsLayout];
+    [cell layoutIfNeeded];
     
     return cell;
 }
@@ -253,14 +267,18 @@
     CGFloat calculatedHeight = 88.0;
     
     if (indexPath.section == SECTION_DISSOCIATOR && indexPath.row == ROW_DISSOCIATOR_HELPCELL) {
+        [self.helpCell setNeedsUpdateConstraints];
         [self.helpCell setNeedsLayout];
         [self.helpCell layoutIfNeeded];
         calculatedHeight = [self.helpCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
     } else {
-        [self configureCell:self.sizingCell AtIndexPath:indexPath];
+        [self.sizingCell removeFromSuperview];
+        self.sizingCell = [self tableView:tableView settingsCellForIndexPath:indexPath];
+        self.sizingCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        self.sizingCell.hidden = YES;
+        [tableView addSubview:self.sizingCell];
         calculatedHeight = [self.sizingCell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
     }
-    
     return calculatedHeight;
 }
 
@@ -270,9 +288,33 @@
         if (indexPath.row == ROW_DISSOCIATOR_HELPCELL) {
             [self toggleHelpCell];
         }
+        
     } else if (indexPath.section == SECTION_ACCOUNTS) {
         DSPAuthenticationTVC *authenticationTVC = [[DSPAuthenticationTVC alloc] init];
         [self.navigationController pushViewController:authenticationTVC animated:YES];
+        
+    } else if (indexPath.section == SECTION_PURCHASES) {
+        if (indexPath.row == 0) {
+            [[IAPHelper sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
+                if (success) {
+                    for (SKProduct *product in products) {
+                        if ([product.productIdentifier isEqualToString:IAPHelperProductRemoveAds]) {
+                            [[IAPHelper sharedInstance] buyProduct:product];
+                        }
+                    }
+                } else {
+                    UIAlertView *IAPAlert = [[UIAlertView alloc] initWithTitle:@"Could not reach the app store."
+                                                                       message:@"Make sure you have internet connectivity."
+                                                                      delegate:nil
+                                                             cancelButtonTitle:@"OK"
+                                                             otherButtonTitles:nil];
+                    [IAPAlert show];
+                }
+            }];
+        } else if (indexPath.row == 1) {
+            [[IAPHelper sharedInstance] restoreCompletedTransactions];
+        }
+        
     } else if (indexPath.section == SECTION_ABOUT) {
         if (indexPath.row == 0) {
             NSString *recipient = @"dissociatedpress@decentfolks.com";
@@ -285,28 +327,8 @@
             NSString *subject = [NSString stringWithFormat:@"Feedback for Dissociated Press %@",version];
             [self composeMailWithRecipient:recipient Subject:subject];
         } else if (indexPath.row == 2) {
-           [[IAPHelper sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products) {
-               if (success) {
-                   for (SKProduct *product in products) {
-                       if ([product.productIdentifier isEqualToString:IAPHelperProductRemoveAds]) {
-                           [[IAPHelper sharedInstance] buyProduct:product];
-                       }
-                   }
-               } else {
-                   UIAlertView *IAPAlert = [[UIAlertView alloc] initWithTitle:@"Could not reach the app store."
-                                                         message:@"Make sure you have internet connectivity."
-                                                        delegate:nil
-                                               cancelButtonTitle:@"OK"
-                                               otherButtonTitles:nil];
-                   [IAPAlert show];
-               }
-           }];
-        } else if (indexPath.row == 3) {
-            [[IAPHelper sharedInstance] restoreCompletedTransactions];
-        }
-        else if (indexPath.row == 4) {
             [Appirater forceShowPrompt:YES];
-        } else if (indexPath.row == 5) {
+        } else if (indexPath.row == 3) {
             NSString *acknowledgementsMessage = [NSString stringWithFormat:@"AFNetworking (github.com/AFNetworking)\n"
                                                  @"Appirater (github.com/arashpayan)\n"
                                                  @"MBProgressHUD (github.com/jdg)\n"
