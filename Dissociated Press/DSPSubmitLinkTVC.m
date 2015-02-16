@@ -105,7 +105,7 @@
     [super viewDidLoad];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero]; //this hides extra separators
     
     self.navigationItem.title = @"Submit to reddit";
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel"
@@ -142,12 +142,19 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+}
+
 - (void)authenticationStateDidChange
 {
     NSIndexPath *userCellIndexPath = [NSIndexPath indexPathForItem:[self.cellsIndex indexOfObject:@"userCell"] inSection:0];
     [self.tableView reloadRowsAtIndexPaths:@[userCellIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     [self getNewCaptcha];
-    [self updateSubmitButtonStatus];
 }
 
 - (void)getNewCaptcha

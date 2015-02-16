@@ -24,7 +24,6 @@
 @property (strong, nonatomic) UIActivityIndicatorView *footerActivityIndicator;
 @property (strong, nonatomic) NSMutableArray *queries; // array of strings;
 @property (strong, nonatomic) NSMutableArray *topics; //array of strings;
-//@property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (strong, nonatomic) UISegmentedControl *queryTypeControl;
 @property (strong, nonatomic) NSMutableArray *newsArray;
 @property (strong, nonatomic) DSPDissociatedNewsLoader *newsLoader;
@@ -46,7 +45,6 @@
     self.topics = [NSMutableArray arrayWithObjects:@"Headlines", @"World", @"Technology", @"Entertainment", @"Health", nil];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     self.topicHeaderView = [[DSPTopicHeaderView alloc] init];
     self.topicHeaderView.delegate = self;
@@ -82,19 +80,10 @@
     UIBarButtonItem *controlButton = [[UIBarButtonItem alloc] initWithCustomView:self.queryTypeControl];
     self.navigationItem.leftBarButtonItem = controlButton;
     
-    //    self.refreshControl = [[UIRefreshControl alloc] init];
-    //    [self.tableView addSubview:self.refreshControl];
-    //    [self.refreshControl addTarget:self action:@selector(loadNews) forControlEvents:UIControlEventValueChanged];
-    
     [self updateIAPStatus:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateIAPStatus:) name:IAPHelperProductPurchasedNotification object:nil];
     
     [self loadNews];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    self.rowHeightCache = [NSMutableDictionary dictionary];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -102,6 +91,15 @@
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
     self.rowHeightCache = [NSMutableDictionary dictionary];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    self.rowHeightCache = [NSMutableDictionary dictionary];
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
 }
 
 - (void)loadNews
@@ -119,7 +117,6 @@
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            //            [self.refreshControl beginRefreshing];
             NSArray *rangeToDelete = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
             [self.newsArray removeAllObjects];
             [self.tableView deleteRowsAtIndexPaths:rangeToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -137,7 +134,6 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            //            [self.refreshControl endRefreshing];
             self.newsLoader = newsLoader;
             self.newsArray = [newNews mutableCopy];
             NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];

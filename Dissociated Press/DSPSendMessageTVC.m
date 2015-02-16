@@ -31,8 +31,8 @@
     [super viewDidLoad];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero]; //this hides extra separators
+
     self.navigationItem.title = @"Message the mods";
     
     self.sendButton = [[UIBarButtonItem alloc] initWithTitle:@"Send" style:UIBarButtonItemStyleBordered target:self action:@selector(send)];
@@ -165,6 +165,14 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
 }
 
 - (void)updateIAPStatus:(NSNotification *)notification

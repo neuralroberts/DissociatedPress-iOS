@@ -10,8 +10,8 @@
 
 @interface DSPTopStoriesTableViewCell ()
 
-@property (strong, nonatomic) NSMutableArray *hasThumbnailConstraints;
-@property (strong, nonatomic) NSMutableArray *noThumbnailConstraints;
+@property (strong, nonatomic) NSArray *hasThumbnailConstraints;
+@property (strong, nonatomic) NSArray *noThumbnailConstraints;
 
 @property (strong, nonatomic) UIView *bodyContainerView;
 @end
@@ -29,10 +29,10 @@
     [self.cardView addSubview:self.bodyContainerView];
     
     self.titleLabel = [[DSPLabel alloc] init];
-    self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor clearColor];
-    self.titleLabel.numberOfLines = 0;
+    self.titleLabel.numberOfLines = 9;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.bodyContainerView addSubview:self.titleLabel];
     
@@ -43,6 +43,7 @@
     
     self.upvoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.upvoteButton setImage:[UIImage imageNamed:@"upvote"] forState:UIControlStateNormal];
+    [self.upvoteButton setImage:[UIImage imageNamed:@"upvote_selected"] forState:UIControlStateSelected];
     self.upvoteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.upvoteButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.upvoteButton addTarget:self action:@selector(upvote) forControlEvents:UIControlEventTouchUpInside];
@@ -50,6 +51,7 @@
     
     self.downvoteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.downvoteButton setImage:[UIImage imageNamed:@"downvote"] forState:UIControlStateNormal];
+    [self.downvoteButton setImage:[UIImage imageNamed:@"downvote_selected"] forState:UIControlStateSelected];
     self.downvoteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.downvoteButton setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.downvoteButton addTarget:self action:@selector(downvote) forControlEvents:UIControlEventTouchUpInside];
@@ -65,18 +67,20 @@
     self.voteLabel = [[DSPLabel alloc] init];
     self.voteLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.voteLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.voteLabel.numberOfLines = 1;
     [self.cardView addSubview:self.voteLabel];
     
     self.authorLabel = [[DSPLabel alloc] init];
     self.authorLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     self.authorLabel.textColor = [UIColor grayColor];
+    self.authorLabel.numberOfLines = 1;
     self.authorLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.bodyContainerView addSubview:self.authorLabel];
     
     self.hasThumbnailConstraints = [NSMutableArray array];
     self.noThumbnailConstraints = [NSMutableArray array];
     [self applyConstraints];
-    
+        
     return self;
 }
 
@@ -97,6 +101,7 @@
     
     if (self.hasThumbnail) {
         self.thumbnail.hidden = NO;
+        self.thumbnail.image = [UIImage imageNamed:@"shreddedNewspaperBW"];
         __weak __typeof(self)weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSData *imageData = [NSData dataWithContentsOfURL:self.link.thumbnailURL];
@@ -199,7 +204,7 @@
 - (void)updateConstraints
 {
     [super updateConstraints];
-
+    
     if (self.hasThumbnail) {
         [self.cardView removeConstraints:self.noThumbnailConstraints];
         [self.cardView addConstraints:self.hasThumbnailConstraints];
@@ -214,284 +219,353 @@
 {
     [super applyConstraints];
     
-    //vote label centery to cardview centery
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.voteLabel
-                                                              attribute:NSLayoutAttributeCenterY
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeCenterY
-                                                             multiplier:1
-                                                               constant:0]];
-    //votelabel centeryX to upvote centerx
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.voteLabel
-                                                              attribute:NSLayoutAttributeCenterX
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.upvoteButton
-                                                              attribute:NSLayoutAttributeCenterX
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //upvote bottom to votelabel top
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.upvoteButton
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.voteLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:0]];
-    //downvote top to votelabel bottom
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.downvoteButton
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.voteLabel
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:0]];
-    //upvote leading to cardview margin
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.upvoteButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:8]];
-    //downvote leading to cardview margin
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.downvoteButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:8]];
-    //upvote top>= cardview top
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.upvoteButton
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:8]];
-    //downvote bottom >= cardview bottom
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.downvoteButton
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:8]];
-    //upvote / downvote equal size
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.downvoteButton
-                                                              attribute:NSLayoutAttributeHeight
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.upvoteButton
-                                                              attribute:NSLayoutAttributeHeight
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.downvoteButton
-                                                              attribute:NSLayoutAttributeWidth
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.upvoteButton
-                                                              attribute:NSLayoutAttributeWidth
-                                                             multiplier:1
-                                                               constant:0]];
-    //body top to carcview top
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:8]];
-    
-    //title top to body top
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //body centery to cardview centery
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeCenterY
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeCenterY
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //title bottom to authorlabel top
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.authorLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //author bottom to body bottom
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.authorLabel
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //body bottom >= cardview bottom
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:8]];
-    
-    //author label leading to title label leading
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.authorLabel
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //title trailing to body trailing
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    //body trailing to cardview trailing
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.bodyContainerView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:8]];
-    
-    //touchCellButton trailing to cardview trailing
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:0]];
-    //touchCellButton top to cardview top
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:0]];
-    //touchCellButton bottom to cardview bottom
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:0]];
-    //touchCellButton leading to votelabel trailing
-    //add some extra space to votes aren't mistaken for cell touches
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.touchCellButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.voteLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:32]];
-    
-    //hasthumbnailconstraints
-    //thumbnail leading to upvote trailing
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeLeading
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.upvoteButton
-                                                                         attribute:NSLayoutAttributeTrailing
-                                                                        multiplier:1
-                                                                          constant:8]];
-    //thumbnail centery to cardview centery
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.cardView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                        multiplier:1
-                                                                          constant:0]];
-    //thumbnail trailing to title leading
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                                         attribute:NSLayoutAttributeLeading
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeTrailing
-                                                                        multiplier:1
-                                                                          constant:8]];
-    
-    //thumbnail top >= cardview top
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeTop
-                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                            toItem:self.cardView
-                                                                         attribute:NSLayoutAttributeTop
-                                                                        multiplier:1
-                                                                          constant:8]];
-    
-    //thumbnail bottom >= cardview bottom
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                                         attribute:NSLayoutAttributeBottom
-                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                            toItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeBottom
-                                                                        multiplier:1
-                                                                          constant:8]];
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                        multiplier:1
-                                                                          constant:0]];
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                         relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                            toItem:nil
-                                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                                        multiplier:1
-                                                                          constant:72]];
+    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [self.authorLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.authorLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [self.bodyContainerView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.bodyContainerView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [self.voteLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
     [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
+    CGFloat thumbnailSize = 48;
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        thumbnailSize = 72;
+    }
+    [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                               attribute:NSLayoutAttributeHeight
+                                                               relatedBy:NSLayoutRelationLessThanOrEqual
+                                                                  toItem:nil
+                                                               attribute:NSLayoutAttributeNotAnAttribute
+                                                              multiplier:1
+                                                                constant:thumbnailSize]];
+    
+    [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                               attribute:NSLayoutAttributeWidth
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:self.thumbnail
+                                                               attribute:NSLayoutAttributeHeight
+                                                              multiplier:1
+                                                                constant:0]];
+    
+    [self.cardView addConstraints:@[
+                                    //votelabel centery = cardview centery + 0
+                                    [NSLayoutConstraint constraintWithItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //votelabel centerx = upvote centerx + 0
+                                    [NSLayoutConstraint constraintWithItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeCenterX
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.upvoteButton
+                                                                 attribute:NSLayoutAttributeCenterX
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //votelabel centerx = downvote centerx + 0
+                                    [NSLayoutConstraint constraintWithItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeCenterX
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.downvoteButton
+                                                                 attribute:NSLayoutAttributeCenterX
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //upvote leading = cardview leading + 8
+                                    [NSLayoutConstraint constraintWithItem:self.upvoteButton
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //downvote leading = cardview leading + 8
+                                    [NSLayoutConstraint constraintWithItem:self.downvoteButton
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //upvote bottom = votelabel top + 0
+                                    [NSLayoutConstraint constraintWithItem:self.upvoteButton
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //downvote top = votelabel bottom + 0
+                                    [NSLayoutConstraint constraintWithItem:self.downvoteButton
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //upvote top >= cardview top + 8
+                                    [NSLayoutConstraint constraintWithItem:self.upvoteButton
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //cardview bottom >= downvote bottom + 8
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.downvoteButton
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //downvote height = upvote height
+                                    [NSLayoutConstraint constraintWithItem:self.downvoteButton
+                                                                 attribute:NSLayoutAttributeHeight
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.upvoteButton
+                                                                 attribute:NSLayoutAttributeHeight
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //downvote width = upvote width
+                                    [NSLayoutConstraint constraintWithItem:self.downvoteButton
+                                                                 attribute:NSLayoutAttributeWidth
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.upvoteButton
+                                                                 attribute:NSLayoutAttributeWidth
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //body top >= cardview top + 8
+                                    [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //cardview bottom >= body bottom + 8
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //title top >= cardview top + 8
+                                    [NSLayoutConstraint constraintWithItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //cardview bottom >= author bottom + 8
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.authorLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //cardview trailing = body trailing + 8
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //body centery = cardview centery + 0
+                                    [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeCenterY
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //title top = body top + 0
+                                    [NSLayoutConstraint constraintWithItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //author top = title bottom + 0
+                                    [NSLayoutConstraint constraintWithItem:self.authorLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //body bottom = author bottom + 0
+                                    [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.authorLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //body leading = title leading + 0
+                                    [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //body trailing = title trailing + 0
+                                    [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //author leading = body leading + 0
+                                    [NSLayoutConstraint constraintWithItem:self.authorLabel
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //author trailing = body trailing + 0
+                                    [NSLayoutConstraint constraintWithItem:self.authorLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //touchcellbutton trailing = cardview trailing + 0
+                                    [NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //touchCellButton top = cardview top + 0
+                                    [NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //touchCellButton bottom = cardbiew bottom + 0
+                                    [NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //touchCellButton leading = votelabel trailing + 32
+                                    //add some extra space to votes aren't mistaken for cell touches
+                                    [NSLayoutConstraint constraintWithItem:self.touchCellButton
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:32]
+                                    ]];
+    
+    
+    
+    //hasthumbnailconstraints
+    self.hasThumbnailConstraints = @[
+                                     //thumbnail top >= cardview top + 8
+                                     [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                  attribute:NSLayoutAttributeTop
+                                                                  relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                     toItem:self.cardView
+                                                                  attribute:NSLayoutAttributeTop
+                                                                 multiplier:1
+                                                                   constant:8],
+                                     
+                                     //cardview bottom >= thumbnail bottom + 8
+                                     [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                  attribute:NSLayoutAttributeBottom
+                                                                  relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                     toItem:self.thumbnail
+                                                                  attribute:NSLayoutAttributeBottom
+                                                                 multiplier:1
+                                                                   constant:8],
+                                     
+                                     //thumbnail centery = cardview centery + 0
+                                     [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                  attribute:NSLayoutAttributeCenterY
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.cardView
+                                                                  attribute:NSLayoutAttributeCenterY
+                                                                 multiplier:1
+                                                                   constant:0],
+                                     
+                                     //thumbnail leading = votelabel trailing + 16
+                                     [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                  attribute:NSLayoutAttributeLeading
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.voteLabel
+                                                                  attribute:NSLayoutAttributeTrailing
+                                                                 multiplier:1
+                                                                   constant:16],
+                                     
+                                     //body leading = thumbnail trailing +8
+                                     [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                  attribute:NSLayoutAttributeLeading
+                                                                  relatedBy:NSLayoutRelationEqual
+                                                                     toItem:self.thumbnail
+                                                                  attribute:NSLayoutAttributeTrailing
+                                                                 multiplier:1
+                                                                   constant:8]
+                                     ];
     
     //nothumbnailconstraints
-    //body leading to upvote trailing
-    [self.noThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.bodyContainerView
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.upvoteButton
-                                                                        attribute:NSLayoutAttributeTrailing
-                                                                       multiplier:1
-                                                                         constant:8]];
-    
-    //title leading to body leading
-    [self.noThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.bodyContainerView
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                       multiplier:1
-                                                                         constant:0]];
-
+    self.noThumbnailConstraints = @[
+                                    //body leading = votelabel trailing +16
+                                    [NSLayoutConstraint constraintWithItem:self.bodyContainerView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.voteLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:16]
+                                    ];
 }
 
 @end

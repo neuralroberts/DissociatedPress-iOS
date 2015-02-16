@@ -123,6 +123,14 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
+}
+
 - (void)authenticationStateDidChange
 {
     NSString *username = [DSPAuthenticationManager usernameForDissociatedPress];

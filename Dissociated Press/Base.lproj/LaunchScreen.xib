@@ -14,11 +14,7 @@
                 <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dd3-PL-F5x">
                     <rect key="frame" x="0.0" y="431" width="480" height="49"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <items>
-                        <tabBarItem systemItem="search" id="1bY-tt-0wC"/>
-                        <tabBarItem systemItem="topRated" id="zA5-47-44b"/>
-                        <tabBarItem title="Settings" image="UIButtonBarGear" selectedImage="UIButtonBarGear" id="HFm-0F-7iA"/>
-                    </items>
+                    <items/>
                 </tabBar>
             </subviews>
             <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -34,7 +30,4 @@
             <point key="canvasLocation" x="548" y="455"/>
         </view>
     </objects>
-    <resources>
-        <image name="UIButtonBarGear" width="25" height="25"/>
-    </resources>
 </document>

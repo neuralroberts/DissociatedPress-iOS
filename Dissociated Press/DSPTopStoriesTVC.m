@@ -34,7 +34,6 @@
     [super viewDidLoad];
     
     self.tableView.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     self.autoLayoutCell = [[DSPTopStoriesTableViewCell alloc] initWithReuseIdentifier:nil];
     self.autoLayoutCell.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -72,6 +71,15 @@
     [super didReceiveMemoryWarning];
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    self.rowHeightCache = [NSMutableDictionary dictionary];
+    [self.tableView beginUpdates];
+    [self.tableView endUpdates];
 }
 
 - (void)authenticationStateDidChange
@@ -214,7 +222,11 @@
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 106.0;
+    RKLink *link = self.links[indexPath.row];
+    NSNumber *cachedHeight = self.rowHeightCache[link.fullName];
+    if (cachedHeight != nil) return [cachedHeight floatValue];
+    return UITableViewAutomaticDimension;
+//    return 106.0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

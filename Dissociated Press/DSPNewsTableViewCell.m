@@ -31,7 +31,7 @@
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor whiteColor];
-    self.titleLabel.numberOfLines = 3;
+    self.titleLabel.numberOfLines = 9;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.cardView addSubview:self.titleLabel];
     
@@ -54,7 +54,7 @@
     self.actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.actionButton setImage:[UIImage imageNamed:@"UIButtonAction"] forState:UIControlStateNormal];
     [self.actionButton setImage:[UIImage imageNamed:@"UIButtonAction_Selected"] forState:UIControlStateHighlighted];
-
+    
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.actionButton addTarget:self action:@selector(didClickActionButton) forControlEvents:UIControlEventTouchUpInside];
     [self.cardView addSubview:self.actionButton];
@@ -111,6 +111,7 @@
     
     if (newsStory.hasThumbnail) {
         self.thumbnail.hidden = NO;
+        self.thumbnail.image = [UIImage imageNamed:@"shreddedNewspaperBW"];
         __weak __typeof(self)weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSData *imageData = [NSData dataWithContentsOfURL:newsStory.imageUrl];
@@ -174,88 +175,7 @@
 {
     [super applyConstraints];
     
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.dissociateButton
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.dateLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeTrailing
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.contentLabel
-                                                              attribute:NSLayoutAttributeTrailing
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dissociateButton
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.dissociateButton
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.actionButton
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:16]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.actionButton
-                                                              attribute:NSLayoutAttributeCenterY
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeCenterY
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    
+    //set compression & hugging priority for buttons
     for (UIButton *button in @[self.actionButton, self.dissociateButton]) {
         [button setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
         [button setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
@@ -263,54 +183,23 @@
         [button setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     }
     
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.cardView
-                                                              attribute:NSLayoutAttributeTop
-                                                             multiplier:1
-                                                               constant:16]];
+    //thumbnail size
+    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.dateLabel
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:0]];
+    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
     
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeLeading
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.contentLabel
-                                                              attribute:NSLayoutAttributeLeading
-                                                             multiplier:1
-                                                               constant:0]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.titleLabel
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:8]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.contentLabel
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.dateLabel
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:8]];
-    
-    [self.cardView addConstraint:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                              attribute:NSLayoutAttributeBottom
-                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                 toItem:self.contentLabel
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1
-                                                               constant:16]];
+    CGFloat thumbnailSize = 48;
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        thumbnailSize = 72;
+    }
+    [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                               attribute:NSLayoutAttributeHeight
+                                                               relatedBy:NSLayoutRelationLessThanOrEqual
+                                                                  toItem:nil
+                                                               attribute:NSLayoutAttributeNotAnAttribute
+                                                              multiplier:1
+                                                                constant:thumbnailSize]];
     
     [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
                                                                attribute:NSLayoutAttributeWidth
@@ -320,68 +209,194 @@
                                                               multiplier:1
                                                                 constant:0]];
     
-    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    //unconditional constraints
+    [self.cardView addConstraints:@[
+                                    //title leading = cardview leading + 16
+                                    [NSLayoutConstraint constraintWithItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //title top = cardview top + 16
+                                    [NSLayoutConstraint constraintWithItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //dissociate button leading = title trailing + 16
+                                    [NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //dissociate button top = cardview top + 16
+                                    [NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTop
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //cardview trailing = dissociate button trailing + 16
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //action button top = dissociate button bottom + 16
+                                    [NSLayoutConstraint constraintWithItem:self.actionButton
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //action button centerX = dissociate button centerX + 0
+                                    [NSLayoutConstraint constraintWithItem:self.actionButton
+                                                                 attribute:NSLayoutAttributeCenterX
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeCenterX
+                                                                multiplier:1
+                                                                  constant:0],
+                                    
+                                    //cardview bottom >= actionbutton bottom + 16
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.actionButton
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //date top = title bottom + 8
+                                    [NSLayoutConstraint constraintWithItem:self.dateLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //dissociate button leading = date trailing + 16
+                                    [NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.dateLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //body top = date bottom + 8
+                                    [NSLayoutConstraint constraintWithItem:self.contentLabel
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.dateLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //dissociated button leading = body trailing + 16
+                                    [NSLayoutConstraint constraintWithItem:self.dissociateButton
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.contentLabel
+                                                                 attribute:NSLayoutAttributeTrailing
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //cardview bottom >= body bottom + 16
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.contentLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:16]
+                                    ]];
     
-    [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    //constraints for no thumbnail condition
+    [self.noThumbnailConstraints addObjectsFromArray:@[
+                                                       //date leading = title leading + 0
+                                                       [NSLayoutConstraint constraintWithItem:self.dateLabel
+                                                                                    attribute:NSLayoutAttributeLeading
+                                                                                    relatedBy:NSLayoutRelationEqual
+                                                                                       toItem:self.titleLabel
+                                                                                    attribute:NSLayoutAttributeLeading
+                                                                                   multiplier:1
+                                                                                     constant:0],
+                                                       
+                                                       //body leading = title leading + 0
+                                                       [NSLayoutConstraint constraintWithItem:self.contentLabel
+                                                                                    attribute:NSLayoutAttributeLeading
+                                                                                    relatedBy:NSLayoutRelationEqual
+                                                                                       toItem:self.titleLabel
+                                                                                    attribute:NSLayoutAttributeLeading
+                                                                                   multiplier:1
+                                                                                     constant:0]
+                                                       ]];
     
-    [self.thumbnail addConstraint:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                               attribute:NSLayoutAttributeHeight
-                                                               relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                  toItem:nil
-                                                               attribute:NSLayoutAttributeNotAnAttribute
-                                                              multiplier:1
-                                                                constant:72]];
-    
-    //hasthumbnail
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                                         attribute:NSLayoutAttributeLeading
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeTrailing
-                                                                        multiplier:1
-                                                                          constant:8]];
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.cardView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                        multiplier:1
-                                                                          constant:0]];
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeLeading
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.actionButton
-                                                                         attribute:NSLayoutAttributeTrailing
-                                                                        multiplier:1
-                                                                          constant:16]];
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeTop
-                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                            toItem:self.cardView
-                                                                         attribute:NSLayoutAttributeTop
-                                                                        multiplier:1
-                                                                          constant:16]];
-    
-    [self.hasThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.cardView
-                                                                         attribute:NSLayoutAttributeBottom
-                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                            toItem:self.thumbnail
-                                                                         attribute:NSLayoutAttributeBottom
-                                                                        multiplier:1
-                                                                          constant:16]];
-    
-    //nothumbnail
-    [self.noThumbnailConstraints addObject:[NSLayoutConstraint constraintWithItem:self.titleLabel
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.actionButton
-                                                                        attribute:NSLayoutAttributeTrailing
-                                                                       multiplier:1
-                                                                         constant:16]];
+    //constraints for has thumbnail condition
+    [self.hasThumbnailConstraints addObjectsFromArray:@[
+                                                        //date leading = thumbnail trailing + 16
+                                                        [NSLayoutConstraint constraintWithItem:self.dateLabel
+                                                                                     attribute:NSLayoutAttributeLeading
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.thumbnail
+                                                                                     attribute:NSLayoutAttributeTrailing
+                                                                                    multiplier:1
+                                                                                      constant:16],
+                                                        
+                                                        //body leading = thumbnail trailing + 16
+                                                        [NSLayoutConstraint constraintWithItem:self.contentLabel
+                                                                                     attribute:NSLayoutAttributeLeading
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.thumbnail
+                                                                                     attribute:NSLayoutAttributeTrailing
+                                                                                    multiplier:1
+                                                                                      constant:16],
+                                                        
+                                                        //thumbnail top = title bottom + 8
+                                                        [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                                     attribute:NSLayoutAttributeTop
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.titleLabel
+                                                                                     attribute:NSLayoutAttributeBottom
+                                                                                    multiplier:1
+                                                                                      constant:8],
+                                                        
+                                                        //thumbnail leading = card leading + 16
+                                                        [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                                     attribute:NSLayoutAttributeLeading
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.cardView
+                                                                                     attribute:NSLayoutAttributeLeading
+                                                                                    multiplier:1
+                                                                                      constant:16],
+                                                        
+                                                        //card bottom >= thumb bottom + 16
+                                                        [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                                     attribute:NSLayoutAttributeBottom
+                                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                                        toItem:self.thumbnail
+                                                                                     attribute:NSLayoutAttributeBottom
+                                                                                    multiplier:1
+                                                                                      constant:16]
+                                                        ]];
 }
 
 @end

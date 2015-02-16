@@ -36,7 +36,7 @@
         //use grouped style for iphone so that header's don't float
         newsTVC = [[DSPNewsTVC alloc] initWithStyle:UITableViewStyleGrouped];
     }
-    newsTVC.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemSearch tag:0];
+    newsTVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Create" image:[UIImage imageNamed:@"UITabBarSearch"] tag:0];
     UINavigationController *newsNavigationVC = [[UINavigationController alloc] initWithRootViewController:newsTVC];
     
     DSPTopStoriesTVC *topTVC = [[DSPTopStoriesTVC alloc] init];
