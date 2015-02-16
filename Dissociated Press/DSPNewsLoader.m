@@ -82,7 +82,7 @@
     NSMutableArray *result = [[NSMutableArray alloc] initWithCapacity:associatedResultsArray.count];
     for (NSDictionary *resultDictionary in associatedResultsArray) {
         DSPNewsStory *story = [[DSPNewsStory alloc] init];
-        story.uniqueIdentifier = [[NSUUID alloc] init];
+        story.uniqueIdentifier = [[[NSUUID alloc] init] UUIDString];
         story.title = [resultDictionary[@"titleNoFormatting"] stringByConvertingHTMLToPlainText];
         story.dissociatedTitle = nil;
         story.content = [resultDictionary[@"content"] stringByConvertingHTMLToPlainText];

@@ -14,6 +14,7 @@
 #import "DSPSubmitLinkTVC.h"
 #import <iAd/iAd.h>
 #import "IAPHelper.h"
+#import "DSPImageStore.h"
 
 
 @interface DSPNewsTVC ()
@@ -91,6 +92,7 @@
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
     self.rowHeightCache = [NSMutableDictionary dictionary];
+    [[DSPImageStore sharedStore] clearImageStore];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -112,7 +114,7 @@
         UISearchBar *searchBar = self.queryHeaderView.searchBars[i];
         self.queries[i] = searchBar.text;
     }
-    
+
     //reset and populate news array
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         

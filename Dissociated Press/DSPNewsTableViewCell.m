@@ -7,6 +7,7 @@
 //
 
 #import "DSPNewsTableViewCell.h"
+#import "DSPImageStore.h"
 
 @interface DSPNewsTableViewCell ()
 
@@ -109,20 +110,29 @@
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     self.dateLabel.text = [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:newsStory.date]];
     
-    if (newsStory.hasThumbnail) {
+    
+    if (self.newsStory.hasThumbnail) {
         self.thumbnail.hidden = NO;
-        self.thumbnail.image = [UIImage imageNamed:@"shreddedNewspaperBW"];
-        __weak __typeof(self)weakSelf = self;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSData *imageData = [NSData dataWithContentsOfURL:newsStory.imageUrl];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                weakSelf.thumbnail.image = [[UIImage alloc] initWithData:imageData];
+        
+        UIImage *image = [[DSPImageStore sharedStore] imageForKey:self.newsStory.uniqueIdentifier];
+        if (image) self.thumbnail.image = image;
+        else {
+            self.thumbnail.image = [UIImage imageNamed:@"shreddedNewspaperBW"];
+            __weak __typeof(self)weakSelf = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSData *imageData = [NSData dataWithContentsOfURL:weakSelf.newsStory.imageUrl];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIImage *image = [[UIImage alloc] initWithData:imageData];
+                    [[DSPImageStore sharedStore] setImage:image forKey:weakSelf.newsStory.uniqueIdentifier];
+                    weakSelf.thumbnail.image = image;
+                });
             });
-        });
+        }
     } else {
         self.thumbnail.hidden = YES;
     }
+    
     
     [self setNeedsUpdateConstraints];
     [self setNeedsLayout];

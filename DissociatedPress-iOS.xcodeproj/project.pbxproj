@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4306DAA01A9194E7002302D1 /* DSPImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4306DA9F1A9194E7002302D1 /* DSPImageStore.m */; };
 		431477911A8173B500D339D0 /* DSPSendMessageTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 431477901A8173B500D339D0 /* DSPSendMessageTVC.m */; };
 		433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */; };
 		43380B451A3B729F00C194DF /* RKClient+DSP.m in Sources */ = {isa = PBXBuildFile; fileRef = 43380B441A3B729F00C194DF /* RKClient+DSP.m */; };
@@ -54,6 +55,8 @@
 
 /* Begin PBXFileReference section */
 		0016EFF84082FA186E4B9BBE /* Pods-Dissociated Press.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.debug.xcconfig"; sourceTree = "<group>"; };
+		4306DA9E1A9194E7002302D1 /* DSPImageStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPImageStore.h; sourceTree = "<group>"; };
+		4306DA9F1A9194E7002302D1 /* DSPImageStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPImageStore.m; sourceTree = "<group>"; };
 		4314778F1A8173B500D339D0 /* DSPSendMessageTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPSendMessageTVC.h; sourceTree = "<group>"; };
 		431477901A8173B500D339D0 /* DSPSendMessageTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPSendMessageTVC.m; sourceTree = "<group>"; };
 		433530E81A3294D10008BC39 /* DSPTopStoriesTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPTopStoriesTVC.h; sourceTree = "<group>"; };
@@ -258,6 +261,8 @@
 				43B5DFC41A36610E00D1877A /* DSPAuthenticationManager.m */,
 				43A3D8431A8A717100192015 /* IAPHelper.h */,
 				43A3D8441A8A717100192015 /* IAPHelper.m */,
+				4306DA9E1A9194E7002302D1 /* DSPImageStore.h */,
+				4306DA9F1A9194E7002302D1 /* DSPImageStore.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -451,6 +456,7 @@
 				43383D741A1155F800D58D0F /* main.m in Sources */,
 				43F75BA81A17E1450059FF33 /* DSPNewsTableViewCell.m in Sources */,
 				43DA00581A142B40008F0C53 /* DSPSettingsVC.m in Sources */,
+				4306DAA01A9194E7002302D1 /* DSPImageStore.m in Sources */,
 				43CFA1291A38D7B40023A7FD /* DSPSubmitLinkCell.m in Sources */,
 				433AA0951A2F97430028477F /* DSPLabel.m in Sources */,
 				43CFA1261A37C7B20023A7FD /* DSPSubmitLinkTVC.m in Sources */,

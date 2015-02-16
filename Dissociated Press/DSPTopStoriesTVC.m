@@ -13,6 +13,7 @@
 #import "DSPWebViewController.h"
 #import <iAd/iAd.h>
 #import "IAPHelper.h"
+#import "DSPImageStore.h"
 
 @interface DSPTopStoriesTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) RKPagination *currentPagination;
@@ -71,6 +72,7 @@
     [super didReceiveMemoryWarning];
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
+    [[DSPImageStore sharedStore] clearImageStore];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
