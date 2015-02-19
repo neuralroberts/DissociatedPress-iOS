@@ -34,6 +34,8 @@
 
 - (instancetype)initPrivate
 {
+    self = [super init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearImageStore) name:@"UIApplicationDidReceiveMemoryWarningNotification" object:nil];
     return [super init];
 }
 

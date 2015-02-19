@@ -24,11 +24,17 @@
 {
     self = [super initWithReuseIdentifier:reuseIdentifier];
     
-    self.helpText = [NSString stringWithFormat:@"Dissociated Press works by breaking the source text into smaller pieces, called tokens, "
-                     "and then reassembling these tokens probabilistically into a new text. "
+    self.helpText = [NSString stringWithFormat:@"Dissociated Press works by breaking the original text into smaller pieces, called tokens, "
+                     "and then reassembling these probabilistically into a new text. \n\n"
+                     "For example, \"illuminati\" split into 4-character tokens would look like this:\n"
+                     "[illu],[llum],[lumi],[umin],[mina],[inat],[nati]\n\n"
+                     "\"Vaccination\" would become:\n"
+                     "[Vacc],[acci],[ccin],[cina],[inat],[nati],[atio],[tion]\n\n"
+                     "These share the token [inat], so they can be reassembled to create: \"Vaccinati\"\n\n"
+                     "Coincidence? Your call.\n\n"
+                     "Good settings to start with are character tokens of size 3-6, or words tokens of size 1-2. "
                      "Too small token settings will result in a nonsensical text, "
-                     "but too large tokens will create a text identical to the original. \n\n"
-                     "Good settings to start with are character tokens of size 3-6, or words tokens of size 1-2."];
+                     "but too large tokens will create a text identical to the original."];
     
     self.titleLabel = [[DSPLabel alloc] init];
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
@@ -46,6 +52,7 @@
     self.detailLabel.numberOfLines = 0;
     self.detailLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.detailLabel.text = nil;
+    self.detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.cardView addSubview:self.detailLabel];
     
     self.disclosureButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
@@ -62,6 +69,7 @@
     
     return self;
 }
+
 
 - (void)setIsExpanded:(BOOL)isExpanded
 {

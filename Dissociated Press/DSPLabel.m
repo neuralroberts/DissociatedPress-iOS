@@ -21,11 +21,17 @@
 }
 
 - (void)layoutSubviews {
+//    NSLog(@"%@",self.text);
+//    NSLog(@"%@",NSStringFromCGSize(self.intrinsicContentSize));
     [super layoutSubviews];
 
+//    NSLog(@"%f, %f",self.bounds.size.width, self.frame.size.width);
     self.preferredMaxLayoutWidth = CGRectGetWidth(self.bounds);
+//    NSLog(@"%@",NSStringFromCGSize(self.intrinsicContentSize));
 
     [super layoutSubviews];
+//    NSLog(@"%@\n\n\n",NSStringFromCGSize(self.intrinsicContentSize));
 }
+
 
 @end

@@ -14,7 +14,6 @@
 #import "DSPSubmitLinkTVC.h"
 #import <iAd/iAd.h>
 #import "IAPHelper.h"
-#import "DSPImageStore.h"
 
 
 @interface DSPNewsTVC ()
@@ -92,7 +91,6 @@
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
     self.rowHeightCache = [NSMutableDictionary dictionary];
-    [[DSPImageStore sharedStore] clearImageStore];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -114,7 +112,7 @@
         UISearchBar *searchBar = self.queryHeaderView.searchBars[i];
         self.queries[i] = searchBar.text;
     }
-
+    
     //reset and populate news array
     dispatch_barrier_async(self.newsLoaderQueue, ^{
         
@@ -136,10 +134,20 @@
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.newsLoader = newsLoader;
-            self.newsArray = [newNews mutableCopy];
-            NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
-            [self.tableView insertRowsAtIndexPaths:rangeToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
+            if ([newNews count] == 0) {
+                UIAlertView *noResultsError = [[UIAlertView alloc] initWithTitle:@"No results found"
+                                                                         message:@"Check your internet connection or try a different query."
+                                                                        delegate:nil
+                                                               cancelButtonTitle:@"OK"
+                                                               otherButtonTitles:nil];
+                [noResultsError show];
+                [self.footerActivityIndicator stopAnimating];
+            } else {
+                self.newsLoader = newsLoader;
+                self.newsArray = [newNews mutableCopy];
+                NSArray *rangeToInsert = [self indexPathArrayForRangeFromStart:0 toEnd:self.newsArray.count inSection:0];
+                [self.tableView insertRowsAtIndexPaths:rangeToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
         });
     });
 }

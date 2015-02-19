@@ -56,7 +56,7 @@
                 }];
             }
         } else {
-            NSString *errorTitle = nil;
+            NSString *errorTitle = @"Error";
             NSString *errorMessage = error.localizedFailureReason;
             NSString *otherButtonTitles = nil;
             NSString *errorKey = [responseObject valueForKeyPath:@"json.errors"][0][0];
@@ -199,9 +199,9 @@
             weakSelf.captchaIdentifier = nil;
             weakSelf.captchaImage = nil;
         }
+        [weakSelf updateSubmitButtonStatus];
     }];
     
-    [self updateSubmitButtonStatus];
 }
 
 - (NSString *)commentString

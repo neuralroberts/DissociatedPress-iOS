@@ -46,7 +46,7 @@
     DSPSettingsVC *settingsVC = [[DSPSettingsVC alloc] initWithStyle:UITableViewStyleGrouped];
     settingsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"UIButtonBarGear"] tag:2];
     UINavigationController *settingsNavigationVC = [[UINavigationController alloc] initWithRootViewController:settingsVC];
-
+    
     UITabBarController *tabController = [[UITabBarController alloc] init];
     tabController.tabBar.translucent = NO;
     tabController.viewControllers = @[newsNavigationVC, topNavigationVC, settingsNavigationVC];
@@ -57,7 +57,7 @@
     [self.window makeKeyAndVisible];
     
     [self setupAppirater];
-
+    
     return YES;
 }
 
@@ -65,8 +65,8 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"hasLaunched"]) {
-        [defaults setInteger:4 forKey:@"tokenSizeParameter"];
-        [defaults setBool:NO forKey:@"dissociateByWordParameter"];
+        [defaults setInteger:1 forKey:@"tokenSizeParameter"];
+        [defaults setBool:YES forKey:@"dissociateByWordParameter"];
         [defaults setBool:YES forKey:@"includeComment"];
     }
     [defaults setBool:YES forKey:@"hasLaunched"];
@@ -74,14 +74,18 @@
 
 - (void)setupReddit
 {
-//    for (NSDictionary *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
-//        NSError *error;
-//        [SSKeychain deletePasswordForService:@"DissociatedPress" account:account[@"acct"] error:&error];
-//        if (error) NSLog(@"%@",error);
-//    }
+    //    for (NSDictionary *account in [SSKeychain accountsForService:@"DissociatedPress"]) {
+    //        NSError *error;
+//            [SSKeychain deletePasswordForService:@"DissociatedPress" account:account[@"acct"] error:&error];
+    //        if (error) NSLog(@"%@",error);
+    //    }
     
-    [[RKClient sharedClient] setUserAgent:@"User-Agent: Dissociated Press-iOS/0.6 /r/Dissociated_Press"];
-    [DSPAuthenticationManager loginWithKeychainWithCompletion:nil];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString *userAgent = [NSString stringWithFormat:@"User-Agent: Dissociated Press-iOS/%@ /r/Dissociated_Press",version];
+        [[RKClient sharedClient] setUserAgent:userAgent];
+        [DSPAuthenticationManager loginWithKeychainWithCompletion:nil];
+    });
 }
 
 

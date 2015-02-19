@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "shreddedNewspaperBW.png"
+      "filename" : "mirroredNewspaperBW.jpeg"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "shreddedNewspaperBW@2x.png"
+      "filename" : "mirroredNewspaperBW@2x.jpeg"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "shreddedNewspaperBW@3x.png"
+      "filename" : "mirroredNewspaperBW@3x.jpeg"
     }
   ],
   "info" : {

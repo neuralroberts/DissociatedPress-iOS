@@ -32,8 +32,9 @@
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor whiteColor];
-    self.titleLabel.numberOfLines = 9;
+    self.titleLabel.numberOfLines = 0;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.cardView addSubview:self.titleLabel];
     
     self.contentLabel = [[DSPLabel alloc] init];
@@ -42,6 +43,7 @@
     self.contentLabel.backgroundColor = [UIColor whiteColor];
     self.contentLabel.numberOfLines = 4;
     self.contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.cardView addSubview:self.contentLabel];
     
     self.dateLabel = [[DSPLabel alloc] init];
@@ -117,7 +119,7 @@
         UIImage *image = [[DSPImageStore sharedStore] imageForKey:self.newsStory.uniqueIdentifier];
         if (image) self.thumbnail.image = image;
         else {
-            self.thumbnail.image = [UIImage imageNamed:@"shreddedNewspaperBW"];
+            self.thumbnail.image = [UIImage imageNamed:@"mirroredNewspaperBW"];
             __weak __typeof(self)weakSelf = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSData *imageData = [NSData dataWithContentsOfURL:weakSelf.newsStory.imageUrl];
@@ -132,7 +134,6 @@
     } else {
         self.thumbnail.hidden = YES;
     }
-    
     
     [self setNeedsUpdateConstraints];
     [self setNeedsLayout];
@@ -195,9 +196,10 @@
     
     //thumbnail size
     [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
-    
     [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
+//    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+//    [self.titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
     CGFloat thumbnailSize = 48;
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
@@ -336,6 +338,33 @@
                                                                     toItem:self.contentLabel
                                                                  attribute:NSLayoutAttributeBottom
                                                                 multiplier:1
+                                                                  constant:16],
+                                    
+                                    //thumbnail top = title bottom + 8
+                                    [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                 attribute:NSLayoutAttributeTop
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.titleLabel
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
+                                                                  constant:8],
+                                    
+                                    //thumbnail leading = card leading + 16
+                                    [NSLayoutConstraint constraintWithItem:self.thumbnail
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                 relatedBy:NSLayoutRelationEqual
+                                                                    toItem:self.cardView
+                                                                 attribute:NSLayoutAttributeLeading
+                                                                multiplier:1
+                                                                  constant:16],
+                                    
+                                    //card bottom >= thumb bottom + 16
+                                    [NSLayoutConstraint constraintWithItem:self.cardView
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                 relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                    toItem:self.thumbnail
+                                                                 attribute:NSLayoutAttributeBottom
+                                                                multiplier:1
                                                                   constant:16]
                                     ]];
     
@@ -377,33 +406,6 @@
                                                                                      relatedBy:NSLayoutRelationEqual
                                                                                         toItem:self.thumbnail
                                                                                      attribute:NSLayoutAttributeTrailing
-                                                                                    multiplier:1
-                                                                                      constant:16],
-                                                        
-                                                        //thumbnail top = title bottom + 8
-                                                        [NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                                     attribute:NSLayoutAttributeTop
-                                                                                     relatedBy:NSLayoutRelationEqual
-                                                                                        toItem:self.titleLabel
-                                                                                     attribute:NSLayoutAttributeBottom
-                                                                                    multiplier:1
-                                                                                      constant:8],
-                                                        
-                                                        //thumbnail leading = card leading + 16
-                                                        [NSLayoutConstraint constraintWithItem:self.thumbnail
-                                                                                     attribute:NSLayoutAttributeLeading
-                                                                                     relatedBy:NSLayoutRelationEqual
-                                                                                        toItem:self.cardView
-                                                                                     attribute:NSLayoutAttributeLeading
-                                                                                    multiplier:1
-                                                                                      constant:16],
-                                                        
-                                                        //card bottom >= thumb bottom + 16
-                                                        [NSLayoutConstraint constraintWithItem:self.cardView
-                                                                                     attribute:NSLayoutAttributeBottom
-                                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                                        toItem:self.thumbnail
-                                                                                     attribute:NSLayoutAttributeBottom
                                                                                     multiplier:1
                                                                                       constant:16]
                                                         ]];

@@ -13,7 +13,6 @@
 #import "DSPWebViewController.h"
 #import <iAd/iAd.h>
 #import "IAPHelper.h"
-#import "DSPImageStore.h"
 
 @interface DSPTopStoriesTVC () <UIAlertViewDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) RKPagination *currentPagination;
@@ -72,7 +71,6 @@
     [super didReceiveMemoryWarning];
     NSLog(@"%@ %@",[self class], NSStringFromSelector(_cmd));
     // Dispose of any resources that can be recreated.
-    [[DSPImageStore sharedStore] clearImageStore];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -119,7 +117,7 @@
         {
             [[weakSelf tableView] beginUpdates];
             
-            NSArray *indexPaths = [weakSelf indexPathArrayForRangeFromStart:self.links.count toEnd:self.links.count+collection.count inSection:0];
+            NSArray *indexPaths = [weakSelf indexPathArrayForRangeFromStart:weakSelf.links.count toEnd:weakSelf.links.count+collection.count inSection:0];
             [[weakSelf tableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
             
             weakSelf.links = [[weakSelf links] arrayByAddingObjectsFromArray:collection];
@@ -129,11 +127,19 @@
             [weakSelf.refreshControl endRefreshing];
             
             weakSelf.loadingNewLinks = NO;
-            [self.footerActivityIndicator stopAnimating];
+            [weakSelf.footerActivityIndicator stopAnimating];
         }
         else
         {
-            NSLog(@"Failed to get links, with error: %@", error);
+            UIAlertView *errorAlertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                     message:error.localizedDescription
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"OK"
+                                                           otherButtonTitles:nil];
+            [errorAlertView show];
+            weakSelf.loadingNewLinks = NO;
+            [weakSelf.refreshControl endRefreshing];
+            [weakSelf.footerActivityIndicator stopAnimating];
         }
     }];
 }

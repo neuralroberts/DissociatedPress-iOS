@@ -33,8 +33,9 @@
     self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     self.titleLabel.textColor = [UIColor blackColor];
     self.titleLabel.backgroundColor = [UIColor clearColor];
-    self.titleLabel.numberOfLines = 9;
+    self.titleLabel.numberOfLines = 0;
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.bodyContainerView addSubview:self.titleLabel];
     
     self.thumbnail = [[UIImageView alloc] init];
@@ -105,7 +106,7 @@
         UIImage *image = [[DSPImageStore sharedStore] imageForKey:self.link.fullName];
         if (image) self.thumbnail.image = image;
         else {
-            self.thumbnail.image = [UIImage imageNamed:@"shreddedNewspaperBW"];
+            self.thumbnail.image = [UIImage imageNamed:@"mirroredNewspaperBW"];
             __weak __typeof(self)weakSelf = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSData *imageData = [NSData dataWithContentsOfURL:self.link.thumbnailURL];
