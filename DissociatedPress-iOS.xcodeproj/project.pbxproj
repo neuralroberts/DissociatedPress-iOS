@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4304216F1A96831B007747C3 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4304216D1A96831B007747C3 /* Crashlytics.framework */; };
+		430421701A96831B007747C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4304216E1A96831B007747C3 /* Fabric.framework */; };
 		4306DAA01A9194E7002302D1 /* DSPImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4306DA9F1A9194E7002302D1 /* DSPImageStore.m */; };
 		431477911A8173B500D339D0 /* DSPSendMessageTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 431477901A8173B500D339D0 /* DSPSendMessageTVC.m */; };
 		433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */; };
@@ -55,6 +57,8 @@
 
 /* Begin PBXFileReference section */
 		0016EFF84082FA186E4B9BBE /* Pods-Dissociated Press.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Dissociated Press.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Dissociated Press/Pods-Dissociated Press.debug.xcconfig"; sourceTree = "<group>"; };
+		4304216D1A96831B007747C3 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		4304216E1A96831B007747C3 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		4306DA9E1A9194E7002302D1 /* DSPImageStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPImageStore.h; sourceTree = "<group>"; };
 		4306DA9F1A9194E7002302D1 /* DSPImageStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSPImageStore.m; sourceTree = "<group>"; };
 		4314778F1A8173B500D339D0 /* DSPSendMessageTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSPSendMessageTVC.h; sourceTree = "<group>"; };
@@ -126,10 +130,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				430421701A96831B007747C3 /* Fabric.framework in Frameworks */,
 				43A3D8421A8A6EF400192015 /* StoreKit.framework in Frameworks */,
 				439BC5A11A86ECE60046A2EE /* iAd.framework in Frameworks */,
 				43944C961A854BCC00A53FFA /* MessageUI.framework in Frameworks */,
 				43F893AE1A377DFF004062E5 /* Security.framework in Frameworks */,
+				4304216F1A96831B007747C3 /* Crashlytics.framework in Frameworks */,
 				516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -156,6 +162,8 @@
 		3C07A17F32927335D382174A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4304216D1A96831B007747C3 /* Crashlytics.framework */,
+				4304216E1A96831B007747C3 /* Fabric.framework */,
 				43A3D8411A8A6EF400192015 /* StoreKit.framework */,
 				439BC5A01A86ECE60046A2EE /* iAd.framework */,
 				43944C951A854BCC00A53FFA /* MessageUI.framework */,
@@ -315,6 +323,7 @@
 				43383D6B1A1155F800D58D0F /* Frameworks */,
 				43383D6C1A1155F800D58D0F /* Resources */,
 				B077F0164189F06ABB453554 /* Copy Pods Resources */,
+				4304216C1A9682CE007747C3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -414,6 +423,19 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
+		};
+		4304216C1A9682CE007747C3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 3cb2091b51c78c4bff8598500ad8d6bb31fd515e 7a8e15ae449409e6d0f4b7a38d9635dbd35e3e8b454ca26eb24ed571f4c631c8";
 		};
 		B077F0164189F06ABB453554 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -520,6 +542,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -571,6 +597,10 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;

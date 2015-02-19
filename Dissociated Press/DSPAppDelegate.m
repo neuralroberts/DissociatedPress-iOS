@@ -15,6 +15,9 @@
 #import <Appirater/Appirater.h>
 #import "IAPHelper.h"
 //#import <SSKeychain/SSKeychain.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 @interface DSPAppDelegate ()
 
 @end
@@ -25,6 +28,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    [Fabric with:@[CrashlyticsKit]];
+
     [self setupUserDefaults];
     [IAPHelper sharedInstance];
     [self setupReddit];
