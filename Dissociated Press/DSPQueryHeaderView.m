@@ -23,7 +23,7 @@
     self.layer.shadowOffset = CGSizeMake(0,0);
     self.layer.shadowRadius = 4;
 
-    NSArray *queries = @[@"ebola",@"granola",@"florida man",@"bieber fever",@"pro-state agitators"];
+    NSArray *queries = @[@"\"United Nations\"",@"Vacations",@"florida man",@"bieber fever",@"pro-state agitators"];
     self.searchBars = [NSMutableArray array];
     for (int i = 0; i < NUM_MAX_SEARCHBARS; i++) {
         UISearchBar *searchBar = [[UISearchBar alloc] init];

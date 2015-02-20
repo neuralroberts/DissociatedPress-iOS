@@ -113,6 +113,7 @@
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     UIImage *image = [self imageWithImage:[[UIImage alloc] initWithData:imageData] scaledToWidth:72.0];
+                    [[DSPImageStore sharedStore] setImage:image forKey:self.link.fullName];
                     weakSelf.thumbnail.image = image;
                 });
             });
@@ -231,6 +232,7 @@
     [self.authorLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     [self.bodyContainerView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.bodyContainerView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [self.voteLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [self.voteLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
     [self.thumbnail setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];

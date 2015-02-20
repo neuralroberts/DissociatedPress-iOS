@@ -99,7 +99,6 @@
     self.currentPagination = [RKPagination new];
     self.currentPagination.timeMethod = RKTimeSortingMethodAllTime;
     
-    
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
     
     [self loadNewLinks];

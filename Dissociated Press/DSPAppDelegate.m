@@ -27,12 +27,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
-    [Fabric with:@[CrashlyticsKit]];
-
+    [self setupReddit];
     [self setupUserDefaults];
     [IAPHelper sharedInstance];
-    [self setupReddit];
     
     DSPNewsTVC *newsTVC;
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
@@ -55,6 +52,7 @@
     UITabBarController *tabController = [[UITabBarController alloc] init];
     tabController.tabBar.translucent = NO;
     tabController.viewControllers = @[newsNavigationVC, topNavigationVC, settingsNavigationVC];
+    [tabController setSelectedViewController:topNavigationVC];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = tabController;
@@ -63,6 +61,8 @@
     
     [self setupAppirater];
     
+    [Fabric with:@[CrashlyticsKit]];
+    
     return YES;
 }
 
@@ -70,8 +70,8 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"hasLaunched"]) {
-        [defaults setInteger:1 forKey:@"tokenSizeParameter"];
-        [defaults setBool:YES forKey:@"dissociateByWordParameter"];
+        [defaults setInteger:5 forKey:@"tokenSizeParameter"];
+        [defaults setBool:NO forKey:@"dissociateByWordParameter"];
         [defaults setBool:YES forKey:@"includeComment"];
     }
     [defaults setBool:YES forKey:@"hasLaunched"];
