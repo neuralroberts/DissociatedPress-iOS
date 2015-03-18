@@ -12,6 +12,7 @@ An iOS app which uses the [Dissociated Press Algorithm](http://www.catb.org/~esr
 * Satan's Best Productivity Tricks
 
 >[/r/Dissociated_Press](http://reddit.com/r/Dissociated_Press)  
+[iOS App Store](https://itunes.apple.com/us/app/dissociated-press-parody-news/id962909584?ls=1&mt=8)  
 [Dissociated Press](http://www.catb.org/~esr/jargon/html/D/Dissociated-Press.html) entry in the Jargon File.  
 [Wikipedia entry](http://en.wikipedia.org/wiki/Dissociated_press)
 
@@ -31,6 +32,9 @@ Requirements
 
 Credits
 ====================
+
+* [reddit.com API](http://www.reddit.com/dev/api)
+* [Google and Google Feeds API](https://developers.google.com/feed/v1/jsondevguide)
 * [AFNetworking](https://github.com/AFNetworking/AFNetworking)
 * [Appirater](https://github.com/arashpayan/appirater)
 * [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
@@ -68,6 +72,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Disclaimer
 ====================
+Headlines created by this app are parodies of real headlines.  
 
 Contact
 ====================
