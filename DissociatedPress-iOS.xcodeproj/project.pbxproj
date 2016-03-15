@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4304216F1A96831B007747C3 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4304216D1A96831B007747C3 /* Crashlytics.framework */; };
-		430421701A96831B007747C3 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4304216E1A96831B007747C3 /* Fabric.framework */; };
 		4306DAA01A9194E7002302D1 /* DSPImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4306DA9F1A9194E7002302D1 /* DSPImageStore.m */; };
 		431477911A8173B500D339D0 /* DSPSendMessageTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 431477901A8173B500D339D0 /* DSPSendMessageTVC.m */; };
 		433530EA1A3294D10008BC39 /* DSPTopStoriesTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 433530E91A3294D10008BC39 /* DSPTopStoriesTVC.m */; };
@@ -130,12 +128,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				430421701A96831B007747C3 /* Fabric.framework in Frameworks */,
 				43A3D8421A8A6EF400192015 /* StoreKit.framework in Frameworks */,
 				439BC5A11A86ECE60046A2EE /* iAd.framework in Frameworks */,
 				43944C961A854BCC00A53FFA /* MessageUI.framework in Frameworks */,
 				43F893AE1A377DFF004062E5 /* Security.framework in Frameworks */,
-				4304216F1A96831B007747C3 /* Crashlytics.framework in Frameworks */,
 				516AFF16F7BB35FEA0060DEC /* libPods-Dissociated Press.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,7 +354,7 @@
 		43F2321F1A11542E008E87E4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0720;
 				TargetAttributes = {
 					43383D6D1A1155F800D58D0F = {
 						CreatedOnToolsVersion = 6.1;
@@ -435,7 +431,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Fabric.framework/run 3cb2091b51c78c4bff8598500ad8d6bb31fd515e 7a8e15ae449409e6d0f4b7a38d9635dbd35e3e8b454ca26eb24ed571f4c631c8";
+			shellScript = "";
 		};
 		B077F0164189F06ABB453554 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -565,6 +561,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DecentFolks.Dissociated-Press";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -612,6 +609,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DecentFolks.Dissociated-Press";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -664,6 +662,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gimmickfactory.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dissociated Press.app/Dissociated Press";
@@ -707,6 +706,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.gimmickfactory.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dissociated Press.app/Dissociated Press";
@@ -719,6 +719,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: JOSEPH WILKERSON (YS4739RCA8)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: JOSEPH WILKERSON (YS4739RCA8)";
+				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;

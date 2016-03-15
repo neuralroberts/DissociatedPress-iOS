@@ -61,7 +61,7 @@
     
     [self setupAppirater];
     
-    [Fabric with:@[CrashlyticsKit]];
+    //[Fabric with:@[CrashlyticsKit]];
     
     return YES;
 }
